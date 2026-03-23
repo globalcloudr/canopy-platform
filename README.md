@@ -22,6 +22,8 @@ The platform direction is:
 
 - `docs/`
   - platform strategy and architecture docs
+- `apps/portal/`
+  - starter `Next.js` portal app skeleton for `usecanopy.school`
 - `sendgrid-newsletter-pro/`
   - existing newsletter-related plugin work that may inform `Community Canopy`
 
@@ -40,6 +42,18 @@ This repo can start small and grow into that structure as the platform core beco
 
 - [Technical Platform Architecture Brief](/Users/zylstra/Code/canopy-platform/docs/canopy-technical-platform-architecture-brief.md)
 - [Repo Structure Proposal](/Users/zylstra/Code/canopy-platform/docs/repo-structure-proposal.md)
+- [Portal MVP Scope](/Users/zylstra/Code/canopy-platform/docs/portal-mvp-scope.md)
+- [Portal Technical Stack Recommendation](/Users/zylstra/Code/canopy-platform/docs/portal-technical-stack.md)
+
+## Local Development
+
+```bash
+cd /Users/zylstra/Code/canopy-platform
+npm install
+npm run dev
+```
+
+The root workspace scripts currently run the portal app in `apps/portal`.
 
 ## Relationship to PhotoVault
 

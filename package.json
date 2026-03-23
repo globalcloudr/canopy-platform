@@ -1,0 +1,17 @@
+{
+  "name": "canopy-platform",
+  "private": true,
+  "version": "0.1.0",
+  "engines": {
+    "node": "20.x"
+  },
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @canopy/portal",
+    "build": "npm run build --workspace @canopy/portal",
+    "start": "npm run start --workspace @canopy/portal",
+    "lint": "npm run lint --workspace @canopy/portal"
+  }
+}
