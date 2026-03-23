@@ -24,8 +24,10 @@ The platform direction is:
   - platform strategy and architecture docs
 - `apps/portal/`
   - starter `Next.js` portal app skeleton for `usecanopy.school`
+- `references/replit/`
+  - imported product and plugin experiments kept as reference material
 - `sendgrid-newsletter-pro/`
-  - existing newsletter-related plugin work that may inform `Community Canopy`
+  - moved under `references/replit/` as reference material
 
 ## Recommended Long-Term Repo Shape
 

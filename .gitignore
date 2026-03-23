@@ -29,4 +29,23 @@ pnpm-debug.log*
 # Misc
 .turbo/
 .cache/
+.config/
+.local/
 
+# Replit and imported reference projects
+.replit
+.agents/
+attached_assets/
+
+# PHP / plugin dependencies
+vendor/
+
+# Archived imports
+*.zip
+*.tar.gz
+
+# Local reference imports
+!references/
+!references/replit/
+references/replit/*
+!references/replit/README.md
