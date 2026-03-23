@@ -231,9 +231,10 @@ Reference roadmap:
 ### CP-012: Second Product Launch Through the Portal
 
 - Goal: Add the second real product launch after PhotoVault.
-- Recommended candidates:
-  - `Reach Canopy`
-  - `Canopy Web`
+- Selected MVP candidate:
+  - `Community Canopy`
+- MVP workflow:
+  - create and send newsletters
 - Acceptance:
   - second product is visible through the same workspace and entitlement model
   - platform value becomes clearly cross-product
@@ -250,6 +251,23 @@ Reference roadmap:
 - Acceptance:
   - account management does not have to live inside product apps
   - platform/control-plane value is clearer
+- Status:
+  - `Planned`
+
+### CP-017: Third Product Launch Through the Portal
+
+- Goal: Add the third connected MVP workflow after PhotoVault and Community Canopy.
+- Selected MVP candidate:
+  - `Reach Canopy`
+- MVP workflow:
+  - create and schedule social posts
+  - manage basic social publishing through the Canopy portal
+- Integration direction:
+  - likely implemented as a connected `Postiz`-backed service under the `Reach Canopy` product surface
+- Acceptance:
+  - third product is visible through the same workspace and entitlement model
+  - social publishing is presented as a Canopy workflow, not a disconnected external tool
+  - platform value is clearly expanding across asset, newsletter, and social workflows
 - Status:
   - `Planned`
 

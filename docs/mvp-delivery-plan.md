@@ -23,6 +23,7 @@ The MVP should prove:
 - schools sign in once and land on one dashboard
 - products and services can coexist inside the same customer environment
 - the platform can grow without becoming one monolithic app
+- the first three practical school workflows can be delivered through connected products
 
 ## Working MVP Outcome
 
@@ -35,6 +36,21 @@ A school user should be able to:
 5. See their Canopy services separately
 6. Click a meaningful task such as `View Photos` or `Create Newsletter`
 7. Launch at least one real connected product through the platform
+
+## Recommended MVP Sequence
+
+The MVP should be built around three practical school workflows:
+
+1. `PhotoVault`
+   - first connected product
+   - photo, asset, and brand-management workflow
+2. `Community Canopy`
+   - second connected product/workflow
+   - create and send newsletters
+3. `Reach Canopy`
+   - third connected product/workflow
+   - social posting and scheduling
+   - likely implemented through a Postiz-backed integration layer behind the Canopy product surface
 
 ## Phases
 
@@ -225,6 +241,12 @@ Must-have MVP implementation targets:
 - one real product launch target
 - one real product/service state model
 
+Recommended MVP product rollout:
+
+1. `PhotoVault`
+2. `Community Canopy`
+3. `Reach Canopy`
+
 Exit criteria:
 
 - a real school account can sign in
@@ -300,7 +322,8 @@ Services to show now:
 Products that should likely feel most real in the MVP:
 
 - `PhotoVault`
-- `Canopy Web` or `Community Canopy`
+- `Community Canopy`
+- `Reach Canopy`
 
 Services that should likely feel most real in the MVP:
 
@@ -317,6 +340,7 @@ By the end of the MVP path, Canopy should feel like:
 - multiple products
 - multiple services
 - practical, familiar, and easy for schools to understand
+- anchored around real school work: assets, newsletters, and social posting
 
 It should not feel like:
 
@@ -337,7 +361,10 @@ It should not feel like:
    - additional products
    - services
 4. Decide the first real connected product after portal sign-in.
-5. Start defining wireframe-level page behavior for:
+5. Define the second and third connected MVP workflows:
+   - `Community Canopy`
+   - `Reach Canopy`
+6. Start defining wireframe-level page behavior for:
    - homepage
    - sign-in
    - dashboard
