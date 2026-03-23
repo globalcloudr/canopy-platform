@@ -77,8 +77,8 @@ These connect Canopy into environments such as WordPress.
 Examples:
 
 - ASAP WordPress plugin work
-- publication management plugin
-- newsletter plugin
+- Publication management plugin
+- Newsletter plugin
 
 Plugins are valid delivery mechanisms and should be treated as first-class integration surfaces, not as architectural embarrassments.
 
