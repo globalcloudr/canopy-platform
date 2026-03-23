@@ -98,7 +98,7 @@ Optional metadata:
 
 Recommended visible naming:
 
-- `PhotoVault by Canopy`
+- `PhotoVault`
 - `Canopy Web`
 - `Create Canopy`
 - `Publish Canopy`
@@ -174,4 +174,3 @@ The best early navigation model for Canopy is:
 - clear separation between portal navigation and product navigation
 
 That supports a connected platform without making the portal feel bloated.
-

@@ -6,10 +6,9 @@ export default function MarketingHomePage() {
       <section className="public-hero">
         <div className="public-copy">
           <p className="eyebrow">Canopy</p>
-          <h1>Connected school growth tools built on one shared platform.</h1>
+          <h1>One practical platform for the school tools your team uses every day.</h1>
           <p className="lede">
-            Canopy helps schools organize assets, publish clearly, communicate consistently, and grow visibility across
-            channels.
+            Canopy helps schools manage publishing, communications, media, outreach, and visibility from one connected customer experience.
           </p>
           <div className="public-actions">
             <Link className="launch-button" href="/sign-in">
@@ -23,11 +22,11 @@ export default function MarketingHomePage() {
 
         <div className="public-panel">
           <p className="card-label">Platform scope</p>
-          <h2>One portal. Multiple connected products.</h2>
+          <h2>One dashboard. Multiple connected products and services.</h2>
           <ul>
-            <li>Asset foundation through PhotoVault</li>
-            <li>Workspace-aware product access</li>
-            <li>Shared account, branding, and launch logic</li>
+            <li>Sign in once and go straight to your dashboard</li>
+            <li>See the products your organization has access to</li>
+            <li>Take action quickly without jumping between disconnected tools</li>
           </ul>
         </div>
       </section>

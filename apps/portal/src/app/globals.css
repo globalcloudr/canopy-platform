@@ -117,6 +117,23 @@ button {
   font: inherit;
 }
 
+.field select {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--panel-strong);
+  color: var(--ink);
+  font: inherit;
+}
+
+.form-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
 .portal-header {
   display: flex;
   justify-content: space-between;
@@ -176,21 +193,15 @@ button {
   color: var(--accent);
 }
 
-.workspace-switcher {
+.workspace-summary {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  font-size: 0.82rem;
-  color: var(--muted);
 }
 
-.workspace-switcher select {
-  min-width: 220px;
-  padding: 10px 14px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--panel-strong);
-  color: var(--ink);
+.workspace-label {
+  font-size: 0.82rem;
+  color: var(--muted);
 }
 
 .account-chip {
@@ -201,6 +212,24 @@ button {
   background: var(--ink);
   color: #fff7ef;
   cursor: pointer;
+}
+
+.workspace-pill {
+  margin: 0;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 252, 245, 0.84);
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.task-label {
+  margin: 14px 0 10px;
+  color: var(--accent);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .hero {

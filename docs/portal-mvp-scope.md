@@ -103,12 +103,12 @@ Primary purpose:
 
 The first product the portal should launch is:
 
-- `PhotoVault by Canopy`
+- `PhotoVault`
 
 Reason:
 
 - it already exists
-- it is already the asset foundation
+- it is already live
 - it gives the portal an immediate practical purpose
 
 ## MVP Data Requirements
@@ -156,4 +156,3 @@ It should prove the Canopy platform model by establishing:
 - one product launcher
 
 That is enough to make `usecanopy.school` real.
-

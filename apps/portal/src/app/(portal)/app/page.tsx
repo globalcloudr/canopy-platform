@@ -1,29 +1,42 @@
 import { ProductLauncherCard } from "@/components/product-launcher-card";
-import { getLauncherProducts } from "@/lib/products";
+import { getWorkspaceName } from "@/lib/mock-session";
+import { getAdditionalLauncherProducts, getEnabledLauncherProducts, getLauncherServices } from "@/lib/products";
 
-export default function PortalDashboardPage() {
-  const launcherProducts = getLauncherProducts();
+type PortalDashboardPageProps = {
+  searchParams?: Promise<{
+    email?: string;
+    workspace?: string;
+  }>;
+};
+
+export default async function PortalDashboardPage({ searchParams }: PortalDashboardPageProps) {
+  const params = (await searchParams) ?? {};
+  const launcherProducts = getEnabledLauncherProducts();
+  const additionalProducts = getAdditionalLauncherProducts();
+  const launcherServices = getLauncherServices();
   const launchableProducts = launcherProducts.filter((product) => product.canLaunch);
   const nextActionProduct = launcherProducts[0];
+  const workspaceName = getWorkspaceName(params.workspace);
+  const email = params.email ?? "sarah.zylstra@school.edu";
 
   return (
     <>
       <header className="hero" id="overview">
         <div className="hero-copy">
-          <p className="eyebrow">Canopy Platform</p>
-          <h1>One shared portal for school growth tools.</h1>
+          <p className="eyebrow">Dashboard</p>
+          <h1>Welcome back.</h1>
           <p className="lede">
-            Canopy helps schools organize, publish, communicate, and grow through connected products built around a
-            shared workspace, entitlement, and launch model.
+            Your organization&apos;s tools and services are available here, so you can jump straight into the work you
+            need to do today.
           </p>
         </div>
         <div className="hero-card">
-          <p className="card-label">Workspace</p>
-          <h2>Example Adult School</h2>
+          <p className="card-label">Organization</p>
+          <h2>{workspaceName}</h2>
           <ul>
-            <li>{launchableProducts.length} launch-ready product</li>
-            <li>1 active workspace</li>
-            <li>Shared account, entitlement, and launch flow</li>
+            <li>{launchableProducts.length} ready to use today</li>
+            <li>1 organization dashboard</li>
+            <li>{email}</li>
           </ul>
         </div>
       </header>
@@ -31,30 +44,30 @@ export default function PortalDashboardPage() {
       <section className="section section-dashboard" id="account">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Workspace Snapshot</p>
-            <h2>Example Adult School</h2>
+            <p className="eyebrow">Today</p>
+            <h2>{workspaceName}</h2>
           </div>
           <p className="section-copy">
-            A lightweight portal home should help staff understand their account, product state, and what needs
-            attention next.
+            The dashboard should help school staff understand what tools are available, what is ready to use, and what
+            action makes sense next.
           </p>
         </div>
 
         <div className="stats-grid">
           <article className="stat-card">
-            <p className="stat-label">Visible products</p>
+            <p className="stat-label">Apps available</p>
             <strong>{launcherProducts.length}</strong>
-            <span>Product cards should be driven by the launcher contract, not a static list of ideas.</span>
+            <span>Your dashboard should show the products your organization can use or is actively setting up.</span>
           </article>
           <article className="stat-card">
-            <p className="stat-label">Team members</p>
-            <strong>14</strong>
-            <span>Workspace roles and product access should resolve from one shared platform account model.</span>
+            <p className="stat-label">Signed in as</p>
+            <strong>{email}</strong>
+            <span>{email} is working inside this organization through one shared Canopy account.</span>
           </article>
           <article className="stat-card">
-            <p className="stat-label">Next action</p>
+            <p className="stat-label">Suggested next step</p>
             <strong>{nextActionProduct?.primaryActionLabel ?? "Launch Product"}</strong>
-            <span>The portal should always surface the clearest next step for the active workspace.</span>
+            <span>The portal should surface useful next actions instead of generic product-launch language.</span>
           </article>
         </div>
       </section>
@@ -62,12 +75,11 @@ export default function PortalDashboardPage() {
       <section className="section" id="products">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Portal MVP</p>
-            <h2>Product launcher</h2>
+            <p className="eyebrow">Your Apps</p>
+            <h2>What would you like to do today?</h2>
           </div>
           <p className="section-copy">
-            The first version of `usecanopy.school` should help a school sign in, resolve its workspace, and act on
-            real product state with confidence.
+            These are the Canopy products your organization already has access to or is actively rolling out.
           </p>
         </div>
 
@@ -78,26 +90,64 @@ export default function PortalDashboardPage() {
         </div>
       </section>
 
+      <section className="section">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Other Products</p>
+            <h2>More Canopy products</h2>
+          </div>
+          <p className="section-copy">
+            This part of the catalog helps staff and administrators see what else Canopy offers without confusing those
+            products with the apps their organization already uses today.
+          </p>
+        </div>
+
+        <div className="product-grid">
+          {additionalProducts.map((product) => (
+            <ProductLauncherCard key={product.productKey} product={product} />
+          ))}
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Services</p>
+            <h2>Canopy services for your organization</h2>
+          </div>
+          <p className="section-copy">
+            Some Canopy offerings are delivered as managed services or implementation support rather than standalone
+            apps. They should still appear clearly on the dashboard.
+          </p>
+        </div>
+
+        <div className="product-grid">
+          {launcherServices.map((service) => (
+            <ProductLauncherCard key={service.productKey} product={service} />
+          ))}
+        </div>
+      </section>
+
       <section className="section section-alt">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Architecture</p>
-            <h2>Platform core first</h2>
+            <p className="eyebrow">Why This Works</p>
+            <h2>One dashboard, multiple connected tools</h2>
           </div>
         </div>
 
         <div className="principles">
           <article>
-            <h3>Shared portal</h3>
-            <p>One login, one workspace model, one place to access enabled products and services.</p>
+            <h3>Simple entry</h3>
+            <p>Users sign in once and land on a dashboard that reflects what their organization has access to.</p>
           </article>
           <article>
-            <h3>Launcher contract</h3>
-            <p>Product cards should reflect entitlement, setup state, and next action rather than static marketing labels.</p>
+            <h3>Useful actions</h3>
+            <p>Cards should present meaningful tasks like viewing photos or creating a newsletter, not just “launch product.”</p>
           </article>
           <article>
-            <h3>Connected outcomes</h3>
-            <p>Assets, branding, publishing, outreach, and insights can connect without becoming one brittle app.</p>
+            <h3>Shared platform</h3>
+            <p>Canopy can keep products modular behind the scenes while still feeling like one connected customer experience.</p>
           </article>
         </div>
       </section>

@@ -78,17 +78,17 @@ It should not focus on the internal business framing of consolidating existing s
 
 ## Core Strategic Strength
 
-The strongest current Canopy advantage is that it can begin from a real asset and brand foundation.
+The strongest current Canopy advantage is that it can become one practical platform where a school accesses multiple tools and services in one place.
 
 That matters because many school communications problems are really coordination problems:
 
-- which logo is current
-- which images are approved
+- which tools the organization has access to
+- which content and assets are approved
 - which brand rules apply
-- which content is safe to publish publicly
-- which assets can be reused across web, newsletters, social, and publications
+- which workflow a staff member should use for today's task
+- which channels and services are already active for the organization
 
-Starting with `PhotoVault by Canopy` as the asset foundation creates a meaningful platform center.
+The Canopy platform core should be the center of gravity, not any one individual product.
 
 ## Directional Comparison
 
@@ -188,7 +188,7 @@ Canopy already compares well in several ways:
 - the product family is coherent
 - the platform naming model is strong
 - the portal/control-plane direction is sound
-- `PhotoVault` gives Canopy a more concrete asset and brand foundation than many communication-first platforms
+- the platform can organize multiple products in one customer environment rather than behaving like one flagship app with add-ons
 - the ecosystem framing is believable
 
 The concept is especially strong if Canopy is positioned as:
@@ -208,7 +208,7 @@ It is intended to make the competitive landscape easier to scan and discuss.
 ### Canopy
 
 - Strongest potential:
-  - asset and brand foundation
+  - practical multi-product platform model
   - connected publishing across web, publications, newsletters, and storytelling
   - platform portal and workspace model
   - service-plus-software fit
@@ -279,7 +279,7 @@ It is intended to make the competitive landscape easier to scan and discuss.
 
 ### Summary Read
 
-- Canopy is strongest where asset foundation, publishing, communications, and storytelling are treated as one connected system.
+- Canopy is strongest where publishing, communications, storytelling, and account access are treated as one connected system.
 - Many comparison platforms are stronger today in mature communications operations, mass notifications, or institutional reach.
 - Canopy’s opportunity is not to out-feature every competitor immediately, but to deliver a clearer, calmer, more connected operating model for schools.
 
@@ -317,9 +317,9 @@ A major opportunity is to feel:
 - more modern
 - less bloated
 - more intuitive
-- more editorial and operational at the same time
+- more practical and operational at the same time
 
-Many school platforms feel heavy, cluttered, or overly administrative.
+Many school platforms feel heavy, cluttered, overly administrative, or visually dated.
 
 ### 4. Practical Growth Framing
 
@@ -339,15 +339,15 @@ instead of making abstract growth claims with no workflow backing.
 
 The strongest early wedge is likely:
 
-- asset and brand foundation
+- one practical platform for school communications and publishing work
 - connected publishing workflows
 - storytelling and communications distribution
 
 In other words:
 
-- organize what the school has
-- publish it clearly
-- distribute it consistently
+- give the school one place to access its tools and services
+- publish clearly
+- distribute consistently
 - measure what happened
 
 That is more focused and more defensible than trying to become every kind of school communication platform at once.
@@ -376,7 +376,7 @@ The initial portal and product experiences should be optimized for the first gro
 
 The Canopy platform promise should be something like:
 
-- one platform where a school can organize assets, publish consistently, communicate clearly, and extend its visibility across channels
+- one platform where a school can access its tools, publish consistently, communicate clearly, and extend its visibility across channels
 
 That promise is stronger than:
 

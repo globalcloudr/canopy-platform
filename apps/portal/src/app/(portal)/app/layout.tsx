@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { PortalHeader } from "@/components/portal-header";
 
 export default function PortalAppLayout({
@@ -7,7 +8,9 @@ export default function PortalAppLayout({
 }>) {
   return (
     <main className="shell">
-      <PortalHeader />
+      <Suspense fallback={null}>
+        <PortalHeader />
+      </Suspense>
       {children}
     </main>
   );

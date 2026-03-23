@@ -1,4 +1,21 @@
+ "use client";
+
+import { useSearchParams } from "next/navigation";
+import { getWorkspaceName, mockWorkspaces } from "@/lib/mock-session";
+
 export function PortalHeader() {
+  const searchParams = useSearchParams();
+  const workspace = searchParams.get("workspace") ?? mockWorkspaces[0].slug;
+  const workspaceName = getWorkspaceName(workspace);
+  const email = searchParams.get("email") ?? "sarah.zylstra@school.edu";
+  const initials = email
+    .split("@")[0]
+    .split(/[.\-_]/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? "")
+    .join("");
+
   return (
     <header className="portal-header">
       <div className="portal-brand">
@@ -18,16 +35,12 @@ export function PortalHeader() {
       </nav>
 
       <div className="portal-actions">
-        <label className="workspace-switcher">
-          <span>Workspace</span>
-          <select defaultValue="example-adult-school" name="workspace">
-            <option value="example-adult-school">Example Adult School</option>
-            <option value="north-valley-campus">North Valley Campus</option>
-            <option value="bay-learning-center">Bay Learning Center</option>
-          </select>
-        </label>
+        <div className="workspace-summary">
+          <span className="workspace-label">Organization</span>
+          <p className="workspace-pill">{workspaceName}</p>
+        </div>
         <button className="account-chip" type="button">
-          SZ
+          {initials || "SZ"}
         </button>
       </div>
     </header>

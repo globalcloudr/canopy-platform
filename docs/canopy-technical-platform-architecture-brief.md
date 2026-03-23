@@ -28,7 +28,7 @@ Canopy should be built as:
 
 PhotoVault should remain a distinct product inside the platform:
 
-- `PhotoVault by Canopy`
+- `PhotoVault`
 
 The central control plane should live at:
 
@@ -213,11 +213,11 @@ This rule prevents duplication drift and reduces platform ambiguity.
 
 Each product needs a clear ownership boundary.
 
-### PhotoVault by Canopy
+### PhotoVault
 
 Role:
 
-- asset foundation and brand asset system
+- visual asset and brand-management product
 
 Owns:
 
@@ -721,6 +721,8 @@ The strongest architecture for Canopy is:
 - shared services for cross-product cohesion
 - modular products with clear ownership boundaries
 
-PhotoVault should remain the first product and the asset foundation of the ecosystem.
+PhotoVault should remain the first live product in the ecosystem.
 
-Canopy should grow by adding connected products around that foundation, not by turning PhotoVault into the entire platform.
+Canopy itself is the platform foundation.
+
+Canopy should grow by adding connected products around the shared platform core rather than centering the entire architecture on any one product.
