@@ -37,6 +37,92 @@ button {
   padding: 40px 24px 72px;
 }
 
+.portal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 18px;
+  margin-bottom: 24px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 250, 241, 0.74);
+  backdrop-filter: blur(8px);
+}
+
+.portal-brand,
+.portal-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1c4b40, #ce6a2b);
+  color: #fff7ef;
+  font-size: 1.15rem;
+}
+
+.brand-name,
+.brand-subtitle {
+  margin: 0;
+}
+
+.brand-name {
+  font-weight: 700;
+}
+
+.brand-subtitle {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.portal-nav {
+  display: flex;
+  gap: 18px;
+}
+
+.portal-nav a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.portal-nav a:hover {
+  color: var(--accent);
+}
+
+.workspace-switcher {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.workspace-switcher select {
+  min-width: 220px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel-strong);
+  color: var(--ink);
+}
+
+.account-chip {
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ink);
+  color: #fff7ef;
+  cursor: pointer;
+}
+
 .hero {
   display: grid;
   grid-template-columns: minmax(0, 1.6fr) minmax(280px, 0.9fr);
@@ -127,6 +213,10 @@ h3 {
   background: linear-gradient(180deg, rgba(255, 248, 235, 0.82), rgba(255, 250, 241, 0.95));
 }
 
+.section-dashboard {
+  background: linear-gradient(180deg, rgba(255, 252, 245, 0.85), rgba(244, 239, 228, 0.95));
+}
+
 .section-heading {
   display: flex;
   justify-content: space-between;
@@ -140,15 +230,43 @@ h3 {
 }
 
 .product-grid,
-.principles {
+.principles,
+.stats-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
 }
 
 .product-card,
-.principles article {
+.principles article,
+.stat-card {
   padding: 24px;
+}
+
+.stat-card {
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: rgba(255, 252, 245, 0.84);
+}
+
+.stat-label {
+  margin-bottom: 12px;
+  color: var(--accent);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.stat-card strong {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 1.8rem;
+  line-height: 1.1;
+}
+
+.stat-card span {
+  color: var(--muted);
+  line-height: 1.6;
 }
 
 .product-top {
@@ -197,9 +315,25 @@ h3 {
   .hero,
   .product-grid,
   .principles,
+  .stats-grid,
   .section-heading {
     grid-template-columns: 1fr;
     display: grid;
+  }
+
+  .portal-header,
+  .portal-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .portal-nav {
+    justify-content: space-between;
+  }
+
+  .workspace-switcher select {
+    min-width: 0;
+    width: 100%;
   }
 
   .section-heading {

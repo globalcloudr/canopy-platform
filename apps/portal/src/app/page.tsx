@@ -22,7 +22,39 @@ const products = [
 export default function HomePage() {
   return (
     <main className="shell">
-      <header className="hero">
+      <header className="portal-header">
+        <div className="portal-brand">
+          <div className="brand-mark" aria-hidden="true">
+            C
+          </div>
+          <div>
+            <p className="brand-name">Canopy</p>
+            <p className="brand-subtitle">School growth platform</p>
+          </div>
+        </div>
+
+        <nav className="portal-nav" aria-label="Primary">
+          <a href="#overview">Home</a>
+          <a href="#products">Products</a>
+          <a href="#account">Account</a>
+        </nav>
+
+        <div className="portal-actions">
+          <label className="workspace-switcher">
+            <span>Workspace</span>
+            <select defaultValue="example-adult-school" name="workspace">
+              <option value="example-adult-school">Example Adult School</option>
+              <option value="north-valley-campus">North Valley Campus</option>
+              <option value="bay-learning-center">Bay Learning Center</option>
+            </select>
+          </label>
+          <button className="account-chip" type="button">
+            SZ
+          </button>
+        </div>
+      </header>
+
+      <header className="hero" id="overview">
         <div className="hero-copy">
           <p className="eyebrow">Canopy Platform</p>
           <h1>One shared portal for school growth tools.</h1>
@@ -42,7 +74,35 @@ export default function HomePage() {
         </div>
       </header>
 
-      <section className="section">
+      <section className="section section-dashboard" id="account">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Workspace Snapshot</p>
+            <h2>Example Adult School</h2>
+          </div>
+          <p className="section-copy">A lightweight portal home should help staff understand their account, enabled products, and what needs attention next.</p>
+        </div>
+
+        <div className="stats-grid">
+          <article className="stat-card">
+            <p className="stat-label">Active products</p>
+            <strong>3</strong>
+            <span>PhotoVault live, additional modules staged through the portal.</span>
+          </article>
+          <article className="stat-card">
+            <p className="stat-label">Team members</p>
+            <strong>14</strong>
+            <span>Workspace roles and product access should resolve from one shared account model.</span>
+          </article>
+          <article className="stat-card">
+            <p className="stat-label">Next action</p>
+            <strong>Launch PhotoVault</strong>
+            <span>Most schools should be able to open their primary product in one click.</span>
+          </article>
+        </div>
+      </section>
+
+      <section className="section" id="products">
         <div className="section-heading">
           <div>
             <p className="eyebrow">Portal MVP</p>
