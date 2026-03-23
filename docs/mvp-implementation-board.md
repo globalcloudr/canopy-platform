@@ -3,6 +3,10 @@
 Repository: `/Users/zylstra/Code/canopy-platform`  
 Current focus: `usecanopy.school` portal MVP + shared platform core
 
+Reference roadmap:
+
+- `/Users/zylstra/Code/canopy-platform/docs/mvp-delivery-plan.md`
+
 ## Shipped: Platform foundation and portal scaffold (2026-03-23)
 
 - Added platform architecture docs for:
@@ -246,6 +250,54 @@ Current focus: `usecanopy.school` portal MVP + shared platform core
 - Acceptance:
   - account management does not have to live inside product apps
   - platform/control-plane value is clearer
+- Status:
+  - `Planned`
+
+## Phase 4: Design System and Visual Design
+
+### CP-014: Canopy Design System Foundations
+
+- Goal: Define the shared visual system for the Canopy homepage and portal.
+- Scope:
+  - color system
+  - typography system
+  - spacing scale
+  - base components
+  - visual rules for products and services
+- Acceptance:
+  - Canopy has one reusable design foundation
+  - portal and homepage can share tokens while looking appropriate for their context
+  - component styling is stable enough to support production implementation
+- Status:
+  - `Planned`
+
+### CP-015: Portal Visual Design v1
+
+- Goal: Turn the portal concept into a real, production-minded dashboard design.
+- Scope:
+  - authenticated shell design
+  - dashboard card patterns
+  - account and product/service sections
+  - mobile and desktop layout behavior
+- Acceptance:
+  - portal feels practical, calm, and modern
+  - dashboard supports real school workflows clearly
+  - product and service sections are easy to scan and understand
+- Status:
+  - `Planned`
+
+### CP-016: Homepage Visual Design v1
+
+- Goal: Design the public Canopy homepage and supporting entry pages.
+- Scope:
+  - homepage structure
+  - marketing sections
+  - sign-in entry treatment
+  - product/service overview presentation
+- Acceptance:
+  - public Canopy site clearly explains the platform
+  - homepage and sign-in feel consistent with the portal
+  - visual direction is ready for implementation
 - Status:
   - `Planned`
 
