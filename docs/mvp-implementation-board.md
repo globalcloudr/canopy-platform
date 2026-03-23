@@ -169,7 +169,9 @@ Current focus: `usecanopy.school` portal MVP + shared platform core
   - PhotoVault launch flow is documented and implementable
   - platform/product boundary remains clear
 - Status:
-  - `Not started`
+  - `In progress`
+  - initial handoff direction documented in:
+    - `/Users/zylstra/Code/canopy-platform/docs/auth-session-handoff-model.md`
 
 ## Phase 2: Next (Shared Platform Services)
 
@@ -188,7 +190,9 @@ Current focus: `usecanopy.school` portal MVP + shared platform core
   - object model is implementation-ready
   - platform MVP data requirements are covered
 - Status:
-  - `Planned`
+  - `In progress`
+  - initial implementation-level object model documented in:
+    - `/Users/zylstra/Code/canopy-platform/docs/core-object-model.md`
 
 ### CP-010: Shared Event and Analytics Model
 
@@ -248,10 +252,10 @@ Current focus: `usecanopy.school` portal MVP + shared platform core
 ## Immediate Next Priorities
 
 1. Define the implementation-level core object model
-2. Add a sign-in page and auth entry flow to `apps/portal`
-3. Split the current portal mock into reusable shell/layout components
-4. Define the PhotoVault launch and workspace handoff strategy
-5. Decide the first actual backend/auth implementation path for the platform core
+2. Define the schema implementation path and initial backend direction
+3. Define the portal launcher contract and product metadata model
+4. Add a sign-in page and auth entry flow to `apps/portal`
+5. Split the current portal mock into reusable shell/layout components
 
 ## Working Rule
 

@@ -27,6 +27,10 @@ body {
   min-height: 100vh;
 }
 
+a {
+  color: inherit;
+}
+
 button {
   font: inherit;
 }
@@ -35,6 +39,82 @@ button {
   max-width: 1200px;
   margin: 0 auto;
   padding: 40px 24px 72px;
+}
+
+.shell-narrow {
+  max-width: 760px;
+}
+
+.public-hero,
+.auth-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.9fr);
+  gap: 24px;
+  align-items: stretch;
+}
+
+.public-copy,
+.public-panel,
+.auth-card {
+  border: 1px solid var(--line);
+  border-radius: 32px;
+  background: var(--panel);
+  backdrop-filter: blur(8px);
+  box-shadow: var(--shadow);
+}
+
+.public-copy,
+.public-panel {
+  padding: 40px;
+}
+
+.public-panel ul {
+  margin: 18px 0 0;
+  padding-left: 18px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.public-actions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-top: 24px;
+}
+
+.auth-card {
+  grid-template-columns: 1fr;
+  padding: 36px;
+}
+
+.auth-footer {
+  margin-top: 20px;
+}
+
+.sign-in-form {
+  display: grid;
+  gap: 18px;
+  margin-top: 12px;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.field label {
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+
+.field input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--panel-strong);
+  color: var(--ink);
+  font: inherit;
 }
 
 .portal-header {
@@ -287,31 +367,62 @@ h3 {
   text-transform: uppercase;
 }
 
-.pill-active {
+.pill-enabled {
   background: rgba(36, 111, 82, 0.12);
   color: var(--success);
 }
 
-.pill-planned {
+.pill-in_setup {
+  background: rgba(206, 106, 43, 0.12);
+  color: var(--accent);
+}
+
+.pill-pilot {
   background: rgba(140, 109, 42, 0.12);
   color: var(--planned);
 }
 
-.launch-button {
+.pill-paused,
+.pill-not_enabled {
+  background: rgba(83, 105, 99, 0.12);
+  color: var(--muted);
+}
+
+.product-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
   margin-top: 18px;
+}
+
+.launch-button {
   border: 0;
   border-radius: 999px;
   padding: 12px 18px;
   background: var(--ink);
   color: #fdf7ee;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .launch-button:hover {
   background: #0f231f;
 }
 
+.secondary-link {
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.secondary-link:hover {
+  color: var(--accent);
+}
+
 @media (max-width: 900px) {
+  .public-hero,
+  .auth-card,
   .hero,
   .product-grid,
   .principles,
