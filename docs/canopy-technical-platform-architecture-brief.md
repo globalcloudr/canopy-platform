@@ -515,11 +515,12 @@ Recommended connection patterns:
 - ASAP API
 - WordPress
 - Issuu
+- CallRail
 - Campaign Monitor or SendGrid
-- social publishing providers
+- Social publishing providers like postiz
 - Canva
-- analytics and reporting tools
-- future assistant or RAG services
+- Analytics and reporting tools
+- Future chatbot assistants or RAG services
 
 ### Integration Rules
 
