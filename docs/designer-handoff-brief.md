@@ -30,15 +30,15 @@ Canopy is the parent platform. Everything else is a product or service inside it
 
 | Product | What it does |
 |---|---|
-| **PhotoVault** | School photo and brand asset library |
-| **Canopy Web** | School website CMS |
-| **Create Canopy** | Design request intake, version tracking, and file delivery |
-| **Publish Canopy** | Digital publication library — class catalogs, brochures, program guides |
-| **Stories Canopy** | AI-powered success story production — form intake → blog, social, video |
-| **Community Canopy** | Email newsletters and school-to-community communications |
-| **Reach Canopy** | Social media posting and scheduling |
-| **Assist Canopy** | Staff knowledge and communications assistant |
-| **Insights Canopy** | Cross-channel analytics and visibility reporting |
+| **PhotoVault by Canopy** | School photo and brand asset library |
+| **Canopy Website** | School website CMS |
+| **Canopy Create** | Design request intake, version tracking, and file delivery |
+| **Canopy Publish** | Digital publication library — class catalogs, brochures, program guides |
+| **Canopy Stories** | AI-powered success story production — form intake → blog, social, video |
+| **Canopy Community** | Email newsletters and school-to-community communications |
+| **Canopy Reach** | Social media posting and scheduling |
+| **Canopy Assistant** | Staff knowledge and communications assistant |
+| **Canopy Insights** | Cross-channel analytics and visibility reporting |
 
 ### Services (managed engagements)
 
@@ -222,12 +222,13 @@ Avoid generic labels like "Launch Product" or "Open App".
 
 The products being prioritized for the MVP build are:
 
-1. PhotoVault — already in beta
-2. Community Canopy — newsletters
-3. Reach Canopy — social posting
-4. Stories Canopy — AI story production
-5. Publish Canopy — digital publications
-6. Create Canopy — design requests
+1. PhotoVault by Canopy — already in beta
+2. Canopy Community — newsletters
+3. Canopy Reach — social posting
+4. Canopy Stories — AI story production
+5. Canopy Publish — digital publications
+6. Canopy Create — design requests
+7. Canopy Websites - CMS
 
 Each has a full MVP definition in `/docs/` — see the reference docs section below.
 
@@ -241,11 +242,11 @@ All planning docs are in `/Users/zylstra/Code/canopy-platform/docs/`:
 | `mvp-implementation-board.md` | Phase overview and current implementation status |
 | `platform-navigation-model.md` | Portal navigation and header structure |
 | `portal-mvp-scope.md` | Portal feature scope and constraints |
-| `community-canopy-mvp.md` | Community Canopy product definition |
-| `reach-canopy-mvp.md` | Reach Canopy product definition |
-| `stories-canopy-mvp.md` | Stories Canopy product definition |
-| `publish-canopy-mvp.md` | Publish Canopy product definition |
-| `create-canopy-mvp.md` | Create Canopy product definition |
+| `community-canopy-mvp.md` | Canopy Community product definition |
+| `reach-canopy-mvp.md` | Canopy Reach product definition |
+| `stories-canopy-mvp.md` | Canopy Stories product definition |
+| `publish-canopy-mvp.md` | Canopy Publish product definition |
+| `create-canopy-mvp.md` | Canopy Create product definition |
 | `workspace-identity-model.md` | Workspace, user, and membership model |
 | `product-entitlements.md` | Product entitlement states |
 

@@ -1,14 +1,14 @@
-# Publish Canopy MVP Definition
+# Canopy Publish MVP Definition
 
 Date: 2026-03-23
 
 ## Purpose
 
-Define `Publish Canopy` as the fifth MVP product inside the Canopy platform so it can be designed and built without ambiguity.
+Define `Canopy Publish` as the fifth MVP product inside the Canopy platform so it can be designed and built without ambiguity.
 
-## What Publish Canopy Is
+## What Canopy Publish Is
 
-Publish Canopy is the digital publications management product inside Canopy.
+Canopy Publish is the digital publications management product inside Canopy.
 
 It gives schools a clean Canopy-native interface to access, display, and share the class catalogs, program brochures, and other print materials that Canopy designs and publishes on their behalf.
 
@@ -18,11 +18,11 @@ This product is grounded in an existing real-world service:
 - Schools receive an embed code from Issuu that displays the flipbook on their website
 - Schools with WordPress sites use the Canopy-built WordPress plugin to manage which publications appear on their site
 
-Publish Canopy turns this workflow into a managed Canopy product: schools see their full publication library in the portal, can get embed codes, share links, and display publications on their Canopy-powered website — without ever needing to know what Issuu is.
+Canopy Publish turns this workflow into a managed Canopy product: schools see their full publication library in the portal, can get embed codes, share links, and display publications on their Canopy-powered website — without ever needing to know what Issuu is.
 
 ## Publishing Infrastructure: Issuu
 
-Issuu is the flipbook hosting and rendering platform that powers Publish Canopy at MVP.
+Issuu is the flipbook hosting and rendering platform that powers Canopy Publish at MVP.
 
 Issuu provides:
 - Interactive flipbook rendering (page-turn viewer) for PDFs
@@ -31,15 +31,15 @@ Issuu provides:
 - Publication-level view stats (page views, reading time, reader count)
 - API access for fetching publication data and embed codes
 
-Canopy operates one Issuu account. Each school's publications are uploaded to Canopy's Issuu account and assigned to that school's workspace in Publish Canopy.
+Canopy operates one Issuu account. Each school's publications are uploaded to Canopy's Issuu account and assigned to that school's workspace in Canopy Publish.
 
-Schools never interact directly with Issuu. Publish Canopy is the only surface they see.
+Schools never interact directly with Issuu. Canopy Publish is the only surface they see.
 
 This is the same infrastructure model as Community Canopy (SendGrid) and Reach Canopy (Postiz): an established platform provides the delivery engine, and Canopy owns the school-facing product layer.
 
 ## Publication Types
 
-Publish Canopy supports the publication types Canopy currently produces for schools:
+Canopy Publish supports the publication types Canopy currently produces for schools:
 
 - **Class catalog** — full term or semester course listings
 - **Program brochure** — single program or department overview
@@ -80,25 +80,25 @@ Per-publication view stats from Issuu:
 
 ## Canopy Web Integration
 
-Schools using Canopy's CMS (`Canopy Web`) can enable a native publications module on their website that displays their Publish Canopy library with no embed code required. As Canopy assigns new publications to the workspace, they appear on the school's site automatically.
+Schools using Canopy's CMS (`Canopy Web`) can enable a native publications module on their website that displays their Canopy Publish library with no embed code required. As Canopy assigns new publications to the workspace, they appear on the school's site automatically.
 
 This is the native path for schools fully on the Canopy platform. It mirrors how Community Canopy newsletters can appear natively on a Canopy Web site.
 
 ## WordPress Plugin
 
-The `Issuu Publications Manager` WordPress plugin is a **separate standalone product** — not the backend of Publish Canopy.
+The `Issuu Publications Manager` WordPress plugin is a **separate standalone product** — not the backend of Canopy Publish.
 
 It exists as an independent offering for schools that manage their own WordPress site and want to display their Issuu publications without a Canopy portal account. It uses an access code system: Canopy generates a code for each school, assigns their publications to that code, and the school enters the code in their WordPress admin to display their library.
 
-Schools with Canopy accounts and WordPress sites may use both, or just Publish Canopy. There is no hard dependency between them.
+Schools with Canopy accounts and WordPress sites may use both, or just Canopy Publish. There is no hard dependency between them.
 
 ## Self-Serve vs. Managed Service
 
-Publish Canopy supports two delivery modes from day one.
+Canopy Publish supports two delivery modes from day one.
 
 ### Self-Serve
 
-School staff log into the Canopy portal, enter Publish Canopy, and manage their own publication display:
+School staff log into the Canopy portal, enter Canopy Publish, and manage their own publication display:
 - View their full publication library
 - Copy embed codes and share links
 - Display publications on their site using embed codes or the Canopy Web module
@@ -111,7 +111,7 @@ At MVP, schools do not upload publications themselves. Canopy uploads finished P
 School contacts Canopy for the full production workflow. Canopy staff handle:
 - Design and layout of the class catalog or brochure
 - PDF export and upload to Issuu
-- Workspace assignment so the publication appears in the school's Publish Canopy library
+- Workspace assignment so the publication appears in the school's Canopy Publish library
 - Delivery notification
 
 The managed service is the default relationship at MVP. Most schools will not have their own PDF to upload — they rely on Canopy to produce the publication.
@@ -128,7 +128,7 @@ This is addressed through Canopy's operator/platform-staff access, not through a
 
 ## Connection to the Platform
 
-Publish Canopy connects to the Canopy platform through the standard model:
+Canopy Publish connects to the Canopy platform through the standard model:
 
 - User authenticates through the Canopy portal
 - Active workspace determines which publications are shown
@@ -138,7 +138,7 @@ Publish Canopy connects to the Canopy platform through the standard model:
 ## Cross-Product Integration
 
 - **Community Canopy** — schools can link to a publication (class catalog, program brochure) inside a newsletter, or embed a flipbook directly if the template supports it
-- **Reach Canopy** — schools can share a publication link as a social post, pulling the cover image and link directly from the Publish Canopy library
+- **Reach Canopy** — schools can share a publication link as a social post, pulling the cover image and link directly from the Canopy Publish library
 - **Canopy Web** — native publications module displays the workspace library without embed codes
 - **Stories Canopy** — program overviews and annual reports can draw on approved publications as context and source material
 
@@ -147,11 +147,11 @@ Publish Canopy connects to the Canopy platform through the standard model:
 **Canopy staff (after designing a class catalog for a school):**
 1. Export finished design as PDF
 2. Upload PDF to Issuu via the Canopy Issuu account
-3. In Publish Canopy staff view: assign the publication to the school's workspace, set type and term
+3. In Canopy Publish staff view: assign the publication to the school's workspace, set type and term
 4. School is notified that their new class catalog is available
 
 **School staff:**
-1. Logs into Canopy portal and enters Publish Canopy
+1. Logs into Canopy portal and enters Canopy Publish
 2. Sees their publication library with the new catalog
 3. Copies the embed code and pastes it into their website (or uses the Canopy Web module)
 4. Shares the public link in their next Community Canopy newsletter
@@ -183,24 +183,24 @@ Publish Canopy connects to the Canopy platform through the standard model:
 
 ## MVP Success Criteria
 
-Publish Canopy MVP succeeds if:
+Canopy Publish MVP succeeds if:
 
 1. A school staff member can log in and see their full publication library
 2. They can copy an embed code and share link for any publication
 3. View stats are visible per publication
 4. Canopy staff can upload a publication and assign it to any school's workspace
 5. Publications appear automatically on a Canopy Web site when the module is enabled
-6. The portal dashboard card for Publish Canopy shows recent publications and a clear entry point
+6. The portal dashboard card for Canopy Publish shows recent publications and a clear entry point
 
 ## Relationship to the WordPress Plugin
 
-The `Issuu Publications Manager` WordPress plugin operates independently from Publish Canopy. Both use Issuu as the underlying publication host, but they serve different access paths:
+The `Issuu Publications Manager` WordPress plugin operates independently from Canopy Publish. Both use Issuu as the underlying publication host, but they serve different access paths:
 
-- **Publish Canopy**: school staff access publications through the Canopy portal
+- **Canopy Publish**: school staff access publications through the Canopy portal
 - **WordPress plugin**: school staff access publications through their WordPress admin using an access code
 
-Schools fully on the Canopy platform use Publish Canopy. Schools that prefer WordPress-based management use the plugin. Schools with both can use both.
+Schools fully on the Canopy platform use Canopy Publish. Schools that prefer WordPress-based management use the plugin. Schools with both can use both.
 
 ## Summary
 
-Publish Canopy is the Canopy-native face of a service Canopy already delivers — designing and distributing class catalogs and brochures for adult education schools. Issuu handles the hosting and rendering. Publish Canopy gives schools a clean portal interface to access their library, display publications on their site, and share them across channels — without any awareness of the underlying platform.
+Canopy Publish is the Canopy-native face of a service Canopy already delivers — designing and distributing class catalogs and brochures for adult education schools. Issuu handles the hosting and rendering. Canopy Publish gives schools a clean portal interface to access their library, display publications on their site, and share them across channels — without any awareness of the underlying platform.

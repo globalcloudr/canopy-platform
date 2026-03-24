@@ -1,14 +1,14 @@
-# Reach Canopy MVP Definition
+# Canopy Reach MVP Definition
 
 Date: 2026-03-23
 
 ## Purpose
 
-Define `Reach Canopy` as the third MVP product inside the Canopy platform so it can be designed and built without ambiguity.
+Define `Canopy Reach` as the third MVP product inside the Canopy platform so it can be designed and built without ambiguity.
 
-## What Reach Canopy Is
+## What Canopy Reach Is
 
-Reach Canopy is the social media posting and scheduling product inside Canopy.
+Canopy Reach is the social media posting and scheduling product inside Canopy.
 
 It lets school staff write, schedule, and publish social media posts to their school's accounts — either themselves through the Canopy portal, or through Canopy as a managed service.
 
@@ -18,11 +18,11 @@ This product is grounded in a proven real-world workflow that Canopy already del
 - Canopy builds a monthly content calendar with planned topics and posting schedule
 - Posts are currently scheduled and published through Hootsuite on the school's behalf
 
-Reach Canopy replaces Hootsuite as the scheduling tool and gives schools a Canopy-native interface to participate in — or take full ownership of — their social media program.
+Canopy Reach replaces Hootsuite as the scheduling tool and gives schools a Canopy-native interface to participate in — or take full ownership of — their social media program.
 
 ## Social Platforms in Scope
 
-Reach Canopy MVP targets the social platforms adult education schools actively use:
+Canopy Reach MVP targets the social platforms adult education schools actively use:
 
 - **Facebook** — primary platform for most schools; highest engagement with adult learners
 - **Instagram** — growing platform for visual storytelling and student highlights
@@ -33,11 +33,11 @@ Platform connections are managed per workspace. Each school connects their own s
 
 ## Self-Serve vs. Managed Service
 
-Reach Canopy supports two delivery modes from day one.
+Canopy Reach supports two delivery modes from day one.
 
 ### Self-Serve
 
-School staff log into the Canopy portal, enter Reach Canopy, and manage their own social presence:
+School staff log into the Canopy portal, enter Canopy Reach, and manage their own social presence:
 - Write a new post using their school's guidelines and templates as a reference
 - Attach an image or media file
 - Select one or more target platforms
@@ -51,7 +51,7 @@ School contacts Canopy instead of managing social posting themselves. Canopy sta
 - Monthly content planning based on the school's calendar and program updates
 - Post drafting and template application
 - Image selection and formatting
-- Scheduling and publishing via Reach Canopy on the school's behalf
+- Scheduling and publishing via Canopy Reach on the school's behalf
 - Monthly performance summary
 
 The managed service includes the onboarding work that currently happens in the field — social media guidelines, branded templates, and the initial content calendar. These are created by Canopy at the start of the engagement and stored in the workspace for ongoing reference.
@@ -64,7 +64,7 @@ During onboarding, Canopy creates per-school:
 - **Social media guidelines** — tone, topics, posting frequency, what to post vs. what not to post
 - **Post templates** — structured content patterns for recurring post types (enrollment open, class spotlight, student story, event, holiday)
 
-These are stored in the workspace and visible inside Reach Canopy. They serve as guardrails and starting points for school staff writing their own posts. For managed service clients, Canopy staff apply these templates when drafting content on the school's behalf.
+These are stored in the workspace and visible inside Canopy Reach. They serve as guardrails and starting points for school staff writing their own posts. For managed service clients, Canopy staff apply these templates when drafting content on the school's behalf.
 
 Template creation and editing is a Canopy-managed setup step at MVP. Self-serve template editing is out of scope.
 
@@ -72,13 +72,13 @@ Template creation and editing is a Canopy-managed setup step at MVP. Self-serve 
 
 School staff composing a post can open a media browser and select an approved photo directly from their PhotoVault library. The selected image attaches to the post without requiring a separate upload.
 
-This integration is a significant differentiator: schools often struggle to find approved, on-brand images at posting time. Connecting Reach Canopy to PhotoVault solves this friction and makes the workflow faster.
+This integration is a significant differentiator: schools often struggle to find approved, on-brand images at posting time. Connecting Canopy Reach to PhotoVault solves this friction and makes the workflow faster.
 
 The PhotoVault integration requires the workspace to have both `reach_canopy` and `photovault` entitlements active. If PhotoVault is not enabled, direct upload is the only media option.
 
 ## Content Calendar
 
-Reach Canopy shows a content calendar view for the workspace:
+Canopy Reach shows a content calendar view for the workspace:
 
 - Scheduled posts by date
 - Published posts by date
@@ -89,7 +89,7 @@ The calendar gives school staff a clear view of their upcoming content pipeline.
 
 ## Posting Engine: Postiz
 
-Reach Canopy uses **Postiz** as its underlying social scheduling engine for the MVP.
+Canopy Reach uses **Postiz** as its underlying social scheduling engine for the MVP.
 
 Postiz is an open-source social media management platform that supports multi-platform scheduling, OAuth-based account connections, and a content calendar. It is self-hostable and exposes an API for integration.
 
@@ -101,7 +101,7 @@ If Postiz proves unsuitable as the platform scales, the integration layer should
 
 ## Analytics
 
-Reach Canopy shows basic engagement stats per post pulled from the social platform APIs via Postiz:
+Canopy Reach shows basic engagement stats per post pulled from the social platform APIs via Postiz:
 
 - Impressions
 - Likes / reactions
@@ -115,16 +115,16 @@ Over time, engagement data flows into Insights Canopy for cross-channel visibili
 
 ## Dashboard Integration
 
-The Reach Canopy dashboard card on the portal home shows:
+The Canopy Reach dashboard card on the portal home shows:
 - Next scheduled post date and platform
 - Total posts published this month
 - Quick action: "New Post"
 
-This gives school staff a live pulse on their social activity without entering Reach Canopy.
+This gives school staff a live pulse on their social activity without entering Canopy Reach.
 
 ## Connection to the Platform
 
-Reach Canopy connects to the Canopy platform through the standard model:
+Canopy Reach connects to the Canopy platform through the standard model:
 
 - User authenticates through the Canopy portal
 - Active workspace determines which social accounts, calendar, and posts are shown
@@ -146,7 +146,7 @@ This is addressed through Canopy's operator/platform-staff access, not through a
 ## MVP Workflow — Step by Step
 
 1. School staff logs into Canopy portal
-2. Launches Reach Canopy from the dashboard
+2. Launches Canopy Reach from the dashboard
 3. Sees their content calendar and recent post history
 4. Clicks "New Post"
 5. Writes post copy (optionally references their school's templates)
@@ -189,7 +189,7 @@ This is addressed through Canopy's operator/platform-staff access, not through a
 
 ## MVP Success Criteria
 
-Reach Canopy MVP succeeds if:
+Canopy Reach MVP succeeds if:
 
 1. A school staff member can log in and see their content calendar
 2. They can write a post, attach an image (including from PhotoVault if enabled), and schedule or publish it to at least one platform
@@ -200,10 +200,10 @@ Reach Canopy MVP succeeds if:
 
 ## Relationship to Community Canopy
 
-Reach Canopy and Community Canopy are peer products that address different communication channels:
+Canopy Reach and Community Canopy are peer products that address different communication channels:
 
 - **Community Canopy** — email newsletters sent to enrolled students and community contacts
-- **Reach Canopy** — social media posts published to the school's public accounts
+- **Canopy Reach** — social media posts published to the school's public accounts
 
 They share the same Canopy portal entry point, the same workspace context, and the same managed service model. Over time, Insights Canopy will unify their analytics into a single cross-channel view.
 
@@ -211,4 +211,4 @@ There is no hard dependency between the two products at MVP. A school can use on
 
 ## Summary
 
-Reach Canopy turns a proven managed social media service into a self-serve Canopy product. It replaces Hootsuite with a clean Canopy-native interface, keeps the managed service path open for schools that prefer it, and connects to PhotoVault to remove the friction of finding approved images at posting time. Postiz provides the scheduling infrastructure at MVP, with the Canopy portal owning the school-facing product surface.
+Canopy Reach turns a proven managed social media service into a self-serve Canopy product. It replaces Hootsuite with a clean Canopy-native interface, keeps the managed service path open for schools that prefer it, and connects to PhotoVault to remove the friction of finding approved images at posting time. Postiz provides the scheduling infrastructure at MVP, with the Canopy portal owning the school-facing product surface.

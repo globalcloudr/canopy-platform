@@ -50,8 +50,8 @@ These connect one Canopy product to another.
 
 Examples:
 
-- PhotoVault assets used in Reach Canopy
-- brand metadata used in Canopy Web
+- PhotoVault assets used in Canopy Reach
+- brand metadata used in Canopy Website
 - publication data surfaced in Insights
 
 These should usually flow through stable APIs or reference services.
@@ -121,7 +121,7 @@ Use when:
 
 Example:
 
-- Reach Canopy stores a PhotoVault asset reference instead of duplicating the asset itself
+- Canopy Reach stores a PhotoVault asset reference instead of duplicating the asset itself
 
 This should be preferred over duplicate data copies when possible.
 
@@ -158,9 +158,9 @@ Use when:
 
 This is especially relevant for:
 
-- Canopy Web
-- Publish Canopy
-- Community Canopy
+- Canopy Website
+- Canopy Publish
+- Canopy Community
 
 ## Source-of-Truth Rules
 
@@ -177,15 +177,15 @@ Recommended source-of-truth examples:
 - workspace identity and product access
   - source of truth: Canopy platform core
 - website content structures
-  - source of truth: Canopy Web
+  - source of truth: Canopy Website
 - publication metadata
-  - source of truth: Publish Canopy
+  - source of truth: Canopy Publish
 - newsletter send records
-  - source of truth: Community Canopy
+  - source of truth: Canopy Community
 - social posts and story workflows
-  - source of truth: Reach Canopy
+  - source of truth: Canopy Reach
 - cross-product reporting models
-  - source of truth: Insights Canopy
+  - source of truth: Canopy Insights
 
 If this answer is fuzzy, the integration is not ready.
 
@@ -202,8 +202,8 @@ Recommended rule:
 
 Example:
 
-- Reach Canopy may own social-channel OAuth state
-- the platform may know that Reach Canopy is connected for a workspace
+- Canopy Reach may own social-channel OAuth state
+- the platform may know that Canopy Reach is connected for a workspace
 
 This avoids leaking product-specific secrets into the wrong layer.
 
@@ -219,7 +219,7 @@ Examples:
 - story distributed
 - publication viewed
 
-These events should flow into a shared analytics/event pipeline so Insights Canopy can become meaningful later.
+These events should flow into a shared analytics/event pipeline so Canopy Insights can become meaningful later.
 
 The platform does not need every product database replicated centrally. It needs a good event model.
 
@@ -253,36 +253,36 @@ The goal is:
 
 ## Example Integration Flows
 
-### PhotoVault -> Reach Canopy
+### PhotoVault -> Canopy Reach
 
 Flow:
 
 - user selects approved assets in PhotoVault
-- Reach Canopy stores asset references
-- Reach Canopy publishes or schedules social content
+- Canopy Reach stores asset references
+- Canopy Reach publishes or schedules social content
 - outcome events flow to Insights
 
-### PhotoVault -> Canopy Web
+### PhotoVault -> Canopy Website
 
 Flow:
 
-- Canopy Web reads approved brand/media references
+- Canopy Website reads approved brand/media references
 - web publishing surfaces use those assets
 - website performance data later contributes to Insights
 
-### Community Canopy -> Insights
+### Canopy Community -> Insights
 
 Flow:
 
-- newsletter sends and engagement metrics are collected in Community Canopy
+- newsletter sends and engagement metrics are collected in Canopy Community
 - normalized metrics flow into the shared reporting layer
 
-### Publish Canopy -> Website
+### Canopy Publish -> Website
 
 Flow:
 
-- publication metadata and embed settings are managed in Publish Canopy
-- website embeds render through Canopy Web or WordPress surfaces
+- publication metadata and embed settings are managed in Canopy Publish
+- website embeds render through Canopy Website or WordPress surfaces
 
 ## Recommended Next Decisions
 

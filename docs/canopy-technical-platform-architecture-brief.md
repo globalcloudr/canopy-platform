@@ -241,7 +241,7 @@ Shares:
 - brand asset references
 - asset metadata needed by other products
 
-### Canopy Web
+### Canopy Website
 
 Role:
 
@@ -266,7 +266,7 @@ Shares:
 - public publishing outputs
 - content performance signals to Insights
 
-### Create Canopy
+### Canopy Create
 
 Role:
 
@@ -291,7 +291,7 @@ Shares:
 - production status
 - collateral metadata
 
-### Publish Canopy
+### Canopy Publish
 
 Role:
 
@@ -316,7 +316,7 @@ Shares:
 - embed metadata
 - visibility and performance signals
 
-### Community Canopy
+### Canopy Community
 
 Role:
 
@@ -341,7 +341,7 @@ Shares:
 - communication activity
 - campaign linkage data
 
-### Reach Canopy
+### Canopy Reach
 
 Role:
 
@@ -370,7 +370,7 @@ Note:
 
 - A tool such as Postiz could be used as an engine for Reach Canopy, but it should remain a modular product service rather than the Canopy platform core.
 
-### Assist Canopy
+### Canopy Assistant
 
 Role:
 
@@ -395,7 +395,7 @@ Shares:
 - surfaced knowledge insights
 - support workflow metadata
 
-### Insights Canopy
+### Canopy Insights
 
 Role:
 
@@ -479,7 +479,7 @@ PhotoVault should remain the asset system of record, while the platform exposes 
 
 - shared metadata indexing
 - document and object discovery
-- knowledge retrieval foundations for Assist Canopy
+- knowledge retrieval foundations for Canopy Assistant
 
 ## Integration Model
 
@@ -676,7 +676,7 @@ Success criteria:
 
 Recommended candidate:
 
-- `Reach Canopy` or `Canopy Web`
+- `Canopy Reach` or `Canopy Website`
 
 Reason:
 
@@ -693,9 +693,9 @@ Success criteria:
 
 Candidates:
 
-- `Publish Canopy`
-- `Community Canopy`
-- `Create Canopy`
+- `Canopy Publish`
+- `Canopy Community`
+- `Canopy Create`
 
 Approach:
 
@@ -707,7 +707,7 @@ Success criteria:
 
 - products share the platform backbone without forcing identical implementation patterns
 
-### Phase 7: Assist and Insights
+### Phase 7: Canopy Assistant and Canopy Insights
 
 Deliverables:
 

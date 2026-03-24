@@ -228,13 +228,13 @@ Recommended fields:
 Recommended `product_key` values:
 
 - `photovault`
-- `canopy_web`
-- `create_canopy`
-- `publish_canopy`
-- `community_canopy`
-- `reach_canopy`
-- `assist_canopy`
-- `insights_canopy`
+- `canopy_website`
+- `canopy_create`
+- `canopy_publish`
+- `canopy_community`
+- `canopy_reach`
+- `canopy_assist`
+- `canopy_insights`
 
 Recommended `status` values:
 

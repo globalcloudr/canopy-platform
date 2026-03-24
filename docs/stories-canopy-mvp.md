@@ -1,18 +1,18 @@
-# Stories Canopy MVP Definition
+# Canopy Stories MVP Definition
 
 Date: 2026-03-23
 
 ## Purpose
 
-Define `Stories Canopy` as the fourth MVP product inside the Canopy platform so it can be designed and built without ambiguity.
+Define `Canopy Stories` as the fourth MVP product inside the Canopy platform so it can be designed and built without ambiguity.
 
-## What Stories Canopy Is
+## What Canopy Stories Is
 
-Stories Canopy is the AI-powered success story production product inside Canopy.
+Canopy Stories is the AI-powered success story production product inside Canopy.
 
 It automates the creation of multi-channel content — blog posts, social media posts, newsletter features, press releases, and short videos — from structured input collected directly from students, staff, or partner organizations.
 
-This product directly competes with **N&R Publications**, a traditional success story service that relies on manual interviews, photography sessions, and weeks-long production cycles. Stories Canopy delivers equivalent output in minutes by replacing manual production with an automated AI pipeline.
+This product directly competes with **N&R Publications**, a traditional success story service that relies on manual interviews, photography sessions, and weeks-long production cycles. Canopy Stories delivers equivalent output in minutes by replacing manual production with an automated AI pipeline.
 
 The core workflow:
 1. School sends a prepopulated intake form to a student, staff member, employer, or partner
@@ -29,11 +29,11 @@ Canopy has been producing success stories for adult education schools as part of
 - Format for each channel (blog, social, newsletter, print)
 - Deliver to the school for publishing
 
-Stories Canopy turns this into a largely automated process, reducing the time from story submission to finished content from days to minutes.
+Canopy Stories turns this into a largely automated process, reducing the time from story submission to finished content from days to minutes.
 
 ## Story Types
 
-Stories Canopy supports the content types adult education schools produce:
+Canopy Stories supports the content types adult education schools produce:
 
 - **Student success stories** — ESL, HSD/GED, CTE, workforce training graduates
 - **Staff highlights** — instructor and program coordinator features
@@ -54,7 +54,7 @@ Schools can send a form link directly to the subject via email. The subject fill
 
 ## AI Content Generation
 
-When a form is submitted, Stories Canopy automatically generates:
+When a form is submitted, Canopy Stories automatically generates:
 
 - **Blog post** (500–800 words) — fully written, publication-ready, with photo integrated
 - **Social media posts** — platform-specific versions for Facebook, Instagram, LinkedIn, and X
@@ -68,7 +68,7 @@ All AI-generated content is accessible and editable before publishing. Canopy st
 
 ## Video Generation
 
-For each story, Stories Canopy automatically generates a 15-second short-form video:
+For each story, Canopy Stories automatically generates a 15-second short-form video:
 
 - Vertical format (9:16) for Instagram Reels, Facebook Stories, and TikTok
 - Dynamic text overlays with story highlights pulled from the submission
@@ -81,7 +81,7 @@ Video generation is powered by the **JSON2Video API** at MVP.
 
 ## Content Package and Delivery
 
-When all content and assets are generated, Stories Canopy bundles them into a downloadable package for the school:
+When all content and assets are generated, Canopy Stories bundles them into a downloadable package for the school:
 
 - All written content files organized by channel (blog, social, newsletter, press release)
 - Social graphics in platform-specific sizes
@@ -90,26 +90,26 @@ When all content and assets are generated, Stories Canopy bundles them into a do
 - Original uploaded photo (optimized)
 - Usage guide and posting schedule recommendations
 
-The school downloads the package from their Stories Canopy section in the Canopy portal and publishes the content themselves — or Canopy handles publication as part of the managed service.
+The school downloads the package from their Canopy Stories section in the Canopy portal and publishes the content themselves — or Canopy handles publication as part of the managed service.
 
 ## Platform Integration
 
-Stories Canopy connects to the rest of the Canopy platform:
+Canopy Stories connects to the rest of the Canopy platform:
 
 - **Community Canopy** — newsletter feature content from a story can be used directly inside Community Canopy when composing a newsletter
 - **Reach Canopy** — social posts generated for a story can be scheduled and published directly from Reach Canopy
 - **PhotoVault** — uploaded photos from a story submission can be stored in PhotoVault as approved brand assets
 - **Canopy Web** — blog posts can be published directly to the school's Canopy-powered website
 
-These integrations make Stories Canopy the content production engine for the Canopy platform. A single story submission can populate content across every channel the school operates.
+These integrations make Canopy Stories the content production engine for the Canopy platform. A single story submission can populate content across every channel the school operates.
 
 ## Self-Serve vs. Managed Service
 
-Stories Canopy supports two delivery modes from day one.
+Canopy Stories supports two delivery modes from day one.
 
 ### Self-Serve
 
-School staff log into the Canopy portal, enter Stories Canopy, and manage their own story production:
+School staff log into the Canopy portal, enter Canopy Stories, and manage their own story production:
 - Start a new story request by selecting a story type
 - Choose or customize the intake form
 - Send the form link to the subject
@@ -146,11 +146,11 @@ This prototype includes:
 
 The Replit prototype was built as an **internal Canopy tool** (operator-facing). The Canopy product version inverts this: school staff and their story subjects are the primary users, with Canopy operators having backstage access for managed service delivery.
 
-The Replit prototype is a direct build reference for the Stories Canopy implementation.
+The Replit prototype is a direct build reference for the Canopy Stories implementation.
 
 ## Connection to the Platform
 
-Stories Canopy connects to the Canopy platform through the standard model:
+Canopy Stories connects to the Canopy platform through the standard model:
 
 - User authenticates through the Canopy portal
 - Active workspace determines which story projects, forms, and packages are shown
@@ -170,12 +170,12 @@ This is addressed through Canopy's operator/platform-staff access, not through a
 
 ## MVP Workflow — Step by Step
 
-1. School staff logs into Canopy portal and enters Stories Canopy
+1. School staff logs into Canopy portal and enters Canopy Stories
 2. Starts a new story request: selects story type and enters the subject's name and email
 3. System generates a shareable intake form link using the matching template
-4. Staff sends the link to the subject (or Stories Canopy emails it automatically)
+4. Staff sends the link to the subject (or Canopy Stories emails it automatically)
 5. Subject opens the form on any device, answers questions, uploads a photo (optional), and submits
-6. Stories Canopy triggers AI content generation automatically
+6. Canopy Stories triggers AI content generation automatically
 7. All content is generated within minutes: blog, social posts, newsletter feature, press release, video
 8. Staff receives a notification that the story is ready for review
 9. Staff reviews each content piece, edits if needed, approves
@@ -213,15 +213,15 @@ This is addressed through Canopy's operator/platform-staff access, not through a
 
 ## MVP Success Criteria
 
-Stories Canopy MVP succeeds if:
+Canopy Stories MVP succeeds if:
 
 1. A Canopy staff member can start a story request, send a form link to a student, and receive AI-generated content within minutes of form submission
 2. The content package includes a blog post, social posts, newsletter feature, and a 15-second video
 3. A school staff member can start their own story request without Canopy's help
 4. Generated content can be pushed directly into Community Canopy or Reach Canopy without copy-pasting
-5. The portal dashboard card for Stories Canopy shows active story pipeline status and a "New Story" action
+5. The portal dashboard card for Canopy Stories shows active story pipeline status and a "New Story" action
 6. Canopy staff can manage stories on behalf of any school
 
 ## Summary
 
-Stories Canopy automates the full success story production cycle that Canopy currently delivers manually. A student fills out a form, and minutes later the school has a blog post, four social media posts, a newsletter feature, a press release, and a 15-second video — all ready to publish. A working prototype of this pipeline already exists. The MVP is about wrapping it in the Canopy platform model, making it school-facing, and connecting its output to the other Canopy channels.
+Canopy Stories automates the full success story production cycle that Canopy currently delivers manually. A student fills out a form, and minutes later the school has a blog post, four social media posts, a newsletter feature, a press release, and a 15-second video — all ready to publish. A working prototype of this pipeline already exists. The MVP is about wrapping it in the Canopy platform model, making it school-facing, and connecting its output to the other Canopy channels.
