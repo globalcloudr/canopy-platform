@@ -76,6 +76,17 @@ const catalogDefinitions: ProductDefinition[] = [
     sortOrder: 4,
   },
   {
+    productKey: "stories_canopy",
+    displayName: "Stories Canopy",
+    shortDescription: "Turn student and staff successes into blog posts, social content, and video — automatically.",
+    category: "Content Production",
+    kind: "product",
+    iconColor: "#d97706",
+    defaultLaunchPath: "/products/stories-canopy",
+    showWhenNotEnabled: true,
+    sortOrder: 5,
+  },
+  {
     productKey: "community_canopy",
     displayName: "Community Canopy",
     shortDescription: "Run recurring newsletters and school-to-community communication workflows.",
@@ -84,18 +95,18 @@ const catalogDefinitions: ProductDefinition[] = [
     iconColor: "#7c3aed",
     defaultLaunchPath: "/products/community-canopy",
     showWhenNotEnabled: true,
-    sortOrder: 5,
+    sortOrder: 6,
   },
   {
     productKey: "reach_canopy",
     displayName: "Reach Canopy",
-    shortDescription: "Coordinate social storytelling, scheduling, and visibility workflows.",
+    shortDescription: "Write, schedule, and publish social media posts to your school's accounts.",
     category: "Outreach and Storytelling",
     kind: "product",
     iconColor: "#db2777",
     defaultLaunchPath: "/products/reach-canopy",
     showWhenNotEnabled: true,
-    sortOrder: 6,
+    sortOrder: 7,
   },
   {
     productKey: "assist_canopy",
@@ -106,7 +117,7 @@ const catalogDefinitions: ProductDefinition[] = [
     iconColor: "#4f46e5",
     defaultLaunchPath: "/products/assist-canopy",
     showWhenNotEnabled: true,
-    sortOrder: 7,
+    sortOrder: 8,
   },
   {
     productKey: "insights_canopy",
@@ -117,7 +128,7 @@ const catalogDefinitions: ProductDefinition[] = [
     iconColor: "#16a34a",
     defaultLaunchPath: "/products/insights-canopy",
     showWhenNotEnabled: true,
-    sortOrder: 8,
+    sortOrder: 9,
   },
   {
     productKey: "website_setup",
@@ -128,29 +139,29 @@ const catalogDefinitions: ProductDefinition[] = [
     iconColor: "#374151",
     defaultLaunchPath: "/services/website-setup",
     showWhenNotEnabled: true,
-    sortOrder: 9,
+    sortOrder: 10,
   },
   {
     productKey: "design_support",
-    displayName: "Design Support",
-    shortDescription: "Coordinate design requests, revisions, and campaign material support.",
+    displayName: "Creative Retainer",
+    shortDescription: "Ongoing design support — Canopy handles design work on your behalf each month.",
     category: "Services",
     kind: "service",
     iconColor: "#374151",
     defaultLaunchPath: "/services/design-support",
     showWhenNotEnabled: true,
-    sortOrder: 10,
+    sortOrder: 11,
   },
   {
     productKey: "communications_support",
     displayName: "Communications Support",
-    shortDescription: "Manage communications help, publishing support, and platform guidance.",
+    shortDescription: "Managed newsletter, social, and content support handled by Canopy for your school.",
     category: "Services",
     kind: "service",
     iconColor: "#374151",
     defaultLaunchPath: "/services/communications-support",
     showWhenNotEnabled: true,
-    sortOrder: 11,
+    sortOrder: 12,
   },
 ];
 
@@ -241,11 +252,18 @@ function getPrimaryActionLabel(productKey: ProductKey, state: ProductState) {
       not_enabled: "View Product",
     },
     create_canopy: {
-      enabled: "Open Create Canopy",
+      enabled: "New Design Request",
+      in_setup: "View Setup",
       not_enabled: "View Product",
     },
     publish_canopy: {
-      enabled: "Open Publish Canopy",
+      enabled: "View Publications",
+      not_enabled: "View Product",
+    },
+    stories_canopy: {
+      enabled: "New Story",
+      pilot: "New Story",
+      in_setup: "View Setup",
       not_enabled: "View Product",
     },
     community_canopy: {
@@ -255,9 +273,9 @@ function getPrimaryActionLabel(productKey: ProductKey, state: ProductState) {
       not_enabled: "View Product",
     },
     reach_canopy: {
-      enabled: "Create Social Post",
+      enabled: "New Post",
       in_setup: "View Setup",
-      pilot: "Open Pilot",
+      pilot: "New Post",
       not_enabled: "View Product",
     },
     assist_canopy: {
@@ -297,12 +315,19 @@ function getPrimaryActionTarget(productKey: ProductKey, state: ProductState) {
       not_enabled: "/products/canopy-web",
     },
     create_canopy: {
-      enabled: "/products/create-canopy",
+      enabled: "/products/create-canopy/requests/new",
+      in_setup: "/products/create-canopy/setup",
       not_enabled: "/products/create-canopy",
     },
     publish_canopy: {
-      enabled: "/products/publish-canopy",
+      enabled: "/products/publish-canopy/publications",
       not_enabled: "/products/publish-canopy",
+    },
+    stories_canopy: {
+      enabled: "/products/stories-canopy/stories/new",
+      pilot: "/products/stories-canopy/stories/new",
+      in_setup: "/products/stories-canopy/setup",
+      not_enabled: "/products/stories-canopy",
     },
     community_canopy: {
       enabled: "/products/community-canopy/newsletters/new",
@@ -347,6 +372,16 @@ function getSecondaryActionLabel(productKey: ProductKey, state: ProductState) {
     canopy_web: {
       in_setup: "View Plan",
     },
+    create_canopy: {
+      enabled: "View Requests",
+    },
+    publish_canopy: {
+      enabled: "Get Embed Code",
+    },
+    stories_canopy: {
+      enabled: "View Stories",
+      pilot: "View Stories",
+    },
     community_canopy: {
       enabled: "View Campaigns",
       pilot: "View Campaigns",
@@ -378,6 +413,16 @@ function getSecondaryActionTarget(productKey: ProductKey, state: ProductState) {
     },
     canopy_web: {
       in_setup: "/products/canopy-web",
+    },
+    create_canopy: {
+      enabled: "/products/create-canopy/requests",
+    },
+    publish_canopy: {
+      enabled: "/products/publish-canopy/embed",
+    },
+    stories_canopy: {
+      enabled: "/products/stories-canopy/stories",
+      pilot: "/products/stories-canopy/stories",
     },
     community_canopy: {
       enabled: "/products/community-canopy/campaigns",

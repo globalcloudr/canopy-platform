@@ -8,6 +8,7 @@ export type ProductKey =
   | "canopy_web"
   | "create_canopy"
   | "publish_canopy"
+  | "stories_canopy"
   | "community_canopy"
   | "reach_canopy"
   | "assist_canopy"
@@ -167,6 +168,12 @@ const entitlements: MockEntitlement[] = [
     workspaceId: "ws-north-valley",
     productKey: "community_canopy",
     status: "active",
+    setupState: "ready",
+  },
+  {
+    workspaceId: "ws-north-valley",
+    productKey: "stories_canopy",
+    status: "pilot",
     setupState: "ready",
   },
   {

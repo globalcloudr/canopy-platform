@@ -479,9 +479,10 @@ These decisions should now be treated as settled unless a strong reason appears 
   - dashboard catalog model is stable
   - products and services are clearly separated
   - Canopy offering structure is understandable to schools
+- Primary docs:
+  - `/Users/zylstra/Code/canopy-platform/docs/mvp-product-catalog.md`
 - Status:
-  - `Started`
-  - current dashboard mock reflects this direction
+  - `Complete`
 
 ### CP-022: Stories Canopy MVP Definition
 
