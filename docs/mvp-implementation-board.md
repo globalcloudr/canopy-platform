@@ -73,6 +73,11 @@ The MVP product sequence is:
    - fourth MVP product
    - AI-powered success story production
    - working prototype exists in `/references/replit/success-story-engine/`
+5. `Publish Canopy`
+   - fifth MVP product
+   - digital publications management (class catalogs, brochures)
+   - Issuu as the hosting and rendering engine
+   - WordPress plugin exists in `/references/replit/issuu-publications-manager/`
 
 Important product rule:
 
@@ -497,9 +502,30 @@ These decisions should now be treated as settled unless a strong reason appears 
 - Status:
   - `Complete`
 
+### CP-023: Publish Canopy MVP Definition
+
+- Goal: Define `Publish Canopy` as the fifth MVP product inside the Canopy platform.
+- Scope:
+  - product purpose
+  - Issuu as the hosting and rendering engine
+  - publication library and embed code model
+  - school-facing and Canopy staff workflows
+  - cross-product integration points
+  - what is in MVP and what is not
+- Acceptance:
+  - `Publish Canopy` is defined clearly enough to design and build without ambiguity
+  - relationship to the Issuu WordPress plugin is clearly separated
+  - Canopy Web native module integration is documented
+- Primary docs:
+  - `/Users/zylstra/Code/canopy-platform/docs/publish-canopy-mvp.md`
+- Reference implementation:
+  - `/Users/zylstra/Code/canopy-platform/references/replit/issuu-publications-manager/`
+- Status:
+  - `Complete`
+
 ### Phase 3 Exit Criteria
 
-- `PhotoVault`, `Community Canopy`, `Reach Canopy`, and `Stories Canopy` each have a clear MVP definition
+- `PhotoVault`, `Community Canopy`, `Reach Canopy`, `Stories Canopy`, and `Publish Canopy` each have a clear MVP definition
 - the portal knows how to present products versus services
 - no unnecessary cross-product dependency is assumed for MVP
 
