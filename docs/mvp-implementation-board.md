@@ -78,6 +78,10 @@ The MVP product sequence is:
    - digital publications management (class catalogs, brochures)
    - Issuu as the hosting and rendering engine
    - WordPress plugin exists in `/references/replit/issuu-publications-manager/`
+6. `Create Canopy`
+   - sixth MVP product
+   - design request and creative services management
+   - formal intake, quote approval, file delivery workflow
 
 Important product rule:
 
@@ -523,9 +527,28 @@ These decisions should now be treated as settled unless a strong reason appears 
 - Status:
   - `Complete`
 
+### CP-024: Create Canopy MVP Definition
+
+- Goal: Define `Create Canopy` as the design request and creative services product inside the Canopy platform.
+- Scope:
+  - design request intake workflow
+  - request types and states
+  - quote and approval model (billing trigger)
+  - file delivery and history
+  - Canopy staff request queue
+  - cross-product handoffs (Publish Canopy, Reach Canopy, PhotoVault)
+- Acceptance:
+  - `Create Canopy` is defined clearly enough to design and build without ambiguity
+  - formal billing trigger is documented
+  - relationship to other products is clear
+- Primary docs:
+  - `/Users/zylstra/Code/canopy-platform/docs/create-canopy-mvp.md`
+- Status:
+  - `Complete`
+
 ### Phase 3 Exit Criteria
 
-- `PhotoVault`, `Community Canopy`, `Reach Canopy`, `Stories Canopy`, and `Publish Canopy` each have a clear MVP definition
+- `PhotoVault`, `Community Canopy`, `Reach Canopy`, `Stories Canopy`, `Publish Canopy`, and `Create Canopy` each have a clear MVP definition
 - the portal knows how to present products versus services
 - no unnecessary cross-product dependency is assumed for MVP
 
