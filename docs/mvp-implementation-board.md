@@ -181,11 +181,13 @@ Outcome:
 - Scope:
   - define canonical workspace fields
   - define workspace lifecycle states
+  - define relationship between `Workspace` and plain-language `Organization`
   - define relationship to school profile and subscription state
 - Primary docs:
   - `/Users/zylstra/Code/canopy-platform/docs/workspace-identity-model.md`
 - Acceptance:
   - one shared definition of `Workspace`
+  - `Organization` and `Workspace` terminology is no longer ambiguous
   - no competing top-level account concept introduced in portal work
   - workspace object is stable enough for portal and product launch flows
 - Status:
@@ -218,12 +220,16 @@ Outcome:
 - Scope:
   - define product keys
   - define entitlement states
+  - define setup state
+  - define manual provisioning model for MVP
   - define how entitlements affect portal visibility and launch access
 - Primary docs:
   - `/Users/zylstra/Code/canopy-platform/docs/product-entitlements.md`
 - Acceptance:
   - portal can answer whether a workspace has access to a product
   - entitlement state supports at least: `active`, `pilot`, `trial`, `paused`
+  - setup state is defined separately from entitlement status
+  - manual product enablement by Canopy is an explicit MVP rule
   - product-launch behavior can rely on this model
 - Status:
   - `In progress`
@@ -254,6 +260,19 @@ Outcome:
 - canonical workspace, membership, and entitlement models are stable
 - core object model is consistent with those definitions
 - we can explain who the user is, what organization they belong to, and what products they can access
+
+### Phase 1 Locked Decisions
+
+These decisions should now be treated as settled unless a strong reason appears to change them.
+
+1. `Workspace` is the canonical implementation term in the Canopy platform model.
+2. `Organization` is the plain-language business term for the same school account.
+3. Canopy owns invitation and membership long term.
+4. School access starts with an invited admin/owner, and that admin can invite additional staff.
+5. Products own product-specific roles and permissions.
+6. Canopy owns product enablement for the organization/workspace.
+7. In MVP, product enablement is managed manually by Canopy.
+8. Dashboard visibility is driven by workspace product entitlements.
 
 ## Phase 2: Portal Structure and Workflow
 

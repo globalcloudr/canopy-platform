@@ -18,6 +18,8 @@ Without a clear entitlement model, the portal becomes confusing and products dri
 
 Entitlements should be resolved at the `Workspace` level first, not the individual user level.
 
+In plain language, this means product access is enabled for the school organization/account first, and users inherit visibility through membership in that workspace.
+
 Reason:
 
 - schools buy or are provisioned into products as accounts
@@ -85,6 +87,11 @@ Each product entitlement should include:
   - retired
   - pilot
 - `plan_key`
+- `setup_state`
+  - not_started
+  - in_setup
+  - ready
+  - blocked
 - `starts_at`
 - `ends_at`
 - `source`
@@ -135,6 +142,18 @@ Recommended portal states:
 - `Not Enabled`
 
 These are presentation states derived from the entitlement model and setup state.
+
+## Early Operational Model
+
+For the early Canopy MVP, product entitlements are expected to be managed manually by Canopy.
+
+That means:
+
+- you sell products to a school organization
+- you enable those products for that workspace
+- the dashboard shows what has been enabled
+
+This is the right early model because it matches how Canopy is currently sold and operated.
 
 ## Product Behavior
 
@@ -258,6 +277,7 @@ Portal result:
 2. finalize entitlement status values
 3. decide whether upsell visibility appears for non-enabled products
 4. define how setup/onboarding state relates to entitlement state
+5. keep manual Canopy provisioning as the MVP operational path unless there is a strong reason to automate sooner
 5. define the first manual provisioning workflow
 
 ## Summary
