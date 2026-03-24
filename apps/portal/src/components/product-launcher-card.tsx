@@ -28,8 +28,8 @@ export function ProductLauncherCard({ product, dim }: ProductLauncherCardProps) 
         {product.displayName[0]}
       </div>
 
-      <h3 className="mb-[5px]!">{product.displayName}</h3>
-      <p className="m-0 mb-auto! text-[0.845rem] text-muted leading-relaxed">{product.shortDescription}</p>
+      <h3 className="mb-[5px]">{product.displayName}</h3>
+      <p className="m-0 mb-auto text-[0.845rem] text-muted leading-relaxed">{product.shortDescription}</p>
 
       <div className="flex items-center justify-between gap-2 pt-3.5 border-t border-[rgba(15,31,61,0.1)] mt-4 flex-nowrap min-w-0">
         <span className={`pill pill-${product.state}`}>{product.stateLabel}</span>

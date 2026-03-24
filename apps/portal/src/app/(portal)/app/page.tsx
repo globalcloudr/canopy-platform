@@ -26,7 +26,7 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
       {/* ── Page header ──────────────────────────────── */}
       <div className="pt-11 pb-9 border-b border-[rgba(15,31,61,0.1)] mb-10 flex items-center justify-between gap-6 overflow-hidden">
         <div className="min-w-0">
-          <h1 className="mb-2!">Welcome back, {firstName}.</h1>
+          <h1 className="mb-2">Welcome back, {firstName}.</h1>
           <div className="flex items-center gap-2 text-sm text-muted flex-wrap">
             <span>{workspaceName}</span>
             <span className="text-[rgba(15,31,61,0.18)]">·</span>

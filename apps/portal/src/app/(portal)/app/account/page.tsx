@@ -20,7 +20,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
 
       {/* ── Page header ──────────────────────────────── */}
       <div className="pt-11 pb-9 border-b border-[rgba(15,31,61,0.1)] mb-10">
-        <h1 className="mb-2!">{activeWorkspace.displayName}</h1>
+        <h1 className="mb-2">{activeWorkspace.displayName}</h1>
         <div className="flex items-center gap-2 text-sm text-muted flex-wrap">
           <span>{user.email}</span>
           <span className="text-[rgba(15,31,61,0.18)]">·</span>

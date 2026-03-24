@@ -46,7 +46,7 @@ export default function SignInPage() {
       <main className="bg-bg flex items-center justify-center px-11 py-12 max-[840px]:px-6 max-[840px]:py-10">
         <div className="w-full max-w-[380px]">
           <p className="eyebrow">Canopy Portal</p>
-          <h1 className="text-[1.75rem]! mb-[6px]!">Sign in to your workspace.</h1>
+          <h1 className="text-[1.75rem] mb-[6px]">Sign in to your workspace.</h1>
           <p className="m-0 text-muted text-[0.9rem]">
             Enter your credentials to access your organization&apos;s tools.
           </p>
