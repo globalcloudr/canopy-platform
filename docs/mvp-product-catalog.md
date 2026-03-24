@@ -90,7 +90,7 @@ Products the workspace does not yet have access to, shown in a dimmed style to s
 
 Products appear in the following order across the dashboard:
 
-1. PhotoVault by Canopy — media and brand assets (most foundational)
+1. PhotoVault by Canopy — media and brand assets
 2. Canopy Website — website (high visibility, always-on)
 3. Canopy Create — design production (feeds other products)
 4. Canopy Publish — digital publications

@@ -643,7 +643,7 @@ Success criteria:
 Deliverables:
 
 - Canopy brand mark in PhotoVault's top bar (same `C` square + "Canopy" wordmark)
-- Product switcher chip in both apps — portal links to `photovault.school`, PhotoVault links back to `canopy.school`
+- Product switcher chip in both apps — portal links to `photovault.school`, PhotoVault links back to `usecanopy.school`
 - Shared layout chrome (same h-14 top bar, same chip position, same avatar style)
 
 **Phase B (planned):** PhotoVault loads inside the portal shell as a module.
