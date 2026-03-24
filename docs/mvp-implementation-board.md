@@ -3,9 +3,159 @@
 Repository: `/Users/zylstra/Code/canopy-platform`  
 Current focus: `usecanopy.school` portal MVP + shared platform core
 
-Reference roadmap:
+## Working Rule
 
-- `/Users/zylstra/Code/canopy-platform/docs/mvp-delivery-plan.md`
+This board is the single implementation source of truth for the Canopy MVP.
+
+We should use it to:
+
+- decide what phase we are in
+- decide what comes next
+- decide what is not in scope yet
+
+We should not create parallel planning tracks that drift away from this board.
+
+## Current Phase
+
+Current active phase:
+
+- `Phase 1: Platform Core Model`
+
+Next phase after that:
+
+- `Phase 2: Portal Structure and Workflow`
+
+Important sequencing rule:
+
+- We can explore later-phase concepts early, but we should only treat one phase as the active implementation phase at a time.
+- Right now, portal/dashboard work that goes beyond the platform core should be treated as exploratory until Phase 1 is stable.
+
+## Immediate Next Priorities
+
+1. Finish `CP-001`, `CP-002`, and `CP-003` so the platform core model is stable.
+2. Finish `CP-009` so the implementation-level object model matches the platform definitions.
+3. Keep `CP-004` through `CP-008` treated as exploratory portal work until Phase 1 is complete.
+4. After Phase 1 is complete, move formally into Phase 2 portal workflow work.
+5. Enter Phase 3 only after the platform core and portal structure are stable enough to define `Community Canopy` and `Reach Canopy` cleanly.
+
+## MVP Definition
+
+The Canopy MVP is:
+
+- a public Canopy homepage
+- a working sign-in flow
+- a school-facing dashboard
+- clear separation between products and services
+- one real connected product launch
+- a believable path to the second and third products
+
+The MVP is not:
+
+- every future product fully implemented
+- deep cross-product integration from day one
+- final high-fidelity design across every screen
+
+## MVP Product Order
+
+The MVP product sequence is:
+
+1. `PhotoVault`
+   - first connected product
+2. `Community Canopy`
+   - second MVP product
+   - create and send newsletters
+3. `Reach Canopy`
+   - third MVP product
+   - social posting and scheduling
+
+Important product rule:
+
+- `PhotoVault` is not the platform foundation
+- `PhotoVault` is one product inside Canopy
+- all products should be treated as peer offerings inside the Canopy platform
+
+## Phase Overview
+
+### Phase 0: Platform Strategy and Shape
+
+Purpose:
+
+- define what Canopy is
+- define product family and service family
+- define the overall dashboard model
+
+Outcome:
+
+- Canopy is clearly the parent platform
+- products and services are clearly separated
+- post-sign-in behavior is dashboard-first
+
+### Phase 1: Platform Core Model
+
+Purpose:
+
+- define the platform objects that power access and dashboard visibility
+
+Outcome:
+
+- stable workspace, user, membership, and entitlement models
+
+### Phase 2: Portal Structure and Workflow
+
+Purpose:
+
+- define how the portal works before final design
+
+Outcome:
+
+- homepage, sign-in, dashboard, products, and services are structurally clear
+
+### Phase 3: MVP Product Definition
+
+Purpose:
+
+- define each MVP product clearly as a Canopy offering
+
+Outcome:
+
+- `PhotoVault`, `Community Canopy`, and `Reach Canopy` each have a clear MVP definition
+- no unnecessary cross-product dependency is assumed
+
+### Phase 4: Design System and Visual Design
+
+Purpose:
+
+- turn the product structure and portal concept into final visual design
+
+Outcome:
+
+- final visual style
+- final component styling
+- brand polish
+- spacing system
+- production UI patterns
+
+### Phase 5: MVP Build
+
+Purpose:
+
+- implement the real portal and first connected products
+
+Outcome:
+
+- real login
+- real dashboard
+- real product access
+
+### Phase 6: MVP Validation and Launch Readiness
+
+Purpose:
+
+- make the MVP usable, presentable, and ready for real school clients
+
+Outcome:
+
+- launch-ready MVP
 
 ## Shipped: Platform foundation and portal scaffold (2026-03-23)
 
@@ -23,7 +173,7 @@ Reference roadmap:
   - product launcher cards
 - Reorganized imported Replit experiments under `references/replit/` so the repo root stays focused on active platform work
 
-## Phase 1: Now (Platform Core MVP)
+## Phase 1: Platform Core Model
 
 ### CP-001: Canonical Workspace Model
 
@@ -79,6 +229,33 @@ Reference roadmap:
   - `In progress`
   - documented conceptually
   - not yet implemented in running platform code
+
+### CP-009: Core Object Model
+
+- Goal: Document the first implementation-level object model for the platform core.
+- Scope:
+  - define tables/entities for:
+    - `users`
+    - `workspaces`
+    - `memberships`
+    - `platform_roles`
+    - `product_entitlements`
+    - `subscriptions`
+- Acceptance:
+  - object model is implementation-ready
+  - platform MVP data requirements are covered
+- Status:
+  - `In progress`
+  - initial implementation-level object model documented in:
+    - `/Users/zylstra/Code/canopy-platform/docs/core-object-model.md`
+
+### Phase 1 Exit Criteria
+
+- canonical workspace, membership, and entitlement models are stable
+- core object model is consistent with those definitions
+- we can explain who the user is, what organization they belong to, and what products they can access
+
+## Phase 2: Portal Structure and Workflow
 
 ### CP-004: Portal Shell and Navigation Baseline
 
@@ -177,27 +354,6 @@ Reference roadmap:
   - initial handoff direction documented in:
     - `/Users/zylstra/Code/canopy-platform/docs/auth-session-handoff-model.md`
 
-## Phase 2: Next (Shared Platform Services)
-
-### CP-009: Core Object Model
-
-- Goal: Document the first implementation-level object model for the platform core.
-- Scope:
-  - define tables/entities for:
-    - `users`
-    - `workspaces`
-    - `memberships`
-    - `platform_roles`
-    - `product_entitlements`
-    - `subscriptions`
-- Acceptance:
-  - object model is implementation-ready
-  - platform MVP data requirements are covered
-- Status:
-  - `In progress`
-  - initial implementation-level object model documented in:
-    - `/Users/zylstra/Code/canopy-platform/docs/core-object-model.md`
-
 ### CP-010: Shared Event and Analytics Model
 
 - Goal: Define a normalized event model for platform and product activity.
@@ -226,54 +382,73 @@ Reference roadmap:
 - Status:
   - `Planned`
 
-## Phase 3: Later (Second Product + Connected Platform Experience)
+### Phase 2 Exit Criteria
 
-### CP-012: Second Product Launch Through the Portal
+- homepage, sign-in, and dashboard structure are clear
+- products and services are clearly separated in the portal model
+- dashboard behavior matches normal SaaS expectations
+- first connected-product handoff direction is documented well enough to implement
 
-- Goal: Add the second real product launch after PhotoVault.
-- Selected MVP candidate:
-  - `Community Canopy`
-- MVP workflow:
-  - create and send newsletters
-- Acceptance:
-  - second product is visible through the same workspace and entitlement model
-  - platform value becomes clearly cross-product
-- Status:
-  - `Planned`
+## Phase 3: MVP Product Definition
 
-### CP-013: Operator and Account Surfaces
+### CP-012: Community Canopy MVP Definition
 
-- Goal: Add the first platform-level account and operator tooling beyond the MVP shell.
+- Goal: Define `Community Canopy` as the second MVP product inside the Canopy platform.
 - Scope:
-  - workspace/account settings
-  - service visibility
-  - platform staff/operator views later
+  - product purpose
+  - newsletter workflow
+  - create/send model
+  - school-facing actions
+  - what is in MVP and what is not
 - Acceptance:
-  - account management does not have to live inside product apps
-  - platform/control-plane value is clearer
+  - `Community Canopy` is defined clearly enough to design and build without ambiguity
+  - the dashboard can present meaningful newsletter actions
+  - no dependency on `PhotoVault` is assumed for MVP
 - Status:
   - `Planned`
 
-### CP-017: Third Product Launch Through the Portal
+### CP-013: Reach Canopy MVP Definition
 
-- Goal: Add the third connected MVP workflow after PhotoVault and Community Canopy.
-- Selected MVP candidate:
-  - `Reach Canopy`
-- MVP workflow:
-  - create and schedule social posts
-  - manage basic social publishing through the Canopy portal
-- Integration direction:
-  - likely implemented as a connected `Postiz`-backed service under the `Reach Canopy` product surface
+- Goal: Define `Reach Canopy` as the third MVP product inside the Canopy platform.
+- Scope:
+  - product purpose
+  - basic social workflow
+  - posting/scheduling model
+  - whether `Postiz` is the right early engine
+  - what is in MVP and what is not
 - Acceptance:
-  - third product is visible through the same workspace and entitlement model
-  - social publishing is presented as a Canopy workflow, not a disconnected external tool
-  - platform value is clearly expanding across asset, newsletter, and social workflows
+  - `Reach Canopy` is defined clearly enough to design and plan
+  - social posting is framed as a Canopy product, not an external tool
+  - no dependency on `PhotoVault` is assumed for MVP
 - Status:
   - `Planned`
+
+### CP-014: MVP Product Catalog and Packaging
+
+- Goal: Define how products and services appear in the portal and how schools understand what they have.
+- Scope:
+  - product list
+  - service list
+  - dashboard grouping
+  - request-access patterns
+  - enabled vs additional products
+- Acceptance:
+  - dashboard catalog model is stable
+  - products and services are clearly separated
+  - Canopy offering structure is understandable to schools
+- Status:
+  - `Started`
+  - current dashboard mock reflects this direction
+
+### Phase 3 Exit Criteria
+
+- `PhotoVault`, `Community Canopy`, and `Reach Canopy` each have a clear MVP definition
+- the portal knows how to present products versus services
+- no unnecessary cross-product dependency is assumed for MVP
 
 ## Phase 4: Design System and Visual Design
 
-### CP-014: Canopy Design System Foundations
+### CP-015: Canopy Design System Foundations
 
 - Goal: Define the shared visual system for the Canopy homepage and portal.
 - Scope:
@@ -289,9 +464,9 @@ Reference roadmap:
 - Status:
   - `Planned`
 
-### CP-015: Portal Visual Design v1
+### CP-016: Portal Visual Design v1
 
-- Goal: Turn the portal concept into a real, production-minded dashboard design.
+- Goal: Turn the portal concept into a production-minded dashboard design.
 - Scope:
   - authenticated shell design
   - dashboard card patterns
@@ -304,9 +479,9 @@ Reference roadmap:
 - Status:
   - `Planned`
 
-### CP-016: Homepage Visual Design v1
+### CP-017: Homepage Visual Design v1
 
-- Goal: Design the public Canopy homepage and supporting entry pages.
+- Goal: Design the public Canopy homepage and entry pages.
 - Scope:
   - homepage structure
   - marketing sections
@@ -319,15 +494,81 @@ Reference roadmap:
 - Status:
   - `Planned`
 
-## Immediate Next Priorities
+### Phase 4 Exit Criteria
 
-1. Define the implementation-level core object model
-2. Define the schema implementation path and initial backend direction
-3. Define the portal launcher contract and product metadata model
-4. Add a sign-in page and auth entry flow to `apps/portal`
-5. Split the current portal mock into reusable shell/layout components
+- homepage visual direction is approved
+- portal visual direction is approved
+- component and spacing rules are clear enough for production implementation
 
-## Working Rule
+## Phase 5: MVP Build
+
+### CP-018: Community Canopy Launch Through the Portal
+
+- Goal: Add the second real product launch after PhotoVault.
+- Scope:
+  - `Community Canopy` product entry
+  - newsletter create/send MVP flow
+  - portal entitlement visibility
+  - dashboard action behavior
+- Acceptance:
+  - second product is visible through the same platform model
+  - school users can enter a newsletter workflow from the dashboard
+  - Canopy clearly supports more than one real product
+- Status:
+  - `Planned`
+
+### CP-019: Reach Canopy Launch Through the Portal
+
+- Goal: Add the third real product launch after PhotoVault and Community Canopy.
+- Scope:
+  - `Reach Canopy` product entry
+  - social posting/scheduling MVP flow
+  - likely external-engine integration path
+- Acceptance:
+  - third product is visible through the same platform model
+  - social posting is presented as a Canopy workflow
+  - Canopy clearly supports a three-product MVP path
+- Status:
+  - `Planned`
+
+### CP-020: Operator and Account Surfaces
+
+- Goal: Add the first platform-level account and operator tooling beyond the MVP shell.
+- Scope:
+  - workspace/account settings
+  - service visibility
+  - platform staff/operator views later
+- Acceptance:
+  - account management does not have to live inside product apps
+  - platform/control-plane value is clearer
+- Status:
+  - `Planned`
+
+### Phase 5 Exit Criteria
+
+- real sign-in works
+- dashboard reflects real account state
+- `PhotoVault` launches through the portal
+- `Community Canopy` is available as the second MVP product
+- `Reach Canopy` has a defined and implementable launch path
+
+## Phase 6: MVP Validation and Launch Readiness
+
+### CP-021: MVP Validation and Launch Checklist
+
+- Goal: Validate that the Canopy MVP is usable, coherent, and ready for real school clients.
+- Scope:
+  - workflow walkthroughs
+  - product/service clarity review
+  - accessibility and responsive review
+  - content QA
+  - launch checklist
+- Acceptance:
+  - MVP is understandable and presentable
+  - core school workflow can be demonstrated cleanly
+  - launch risks are documented
+- Status:
+  - `Planned`
 
 This repo should stay focused on:
 

@@ -22,6 +22,7 @@ It is not the final long-term SSO architecture, but it should preserve a clean p
 The platform portal should own:
 
 - identity entry
+- invitations and workspace membership
 - workspace resolution
 - product entitlements
 - launch authorization decisions
@@ -49,6 +50,21 @@ Recommended near-term direction:
 - PhotoVault should verify the user session and then resolve product access using platform-compatible identity and workspace data
 
 This preserves a path toward shared login while avoiding a premature custom SSO layer.
+
+## Invitation Direction
+
+Long-term recommendation:
+
+- staff should be invited through Canopy, not through separate product invite flows
+
+That means the future seamless flow should be:
+
+1. school admin invites staff into Canopy
+2. staff accepts once
+3. Canopy establishes workspace membership
+4. products use that membership and entitlement data for access
+
+This avoids making school staff accept separate invitations for each product.
 
 ## Recommended Handoff Goals
 
@@ -165,6 +181,21 @@ Example:
 - workspace role `staff` -> PhotoVault role determined by product rules
 
 This mapping can evolve later, but the separation of concerns should remain.
+
+## PhotoVault Compatibility Transition
+
+PhotoVault already has working organization and invite flows.
+
+Recommended MVP transition:
+
+- do not break PhotoVault's current invite-driven setup immediately
+- begin treating Canopy as the future invitation and membership source of truth
+- allow Canopy membership to provision or synchronize the product-side access PhotoVault requires
+
+Near-term bias:
+
+- seamless product access is the target
+- product-local invite loops are a temporary compatibility pattern, not the final Canopy model
 
 ## Recommended MVP Architecture Options
 

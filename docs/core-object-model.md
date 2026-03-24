@@ -43,6 +43,7 @@ The core object model should follow these rules:
 - resolve product access at the workspace level first
 - avoid over-modeling commercial and billing complexity too early
 - support software, managed service, and hybrid delivery
+- keep invitation and membership ownership at the platform layer
 
 ## Core Entity Overview
 
@@ -129,6 +130,7 @@ Responsibilities:
 - workspace access
 - workspace-level role assignment
 - membership lifecycle state
+- invitation lifecycle
 
 Recommended fields:
 
@@ -137,7 +139,9 @@ Recommended fields:
 - `user_id`
 - `workspace_role`
 - `status`
+- `invitation_email`
 - `invited_by_user_id`
+- `invited_at`
 - `joined_at`
 - `created_at`
 - `updated_at`
@@ -159,6 +163,7 @@ Notes:
 
 - product-specific roles should not be stored here initially
 - product apps can map workspace membership into product behavior
+- the platform should own invitation records through this membership model rather than relying on product-specific invite loops long term
 
 ### `platform_roles`
 
@@ -258,6 +263,23 @@ Notes:
 - `status` answers whether the workspace is entitled
 - `setup_state` answers whether the product is operationally ready
 - this keeps commercial and setup concerns separate
+- in early MVP, entitlements may be created manually when Canopy enables products for a school
+
+## Operational Rule
+
+For early Canopy MVP:
+
+- you manually enable products for a school organization/workspace
+- the platform records those enabled products through `product_entitlements`
+- the dashboard uses those entitlements to decide what products to show
+
+## Invitation and Product-Access Rule
+
+Recommended long-term rule:
+
+- the Canopy platform owns user invitation and membership
+- products consume platform identity, workspace membership, and product entitlement
+- products remain responsible for product-specific role behavior
 
 ### `subscriptions`
 

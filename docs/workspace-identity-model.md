@@ -17,6 +17,13 @@ This is the most important platform-level model to get right early.
 
 Canopy should treat each school customer as a `Workspace`.
 
+In business terms, this is also the customer `Organization`.
+
+For the early platform model, `Workspace` and `Organization` can be treated as the same core object viewed from two angles:
+
+- `Organization` = the school customer account
+- `Workspace` = the active environment that school staff enter inside Canopy and its products
+
 The workspace is the primary account boundary for:
 
 - access
@@ -26,6 +33,17 @@ The workspace is the primary account boundary for:
 - reporting scope
 
 Products should not invent their own competing top-level account concepts unless there is a strong reason.
+
+## Terminology Direction
+
+Recommended practical terminology:
+
+- use `Workspace` as the canonical platform-model term in implementation docs and schema
+- treat `Organization` as the plain-language business term for the same customer account
+
+For early MVP, the important point is not the label.
+
+The important point is that there is one shared top-level school account object across Canopy.
 
 ## Core Objects
 
@@ -71,6 +89,7 @@ Core responsibilities:
 - ties a user to a workspace
 - defines workspace-level access
 - supports invited and active states
+- supports Canopy-managed invitation flow
 
 ### `PlatformRole`
 
@@ -102,6 +121,21 @@ The identity model should work like this:
 3. the user selects or is routed into an active workspace
 4. the platform resolves product entitlements for that workspace
 5. products inherit workspace context and access rules
+
+## Invitation Ownership
+
+Long-term rule:
+
+- invitation logic should live at `Canopy`
+
+That means:
+
+1. Canopy staff or an authorized school admin invites a user into the organization/workspace
+2. the user accepts the invitation once
+3. the user becomes an active Canopy user with workspace membership
+4. products use that membership and product access to authorize entry
+
+Products should not require a second separate invitation loop for the same staff user once the Canopy platform model is in place.
 
 ## Recommended Access Layers
 
@@ -187,6 +221,14 @@ These are platform/workspace roles, not necessarily the exact same roles used in
 
 Products may map workspace access into more specialized product roles.
 
+Recommended early invitation pattern:
+
+- Canopy or platform staff invites the first school admin
+- that school admin becomes the initial `owner` or `admin`
+- that school admin can invite additional school staff into the workspace
+
+This matches the current PhotoVault operating model and is a good Canopy starting point.
+
 ## Product Role Mapping
 
 The platform should not try to define every internal product permission centrally.
@@ -207,6 +249,25 @@ Example:
 
 This keeps the platform core simpler and prevents permission sprawl.
 
+## Product Access Ownership
+
+Canopy should decide:
+
+- whether the organization/workspace has access to a product
+- whether the user belongs to that organization/workspace
+- whether the user should be allowed to enter the product
+
+The product should decide:
+
+- what detailed product role the user has
+- what actions that role can perform inside the product
+
+Recommended long-term split:
+
+- Canopy owns invitation and membership
+- Canopy owns product enablement
+- products own product-specific role behavior
+
 ## Single Sign-On Direction
 
 Long-term goal:
@@ -222,6 +283,18 @@ Recommended behavior:
 This can be implemented incrementally.
 
 Near term, the key is to preserve a model that can support SSO later even if some products begin with separate auth plumbing.
+
+## PhotoVault Transition Note
+
+PhotoVault already has working organization and invite behavior.
+
+For MVP, the platform should not break that prematurely.
+
+Recommended transition direction:
+
+- treat Canopy as the future source of truth for invites and memberships
+- keep PhotoVault-compatible membership handling during the transition
+- move toward a model where Canopy membership can provision or synchronize the product-side access that PhotoVault needs
 
 ## Active Workspace Resolution
 
