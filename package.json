@@ -6,7 +6,8 @@
     "node": "20.x"
   },
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "packages/*"
   ],
   "scripts": {
     "dev": "npm run dev --workspace @canopy/portal",

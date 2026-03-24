@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { cn } from "@canopy/ui";
 import { resolvePortalSession } from "@/lib/platform";
-import { cn } from "@/lib/cn";
 
 const navLink = cn(
   "text-muted no-underline text-sm font-medium px-3 py-1.5 rounded-md",

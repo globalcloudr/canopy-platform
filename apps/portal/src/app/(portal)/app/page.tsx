@@ -1,6 +1,8 @@
+import { Badge } from "@canopy/ui";
 import { ProductLauncherCard } from "@/components/product-launcher-card";
 import { resolvePortalSession } from "@/lib/platform";
 import { getAdditionalLauncherProducts, getEnabledLauncherProducts, getLauncherServices } from "@/lib/products";
+import type { ProductState } from "@/lib/products";
 
 type PortalDashboardPageProps = {
   searchParams?: Promise<{
@@ -100,7 +102,7 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
                   </div>
                 </div>
                 <div className="flex items-center gap-3 shrink-0">
-                  <span className={`pill pill-${service.state}`}>{service.stateLabel}</span>
+                  <Badge variant={service.state as ProductState}>{service.stateLabel}</Badge>
                   <a
                     className="text-[0.845rem] font-semibold text-blue no-underline whitespace-nowrap transition-colors hover:text-blue-hover hover:underline"
                     href={service.primaryActionTarget}

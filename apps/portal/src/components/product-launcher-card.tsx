@@ -1,5 +1,6 @@
-import type { LauncherProduct } from "@/lib/products";
-import { cn } from "@/lib/cn";
+import { Badge } from "@canopy/ui";
+import { cn } from "@canopy/ui";
+import type { LauncherProduct, ProductState } from "@/lib/products";
 
 type ProductLauncherCardProps = {
   product: LauncherProduct;
@@ -32,7 +33,7 @@ export function ProductLauncherCard({ product, dim }: ProductLauncherCardProps) 
       <p className="m-0 mb-auto text-[0.845rem] text-muted leading-relaxed">{product.shortDescription}</p>
 
       <div className="flex items-center justify-between gap-2 pt-3.5 border-t border-[rgba(15,31,61,0.1)] mt-4 flex-nowrap min-w-0">
-        <span className={`pill pill-${product.state}`}>{product.stateLabel}</span>
+        <Badge variant={product.state as ProductState}>{product.stateLabel}</Badge>
         <div className="flex items-center gap-3.5">
           {!dim && product.secondaryActionLabel && product.secondaryActionTarget && (
             <a

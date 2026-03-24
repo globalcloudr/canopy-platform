@@ -1,5 +1,7 @@
+import { Badge } from "@canopy/ui";
 import { resolvePortalSession } from "@/lib/platform";
 import { getProductDefinition } from "@/lib/products";
+import type { ProductState } from "@/lib/products";
 
 type AccountPageProps = {
   searchParams?: Promise<{
@@ -89,9 +91,9 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
                     </p>
                   </div>
                 </div>
-                <span className={`pill pill-${entitlement.status === "active" ? "enabled" : entitlement.status}`}>
+                <Badge variant={(entitlement.status === "active" ? "enabled" : entitlement.status) as ProductState}>
                   {entitlement.status.charAt(0).toUpperCase() + entitlement.status.slice(1)}
-                </span>
+                </Badge>
               </div>
             );
           })}
