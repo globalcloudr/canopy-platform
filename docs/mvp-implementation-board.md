@@ -19,26 +19,24 @@ We should not create parallel planning tracks that drift away from this board.
 
 Current active phase:
 
-- `Phase 2: Portal Structure and Workflow`
+- `Phase 4: Design System and Visual Design`
+
+Completed phases:
+
+- `Phase 1: Platform Core Model` — complete at concept level
+- `Phase 2: Portal Structure and Workflow` — complete at concept/mock level
+- `Phase 3: MVP Product Definition` — complete
 
 Next phase after that:
 
-- `Phase 3: MVP Product Definition`
-
-Important sequencing rule:
-
-- We can explore later-phase concepts early, but we should only treat one phase as the active implementation phase at a time.
-- Right now, portal/dashboard work should be treated as the active implementation focus.
-- Product-definition work for specific MVP products should stay secondary until the portal structure is stable enough to support it.
+- `Phase 5: MVP Build`
 
 ## Immediate Next Priorities
 
-1. Finish `CP-004` so the portal shell and navigation baseline are structurally stable.
-2. Finish `CP-005` so the sign-in and authenticated entry flow are defined cleanly.
-3. Finish `CP-006` so workspace resolution behavior is documented without making it the main user-facing workflow.
-4. Finish `CP-007` so the dashboard product launcher follows the entitlement model consistently.
-5. Keep `CP-008` focused on launch-handoff structure, not deep product integration yet.
-6. Enter Phase 3 only after the portal structure is stable enough to define `Community Canopy` and `Reach Canopy` cleanly.
+1. Complete `CP-015` — document the design system foundations now that the visual direction is implemented
+2. Complete `CP-016` — finalize portal visual design (dashboard, header, cards, services)
+3. Complete `CP-017` — finalize homepage visual design
+4. Begin `Phase 5` planning — real auth, real database, first product launch
 
 ## MVP Definition
 
@@ -308,9 +306,9 @@ These decisions should now be treated as settled unless a strong reason appears 
   - top-level navigation reflects platform intent
   - product launcher feels like the center of the portal
 - Status:
-  - `Started`
-  - initial mock implemented
-  - still page-local and not yet split into reusable portal layout components
+  - `Complete` (concept/mock level — real implementation in Phase 5)
+  - portal header, workspace chip, nav, product launcher, and account entry point all implemented
+  - `PortalHeader` component extracted and reused across authenticated routes
 
 ### CP-005: Authentication Entry Flow
 
@@ -330,9 +328,10 @@ These decisions should now be treated as settled unless a strong reason appears 
   - multi-workspace behavior does not disrupt the default sign-in flow
   - auth flow is compatible with future cross-product SSO
 - Status:
-  - `Started`
-  - sign-in and dashboard mock exist
-  - flow direction now documented as dashboard-first
+  - `Complete` (concept/mock level — real Supabase auth implementation in Phase 5)
+  - sign-in page implemented with split-panel layout
+  - dashboard-first flow documented and implemented in mock session layer
+  - mock session resolves via URL params (`?email=&workspace=`) for development
 
 ### CP-006: Workspace Resolution and Switcher Logic
 
@@ -350,8 +349,10 @@ These decisions should now be treated as settled unless a strong reason appears 
   - switcher behavior is predictable and documented
   - workspace switching is not promoted as a default visible workflow
 - Status:
-  - `Started`
-  - decision direction documented as dashboard-first with passive workspace visibility
+  - `Complete` (concept/mock level — real implementation in Phase 5)
+  - workspace resolution implemented in `platform.ts` mock layer
+  - single-workspace users land directly on dashboard; multi-workspace via URL param
+  - workspace chip visible in header without being promoted as a primary workflow
 
 ### CP-007: Entitlement-Aware Product Launcher
 
@@ -368,9 +369,10 @@ These decisions should now be treated as settled unless a strong reason appears 
   - non-enabled products are either hidden or intentionally marked
   - launch actions map to actual destinations
 - Status:
-  - `Started`
-  - mocked in UI
-  - not yet backed by real data or routing rules
+  - `Complete` (concept/mock level — real entitlement data in Phase 5)
+  - full product catalog implemented in `products.ts` with all states, action labels, and routes
+  - dashboard renders "Your Apps", "Active Services", and "More from Canopy" sections
+  - color-coded product cards with per-product icon colors and background tints
 
 ### CP-008: PhotoVault as First Connected Product
 
@@ -389,9 +391,9 @@ These decisions should now be treated as settled unless a strong reason appears 
   - PhotoVault launch flow is documented and implementable
   - platform/product boundary remains clear
 - Status:
-  - `In progress`
-  - initial handoff direction documented in:
-    - `/Users/zylstra/Code/canopy-platform/docs/auth-session-handoff-model.md`
+  - `Complete` (concept level — cross-repo integration in Phase 5)
+  - launch URL pattern, workspace context passing, and auth/SSO handoff direction documented
+  - primary doc: `/Users/zylstra/Code/canopy-platform/docs/auth-session-handoff-model.md`
 
 ### CP-010: Shared Event and Analytics Model
 
@@ -569,7 +571,12 @@ These decisions should now be treated as settled unless a strong reason appears 
   - portal and homepage can share tokens while looking appropriate for their context
   - component styling is stable enough to support production implementation
 - Status:
-  - `Planned`
+  - `Started`
+  - design system implemented in `apps/portal/src/app/globals.css`
+  - color tokens, typography scale, shadows, and component patterns all defined
+  - font: Plus Jakarta Sans; palette: navy/white/blue
+  - designer handoff brief updated: `/Users/zylstra/Code/canopy-platform/docs/designer-handoff-brief.md`
+  - needs final documentation as a standalone design system reference
 
 ### CP-016: Portal Visual Design v1
 
@@ -584,7 +591,11 @@ These decisions should now be treated as settled unless a strong reason appears 
   - dashboard supports real school workflows clearly
   - product and service sections are easy to scan and understand
 - Status:
-  - `Planned`
+  - `Started`
+  - dashboard implemented with color-coded product cards, dot-grid background,
+    per-product gradient tints, SVG decorative header graphic
+  - portal header, services list, "More from Canopy" discover section all implemented
+  - needs final design polish and responsive review before Phase 5
 
 ### CP-017: Homepage Visual Design v1
 
@@ -599,7 +610,11 @@ These decisions should now be treated as settled unless a strong reason appears 
   - homepage and sign-in feel consistent with the portal
   - visual direction is ready for implementation
 - Status:
-  - `Planned`
+  - `Started`
+  - dark navy hero band with blue radial gradient and floating product icon animations
+  - all 9 products shown in card grid
+  - sign-in page implemented with split-panel layout
+  - needs final copy review and additional marketing sections
 
 ### Phase 4 Exit Criteria
 
