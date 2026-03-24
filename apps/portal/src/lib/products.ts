@@ -475,3 +475,7 @@ export function getAdditionalLauncherProducts(entitlements: MockEntitlement[]): 
 export function getLauncherServices(entitlements: MockEntitlement[]): LauncherProduct[] {
   return getCatalogItems(entitlements).filter((item) => item.kind === "service" && item.state !== "not_enabled");
 }
+
+export function getProductDefinition(key: ProductKey): ProductDefinition | undefined {
+  return catalogDefinitions.find((d) => d.productKey === key);
+}

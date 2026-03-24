@@ -1,8 +1,12 @@
+import { Button } from "@/components/ui/button";
+
 export function SignInForm() {
   return (
-    <form action="/app" className="sign-in-form" method="GET">
-      <div className="field">
-        <label htmlFor="email">Email address</label>
+    <form action="/app" className="flex flex-col gap-4 mt-6" method="GET">
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="email" className="text-sm font-medium text-ink-2">
+          Email address
+        </label>
         <input
           defaultValue="sarah.zylstra@school.edu"
           id="email"
@@ -10,27 +14,31 @@ export function SignInForm() {
           type="email"
           placeholder="you@school.edu"
           autoComplete="email"
+          className="w-full px-3.5 py-2.5 border-[1.5px] border-[rgba(15,31,61,0.18)] rounded-lg bg-surface text-ink font-[inherit] text-[0.9375rem] outline-none transition-[border-color,box-shadow] focus:border-blue focus:shadow-[0_0_0_3px_rgba(37,99,235,0.08)]"
         />
       </div>
 
-      <div className="field">
-        <label htmlFor="password">Password</label>
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="password" className="text-sm font-medium text-ink-2">
+          Password
+        </label>
         <input
           id="password"
           name="password"
           type="password"
           placeholder="Enter your password"
           autoComplete="current-password"
+          className="w-full px-3.5 py-2.5 border-[1.5px] border-[rgba(15,31,61,0.18)] rounded-lg bg-surface text-ink font-[inherit] text-[0.9375rem] outline-none transition-[border-color,box-shadow] focus:border-blue focus:shadow-[0_0_0_3px_rgba(37,99,235,0.08)]"
         />
       </div>
 
-      <button className="btn-primary" type="submit">
+      <Button variant="primary" size="lg" className="w-full justify-center mt-1">
         Sign in
-      </button>
+      </Button>
 
-      <div className="signin-links">
-        <p className="form-note">Mock sign-in — any email will work.</p>
-        <a className="ghost-link" href="/password-reset">
+      <div className="flex items-center justify-between mt-1">
+        <p className="text-[0.825rem] text-muted leading-relaxed m-0">Mock sign-in — any email will work.</p>
+        <a className="text-sm font-medium text-muted no-underline transition-colors hover:text-ink" href="/password-reset">
           Forgot password?
         </a>
       </div>
