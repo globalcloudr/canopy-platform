@@ -106,7 +106,7 @@ The portal and PhotoVault share:
 - Same avatar style and position
 - Same `h-14` top bar height and white background
 
-PhotoVault's `media-workspace-shell.tsx` was updated to reflect Canopy branding. The portal links to PhotoVault at `https://photovault.school`. PhotoVault links back to the Canopy portal at `https://canopy.school`.
+PhotoVault's `media-workspace-shell.tsx` was updated to reflect Canopy branding. The portal links to PhotoVault at `https://photovault.school`. PhotoVault links back to the Canopy portal at `https://usecanopy.school`.
 
 ## Monorepo Structure
 

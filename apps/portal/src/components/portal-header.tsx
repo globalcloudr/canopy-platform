@@ -150,14 +150,14 @@ export function PortalHeader() {
                     Account settings
                   </Link>
                   <a
-                    href="mailto:support@canopy.school"
+                    href="mailto:info@akkedisdigital.com"
                     className="flex items-center gap-2.5 px-3 py-2 rounded-md text-[0.875rem] text-ink-2 no-underline hover:bg-[rgba(15,31,61,0.04)] transition-colors"
                   >
                     <IconHelp />
                     Help &amp; support
                   </a>
                   <a
-                    href="mailto:feedback@canopy.school"
+                    href="mailto:info@akkedisdigital.com"
                     className="flex items-center gap-2.5 px-3 py-2 rounded-md text-[0.875rem] text-ink-2 no-underline hover:bg-[rgba(15,31,61,0.04)] transition-colors"
                   >
                     <IconFeedback />

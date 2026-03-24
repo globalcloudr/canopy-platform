@@ -127,7 +127,7 @@ Purpose: Turn the portal structure and product definitions into a real visual de
 - **Product switcher:** Org chip in header opens dropdown of enabled products. PhotoVault links to `photovault.school`. Others link to internal placeholder pages.
 - **Avatar dropdown:** User info, account settings, help & support, send feedback, sign out.
 - **Placeholder pages:** Every product and service gets a branded placeholder page at `/app/products/[slug]` and `/app/services/[slug]`.
-- **PhotoVault brand alignment:** PhotoVault's top bar updated to show Canopy brand mark. PhotoVault chip links back to `canopy.school`. Shared visual chrome creates continuity across both apps.
+- **PhotoVault brand alignment:** PhotoVault's top bar updated to show Canopy brand mark. PhotoVault chip links back to `usecanopy.school`. Shared visual chrome creates continuity across both apps.
 - **Navigation architecture decision:** Portal is the **persistent shell**. Products load inside it. Sidebar will switch to product-specific nav when a product is active (Phase B of integration, planned for Phase 5+).
 
 **Exit criteria met:** Visual direction approved. Component and layout rules established. Portal and PhotoVault share recognizable visual chrome.

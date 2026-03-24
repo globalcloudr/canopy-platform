@@ -191,7 +191,7 @@ function getDefaultState(definition: ProductDefinition): WorkspaceProductState {
     primaryActionLabel: "View Product",
     primaryActionTarget: `/app/products/${productSlug(definition.productKey)}`,
     secondaryActionLabel: "Request Access",
-    secondaryActionTarget: "mailto:hello@canopy.school",
+    secondaryActionTarget: "mailto:info@akkedisdigital.com",
   };
 }
 
