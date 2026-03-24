@@ -337,30 +337,47 @@ This means:
 - PhotoVault should eventually consume platform context
 - the platform should not duplicate PhotoVault's asset, album, or product-domain tables
 
-## Recommended Migration Strategy
+## Phase 5 Entry Point: Shared Supabase Project
 
-The safest implementation path is:
+**Decision (confirmed 2026-03-23):** PhotoVault's existing Supabase project will be promoted to the Canopy platform core. A separate Supabase project will not be created.
 
-1. establish the platform-core schema in the Canopy platform environment
-2. build the portal against those records
-3. define the first launch handoff into PhotoVault
-4. only then define cross-product synchronization and deeper shared services
+**Why this is safe:**
+- PhotoVault is still in beta with operator-populated test data only
+- No real customer data is at risk
+- The existing tables and auth setup give a clean starting foundation
 
-Do not start with:
+**Why this is the right call:**
+- Avoids cross-project auth token passing and JWT complexity at the start
+- The portal and PhotoVault can share `auth.users` and `workspaces` natively
+- One source of truth from day one
 
-- deep cross-database coupling
-- hidden table sharing between products
-- a massive all-at-once schema
+### Phase 5 Pre-Build Checklist
 
-## Recommended Open Questions to Resolve Soon
+Before writing any Phase 5 portal code against Supabase, complete these steps in order:
 
-These decisions can remain open briefly, but not for too long:
+1. **Audit existing PhotoVault tables** — identify which are platform-core-safe (users, auth) vs. PhotoVault-specific (assets, albums, etc.). Document the boundary.
+2. **Add `product_entitlements` table** — this is the only new platform-core table needed. Use the schema defined in Step 5 above.
+3. **Review and tighten RLS policies** — PhotoVault's existing policies were written for a single-product context. Update them to account for platform-level workspace and role concepts.
+4. **Switch portal auth to server-side Supabase calls** — replace the `platform.ts` mock layer with real Supabase queries using the same Supabase project.
+5. **Keep PhotoVault domain tables separate** — do not merge or rename PhotoVault's product-specific tables into platform-core names. Platform core and PhotoVault domain live in the same project but remain logically distinct.
 
-1. Will Canopy platform and PhotoVault share the same Supabase project initially, or separate projects with an integration boundary?
-2. What is the first auth/session handoff path from portal to PhotoVault?
-3. How should active workspace context be persisted across product launches?
-4. Should non-enabled products appear in the portal as upsell visibility or remain hidden?
-5. What is the first operational flow for provisioning a new workspace and its initial entitlements?
+## Resolved Questions
+
+The following questions from the original open list have been decided:
+
+**1. Shared Supabase project?**
+Yes. PhotoVault's Supabase project becomes the platform core. See Phase 5 Entry Point section above.
+
+**4. Should non-enabled products appear in the portal?**
+Yes — upsell visibility. Non-enabled products render as dimmed cards in a "More from Canopy" section with a "Request Access" action. They do not link to the product itself. See `docs/mvp-product-catalog.md`.
+
+## Remaining Open Questions
+
+These decisions can remain open until Phase 5 build begins:
+
+1. What is the first auth/session handoff path from portal to PhotoVault? (token passing vs. shared session)
+2. How should active workspace context be persisted across product launches? (URL param, cookie, or Supabase session metadata)
+3. What is the first operational flow for provisioning a new workspace and its initial entitlements? (manual Supabase insert at MVP, or a lightweight admin UI)
 
 ## Recommended Near-Term Implementation Bias
 
