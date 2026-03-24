@@ -18,7 +18,7 @@
 
 | Task | Status |
 |------|--------|
-| CP-015 — Document the design system as a standalone reference | Started |
+| CP-015 — Adopt shadcn/ui + Tailwind v4 as shared component system | Complete |
 | CP-016 — Final design polish: dashboard, header, cards, services | Started |
 | CP-017 — Final design polish: homepage, sign-in, copy review | Started |
 
@@ -132,6 +132,11 @@ Purpose: Turn the portal structure and product definitions into a real visual de
 - Dark navy marketing hero with radial glow and floating animated product icons
 - Decorative SVG in dashboard header
 - Designer handoff brief: `docs/designer-handoff-brief.md`
+- **Tailwind v4 + shadcn/ui stack adopted** — matches PhotoVault exactly
+  - `tailwindcss`, `@tailwindcss/postcss`, `clsx`, `tailwind-merge`, `class-variance-authority`, `lucide-react`, `@radix-ui/react-slot` installed
+  - `@theme inline` block in `globals.css` maps Canopy tokens to Tailwind utilities (`bg-navy`, `text-blue`, etc.)
+  - `src/lib/cn.ts` utility added
+  - `src/components/ui/button.tsx` — first Canopy UI component with navy/blue CVA variants
 
 **Exit criteria:** Homepage and portal visual direction are approved. Component and spacing rules are clear enough for Phase 5 production implementation.
 
