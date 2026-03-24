@@ -15,8 +15,8 @@ const allProducts = [
 const differentiators = [
   {
     n: "01",
-    title: "One platform, not six tools",
-    body: "Stop juggling Hootsuite, Mailchimp, Canva, and Google Drive. Every tool your team needs is in one place, with one login.",
+    title: "Content that works together",
+    body: "A success story flows straight to social, newsletter, and your website. Every tool shares the same assets and school context — no copy-pasting.",
   },
   {
     n: "02",
@@ -102,21 +102,6 @@ export default function MarketingHomePage() {
       {/* ── Light content area ───────────────────────── */}
       <div className="max-w-[1160px] mx-auto px-6 pb-20 max-[580px]:px-4">
 
-        {/* Why Canopy */}
-        <section className="pt-18 pb-20 border-b border-[rgba(15,31,61,0.1)]">
-          <p className="eyebrow">Why Canopy</p>
-          <h2>Built for adult education marketing teams.</h2>
-          <div className="grid grid-cols-3 gap-8 mt-9 max-[840px]:grid-cols-1 max-[840px]:gap-6">
-            {differentiators.map((d) => (
-              <div key={d.n}>
-                <p className="m-0 mb-3 text-xs font-extrabold tracking-[0.08em] text-blue">{d.n}</p>
-                <h3 className="text-[1.05rem] font-bold mb-2.5">{d.title}</h3>
-                <p className="text-[0.9rem] text-muted leading-[1.7] m-0">{d.body}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
         {/* Product grid */}
         <section className="pt-18 mb-20" id="products">
           <p className="eyebrow">The platform</p>
@@ -139,6 +124,21 @@ export default function MarketingHomePage() {
                 </div>
                 <h3 className="text-[0.95rem] mb-1.5">{product.name}</h3>
                 <p className="text-[0.845rem] text-muted m-0 leading-relaxed">{product.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Why Canopy */}
+        <section className="pt-18 pb-20 border-t border-[rgba(15,31,61,0.1)]">
+          <p className="eyebrow">Why Canopy</p>
+          <h2>Built for adult education marketing teams.</h2>
+          <div className="grid grid-cols-3 gap-8 mt-9 max-[840px]:grid-cols-1 max-[840px]:gap-6">
+            {differentiators.map((d) => (
+              <div key={d.n}>
+                <p className="m-0 mb-3 text-xs font-extrabold tracking-[0.08em] text-blue">{d.n}</p>
+                <h3 className="text-[1.05rem] font-bold mb-2.5">{d.title}</h3>
+                <p className="text-[0.9rem] text-muted leading-[1.7] m-0">{d.body}</p>
               </div>
             ))}
           </div>
