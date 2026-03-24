@@ -194,8 +194,14 @@ h3 {
   background: rgba(15, 31, 61, 0.03);
 }
 
+.card-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
 .card-action {
-  font-size: 0.85rem;
+  font-size: 0.845rem;
   font-weight: 600;
   color: var(--blue);
   text-decoration: none;
@@ -206,6 +212,19 @@ h3 {
 .card-action:hover {
   color: var(--blue-hover);
   text-decoration: underline;
+}
+
+.card-action-secondary {
+  font-size: 0.845rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.15s;
+}
+
+.card-action-secondary:hover {
+  color: var(--ink-2);
 }
 
 .ghost-link {
@@ -556,16 +575,29 @@ h3 {
 
 .product-grid-dim .product-card,
 .product-card-dim {
-  opacity: 0.55;
+  opacity: 0.5;
   box-shadow: none;
   border-style: dashed;
+  border-top-style: solid;
+  filter: grayscale(0.3);
+  transition: opacity 0.2s, filter 0.2s, transform 0.2s;
 }
 
 .product-grid-dim .product-card:hover,
 .product-card-dim:hover {
-  opacity: 0.85;
+  opacity: 0.8;
+  filter: grayscale(0);
   box-shadow: var(--shadow-sm);
-  transform: none;
+  transform: translateY(-1px);
+}
+
+/* Muted discover section */
+.section-discover {
+  background: rgba(15, 31, 61, 0.025);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px 28px 24px;
+  margin-bottom: 48px;
 }
 
 /* ─── Stat cards ─────────────────────────────────────────── */

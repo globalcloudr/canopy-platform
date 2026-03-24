@@ -17,12 +17,13 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
   const launcherServices = getLauncherServices(session.entitlements);
   const launchableCount = launcherProducts.filter((p) => p.canLaunch).length;
   const workspaceName = session.activeWorkspace.displayName;
+  const firstName = session.user.displayName.split(" ")[0];
   const activeMembership = session.memberships.find((m) => m.workspaceId === session.activeWorkspace.id);
 
   return (
     <div className="shell">
       <div className="page-header" id="overview">
-        <h1>Welcome back.</h1>
+        <h1>Welcome back, {firstName}.</h1>
         <div className="page-meta">
           <span>{workspaceName}</span>
           <span className="page-meta-dot">·</span>
@@ -83,7 +84,7 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
       )}
 
       {additionalProducts.length > 0 && (
-        <section className="section">
+        <div className="section-discover">
           <div className="section-heading">
             <div>
               <p className="eyebrow">More from Canopy</p>
@@ -96,7 +97,7 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
               <ProductLauncherCard key={product.productKey} product={product} dim />
             ))}
           </div>
-        </section>
+        </div>
       )}
     </div>
   );

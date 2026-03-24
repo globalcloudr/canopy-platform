@@ -7,7 +7,10 @@ type ProductLauncherCardProps = {
 
 export function ProductLauncherCard({ product, dim }: ProductLauncherCardProps) {
   return (
-    <article className={`product-card${dim ? " product-card-dim" : ""}`}>
+    <article
+      className={`product-card${dim ? " product-card-dim" : ""}`}
+      style={{ borderTop: `3px solid ${product.iconColor}` }}
+    >
       <div className="product-icon" style={{ background: product.iconColor }}>
         {product.displayName[0]}
       </div>
@@ -15,9 +18,16 @@ export function ProductLauncherCard({ product, dim }: ProductLauncherCardProps) 
       <p>{product.shortDescription}</p>
       <div className="product-card-footer">
         <span className={`pill pill-${product.state}`}>{product.stateLabel}</span>
-        <a className="card-action" href={product.primaryActionTarget}>
-          {product.primaryActionLabel} →
-        </a>
+        <div className="card-actions">
+          {product.secondaryActionLabel && product.secondaryActionTarget && (
+            <a className="card-action-secondary" href={product.secondaryActionTarget}>
+              {product.secondaryActionLabel}
+            </a>
+          )}
+          <a className="card-action" href={product.primaryActionTarget}>
+            {product.primaryActionLabel} →
+          </a>
+        </div>
       </div>
     </article>
   );
