@@ -430,8 +430,10 @@ These decisions should now be treated as settled unless a strong reason appears 
   - `Community Canopy` is defined clearly enough to design and build without ambiguity
   - the dashboard can present meaningful newsletter actions
   - no dependency on `PhotoVault` is assumed for MVP
+- Primary docs:
+  - `/Users/zylstra/Code/canopy-platform/docs/community-canopy-mvp.md`
 - Status:
-  - `Planned`
+  - `Complete`
 
 ### CP-013: Reach Canopy MVP Definition
 
