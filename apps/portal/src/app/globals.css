@@ -252,6 +252,8 @@ h3 {
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.02em;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .pill::before {
@@ -523,6 +525,8 @@ h3 {
   padding-top: 14px;
   border-top: 1px solid var(--border);
   margin-top: 16px;
+  flex-wrap: nowrap;
+  min-width: 0;
 }
 
 /* ─── Services list ──────────────────────────────────────── */
