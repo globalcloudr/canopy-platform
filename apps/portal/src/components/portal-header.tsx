@@ -25,10 +25,7 @@ export function PortalHeader() {
         <div className="brand-mark" aria-hidden="true">
           C
         </div>
-        <div>
-          <p className="brand-name">Canopy</p>
-          <p className="brand-subtitle">School growth platform</p>
-        </div>
+        <p className="brand-name">Canopy</p>
       </div>
 
       <nav className="portal-nav" aria-label="Primary">

@@ -5,8 +5,6 @@ type ProductLauncherCardProps = {
 };
 
 export function ProductLauncherCard({ product }: ProductLauncherCardProps) {
-  const taskLabel = product.kind === "service" ? "Most common next step" : "Most common task";
-
   return (
     <article className="product-card">
       <div className="product-top">
@@ -15,7 +13,6 @@ export function ProductLauncherCard({ product }: ProductLauncherCardProps) {
       </div>
       <h3>{product.displayName}</h3>
       <p>{product.shortDescription}</p>
-      <p className="task-label">{taskLabel}</p>
       <div className="product-actions">
         <a className="launch-button" href={product.primaryActionTarget}>
           {product.primaryActionLabel}
