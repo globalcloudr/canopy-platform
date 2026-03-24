@@ -12,6 +12,7 @@ export type ProductDefinition = {
   kind: CatalogKind;
   iconColor: string;
   defaultLaunchPath: string;
+  externalUrl?: string;
   showWhenNotEnabled: boolean;
   sortOrder: number;
 };
@@ -33,18 +34,19 @@ export type LauncherProduct = ProductDefinition & WorkspaceProductState;
 const catalogDefinitions: ProductDefinition[] = [
   {
     productKey: "photovault",
-    displayName: "PhotoVault",
+    displayName: "PhotoVault by Canopy",
     shortDescription: "View school photos, brand assets, and approved media.",
     category: "Media and Brand",
     kind: "product",
     iconColor: "#0f1f3d",
     defaultLaunchPath: "/launch/photovault",
+    externalUrl: "https://photovault.school",
     showWhenNotEnabled: false,
     sortOrder: 1,
   },
   {
     productKey: "canopy_web",
-    displayName: "Canopy Web",
+    displayName: "Canopy Website",
     shortDescription: "Publish school websites, program pages, and public-facing information.",
     category: "Web Publishing",
     kind: "product",
@@ -55,7 +57,7 @@ const catalogDefinitions: ProductDefinition[] = [
   },
   {
     productKey: "create_canopy",
-    displayName: "Create Canopy",
+    displayName: "Canopy Create",
     shortDescription: "Create brochures, class catalogs, flyers, and campaign materials.",
     category: "Design Publishing",
     kind: "product",
@@ -66,7 +68,7 @@ const catalogDefinitions: ProductDefinition[] = [
   },
   {
     productKey: "publish_canopy",
-    displayName: "Publish Canopy",
+    displayName: "Canopy Publish",
     shortDescription: "Manage digital publications, guides, and embedded catalogs.",
     category: "Publication Management",
     kind: "product",
@@ -77,7 +79,7 @@ const catalogDefinitions: ProductDefinition[] = [
   },
   {
     productKey: "stories_canopy",
-    displayName: "Stories Canopy",
+    displayName: "Canopy Stories",
     shortDescription: "Turn student and staff successes into blog posts, social content, and video — automatically.",
     category: "Content Production",
     kind: "product",
@@ -88,7 +90,7 @@ const catalogDefinitions: ProductDefinition[] = [
   },
   {
     productKey: "community_canopy",
-    displayName: "Community Canopy",
+    displayName: "Canopy Community",
     shortDescription: "Run recurring newsletters and school-to-community communication workflows.",
     category: "Community Communication",
     kind: "product",
@@ -99,7 +101,7 @@ const catalogDefinitions: ProductDefinition[] = [
   },
   {
     productKey: "reach_canopy",
-    displayName: "Reach Canopy",
+    displayName: "Canopy Reach",
     shortDescription: "Write, schedule, and publish social media posts to your school's accounts.",
     category: "Outreach and Storytelling",
     kind: "product",
@@ -110,7 +112,7 @@ const catalogDefinitions: ProductDefinition[] = [
   },
   {
     productKey: "assist_canopy",
-    displayName: "Assist Canopy",
+    displayName: "Canopy Assistant",
     shortDescription: "Give staff a knowledge and communications assistant for everyday work.",
     category: "Communication and Knowledge",
     kind: "product",
@@ -121,7 +123,7 @@ const catalogDefinitions: ProductDefinition[] = [
   },
   {
     productKey: "insights_canopy",
-    displayName: "Insights Canopy",
+    displayName: "Canopy Insights",
     shortDescription: "Track visibility, campaign activity, and cross-channel performance.",
     category: "Measurement and Visibility",
     kind: "product",
@@ -165,6 +167,10 @@ const catalogDefinitions: ProductDefinition[] = [
   },
 ];
 
+function productSlug(productKey: ProductKey): string {
+  return productKey.replace(/_/g, "-");
+}
+
 function getDefaultState(definition: ProductDefinition): WorkspaceProductState {
   if (definition.kind === "service") {
     return {
@@ -173,7 +179,7 @@ function getDefaultState(definition: ProductDefinition): WorkspaceProductState {
       stateLabel: "Available",
       canLaunch: false,
       primaryActionLabel: "Learn More",
-      primaryActionTarget: definition.defaultLaunchPath,
+      primaryActionTarget: `/app/services/${productSlug(definition.productKey)}`,
     };
   }
 
@@ -183,9 +189,9 @@ function getDefaultState(definition: ProductDefinition): WorkspaceProductState {
     stateLabel: "Not Enabled",
     canLaunch: false,
     primaryActionLabel: "View Product",
-    primaryActionTarget: definition.defaultLaunchPath,
+    primaryActionTarget: `/app/products/${productSlug(definition.productKey)}`,
     secondaryActionLabel: "Request Access",
-    secondaryActionTarget: "/account/services",
+    secondaryActionTarget: "mailto:hello@canopy.school",
   };
 }
 
@@ -301,67 +307,22 @@ function getPrimaryActionLabel(productKey: ProductKey, state: ProductState) {
   return actionMap[productKey][state] ?? "View Product";
 }
 
-function getPrimaryActionTarget(productKey: ProductKey, state: ProductState) {
-  const targetMap: Record<ProductKey, Partial<Record<ProductState, string>>> = {
-    photovault: {
-      enabled: "/launch/photovault",
-      in_setup: "/products/photovault/setup",
-      pilot: "/products/photovault",
-      not_enabled: "/products/photovault",
-    },
-    canopy_web: {
-      enabled: "/products/canopy-web",
-      in_setup: "/products/canopy-web/setup",
-      not_enabled: "/products/canopy-web",
-    },
-    create_canopy: {
-      enabled: "/products/create-canopy/requests/new",
-      in_setup: "/products/create-canopy/setup",
-      not_enabled: "/products/create-canopy",
-    },
-    publish_canopy: {
-      enabled: "/products/publish-canopy/publications",
-      not_enabled: "/products/publish-canopy",
-    },
-    stories_canopy: {
-      enabled: "/products/stories-canopy/stories/new",
-      pilot: "/products/stories-canopy/stories/new",
-      in_setup: "/products/stories-canopy/setup",
-      not_enabled: "/products/stories-canopy",
-    },
-    community_canopy: {
-      enabled: "/products/community-canopy/newsletters/new",
-      in_setup: "/products/community-canopy/setup",
-      pilot: "/products/community-canopy/newsletters/new",
-      not_enabled: "/products/community-canopy",
-    },
-    reach_canopy: {
-      enabled: "/products/reach-canopy/posts/new",
-      in_setup: "/products/reach-canopy/setup",
-      pilot: "/products/reach-canopy",
-      not_enabled: "/products/reach-canopy",
-    },
-    assist_canopy: {
-      enabled: "/products/assist-canopy",
-      in_setup: "/products/assist-canopy/setup",
-      not_enabled: "/products/assist-canopy",
-    },
-    insights_canopy: {
-      enabled: "/products/insights-canopy",
-      not_enabled: "/products/insights-canopy",
-    },
-    website_setup: {
-      service: "/services/website-setup",
-    },
-    design_support: {
-      service: "/services/design-support",
-    },
-    communications_support: {
-      service: "/services/communications-support",
-    },
-  };
+function getPrimaryActionTarget(productKey: ProductKey, state: ProductState): string {
+  const def = catalogDefinitions.find((d) => d.productKey === productKey);
+  const slug = productSlug(productKey);
 
-  return targetMap[productKey][state] ?? "/account/services";
+  // Live external products (e.g. PhotoVault at photovault.school)
+  if (def?.externalUrl && (state === "enabled" || state === "pilot")) {
+    return def.externalUrl;
+  }
+
+  // Services → service placeholder pages
+  if (state === "service") {
+    return `/app/services/${slug}`;
+  }
+
+  // Everything else → product placeholder page within the portal
+  return `/app/products/${slug}`;
 }
 
 function getSecondaryActionLabel(productKey: ProductKey, state: ProductState) {

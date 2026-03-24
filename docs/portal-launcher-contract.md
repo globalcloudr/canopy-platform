@@ -1,370 +1,166 @@
 # Canopy Portal Launcher Contract
 
-Date: 2026-03-23
+Date: 2026-03-24 (updated)
 
 ## Purpose
 
-Define the first implementation-level contract for the Canopy product launcher.
-
-This document translates the platform vision into a practical launcher model that can drive:
-
-- the portal home/dashboard
-- the products view
-- product card rendering
-- launch behavior
-- entitlement-aware user guidance
+Define the implementation contract for the Canopy product launcher — how products are represented, what state they can be in, and how the portal routes users to the right place.
 
 The launcher is one of the most important platform objects because it is where Canopy becomes visibly connected.
 
 ## Core Principle
 
-The launcher should answer four questions for the active workspace:
+The launcher answers four questions for the active workspace:
 
-1. what products exist
-2. which products are available here
-3. what state each product is in
-4. what the user can do next
+1. What products exist?
+2. Which products are available here?
+3. What state is each product in?
+4. What can the user do next?
 
-This should be driven by:
+## Where the Launcher Appears
 
-- workspace context
-- product entitlements
-- setup state
-- stable product metadata
-
-## Launcher Responsibilities
-
-The portal launcher should:
-
-- list products for the active workspace
-- show product state in human-readable language
-- determine whether a product can be launched
-- route the user to the right next action
-- provide enough context to avoid confusing dead ends
-
-The launcher should not:
-
-- own product-specific workflow logic
-- make detailed product-role decisions
-- duplicate product-side permission systems
+- **Dashboard (`/app`)** — primary launcher surface; product grid + services list
+- **Product switcher chip** — global header; quick cross-product navigation
+- **Product placeholder pages** — landing pages for not-yet-live products
 
 ## Launcher Inputs
 
-The launcher should be built from two kinds of input:
-
 ### 1. Static Product Metadata
 
-This is platform-owned configuration describing each product.
+Platform-owned configuration per product. Defined in `apps/portal/src/lib/products.ts`.
 
-Examples:
+Fields:
 
-- visible product name
-- short descriptor
-- icon or visual token
-- category
-- default launch target
-- whether the product should be shown when not entitled
+| Field | Type | Purpose |
+|-------|------|---------|
+| `productKey` | `ProductKey` | Canonical identifier (`community_canopy`, etc.) |
+| `displayName` | `string` | Human-readable name shown in UI |
+| `shortDescription` | `string` | One-line descriptor for cards and placeholders |
+| `category` | `string` | Grouping label (e.g., "Community Communication") |
+| `kind` | `"product" \| "service"` | Determines rendering and routing logic |
+| `iconColor` | `string` | Hex color for icon mark and card accent |
+| `defaultLaunchPath` | `string` | Fallback path if no state-specific target |
+| `externalUrl` | `string?` | Live external deployment URL (if product is launched externally) |
+| `showWhenNotEnabled` | `boolean` | Whether to show in "More from Canopy" when not entitled |
+| `sortOrder` | `number` | Display order in launcher grid |
+
+The `externalUrl` field is the key to the portal-to-product routing decision:
+- If set and product is `enabled` or `pilot` → link goes to `externalUrl` (external app)
+- If not set → link goes to an internal portal route (`/app/products/[slug]`)
+
+Current `externalUrl` values:
+- `photovault` → `https://photovault.school`
+- All others → not set (internal placeholder pages)
 
 ### 2. Workspace-Specific Product State
 
-This is dynamic data derived from the active workspace.
-
-Examples:
-
-- entitlement status
-- setup state
-- plan key
-- whether launch is allowed
-- whether the product should show setup guidance instead of launch
-
-## Recommended Product Metadata Model
-
-The portal should maintain a small platform-side product registry.
-
-Recommended fields:
-
-- `product_key`
-- `display_name`
-- `short_description`
-- `category`
-- `icon_key`
-- `default_launch_path`
-- `launch_mode`
-- `show_when_not_enabled`
-- `sort_order`
-
-Recommended example values:
-
-- `product_key`
-  - `photovault`
-  - `canopy_web`
-  - `community_canopy`
-- `launch_mode`
-  - `direct`
-  - `setup`
-  - `info_only`
-
-Notes:
-
-- this registry is not the entitlement record
-- it is the platform's canonical product catalog
-
-## Recommended Launcher State Model
-
-For each product card, the portal should derive a user-facing launcher state.
-
-Recommended user-facing states:
-
-- `Enabled`
-- `In Setup`
-- `Pilot`
-- `Trial`
-- `Paused`
-- `Not Enabled`
-
-These should be derived from:
-
-- entitlement `status`
-- entitlement `setup_state`
-- product metadata
-
-## Recommended State Rules
-
-### `Enabled`
-
-Conditions:
-
-- entitlement status is `active`
-- setup state is `ready`
-
-Card behavior:
-
-- show launch button
-- allow direct product entry
-
-### `In Setup`
-
-Conditions:
-
-- entitlement exists
-- setup state is `not_started`, `in_setup`, or `blocked`
-
-Card behavior:
-
-- do not present as fully launch-ready
-- show setup or next-step action instead
-
-### `Pilot`
-
-Conditions:
-
-- entitlement status is `pilot`
-- setup state may be `ready` or still in setup
-
-Card behavior:
-
-- show pilot label
-- allow launch only if operationally ready
-
-### `Trial`
-
-Conditions:
-
-- entitlement status is `trial`
-
-Card behavior:
-
-- show launch if ready
-- show trial context
-
-### `Paused`
-
-Conditions:
-
-- entitlement status is `paused`
-
-Card behavior:
-
-- do not allow normal launch
-- show account/service context instead
-
-### `Not Enabled`
-
-Conditions:
-
-- no active entitlement for the workspace
-
-Card behavior:
-
-- either hide the product or show a non-launch state, depending on platform policy
-
-## Recommended Card Contract
-
-Each launcher card should be able to render from a stable object shape.
-
-Recommended fields:
-
-- `product_key`
-- `display_name`
-- `short_description`
-- `category`
-- `state`
-- `state_label`
-- `can_launch`
-- `primary_action_label`
-- `primary_action_target`
-- `secondary_action_label`
-- `secondary_action_target`
-- `workspace_slug`
-- `plan_key`
-
-This is not necessarily the database shape.
-
-It is the shape the portal UI should receive after platform-side resolution.
-
-## Recommended Action Rules
-
-The launcher should always show the best next action for the user.
-
-### If `can_launch = true`
-
-Primary action:
-
-- `Launch Product`
-
-### If product is `In Setup`
-
-Primary action:
-
-- `Continue Setup`
-or
-- `View Setup`
-
-### If product is `Paused`
-
-Primary action:
-
-- `View Account`
-or
-- `Contact Support`
-
-### If product is `Not Enabled` and visible
-
-Primary action:
-
-- `Learn More`
-or
-- `Request Access`
-
-This prevents cards from becoming visually present but operationally useless.
-
-## Recommended Launch Target Model
-
-When a product can launch, the launcher should resolve:
-
-- product destination
-- active workspace context
-- any required launch-state metadata
-
-Recommended resolved launch object:
-
-- `product_key`
-- `launch_url`
-- `workspace_slug`
-- `requires_auth`
-- `requires_entitlement_check`
-
-For PhotoVault, the launch target should preserve:
-
-- active workspace context
-- the expectation that product-side verification still occurs
-
-## Recommended First Product Contract: PhotoVault
-
-The first real product contract should be for `photovault`.
-
-Recommended metadata:
-
-- `product_key`: `photovault`
-- `display_name`: `PhotoVault by Canopy`
-- `category`: `Asset Foundation`
-- `launch_mode`: `direct`
-
-Recommended launcher behavior:
-
-- if entitled and ready:
-  - show `Launch Product`
-- if entitled but setup incomplete:
-  - show `Continue Setup`
-- if not entitled:
-  - hide or show controlled visibility depending on portal policy
-
-## Recommended Display Policy for Non-Enabled Products
-
-Near-term recommendation:
-
-- on the main workspace home, prioritize enabled products first
-- for MVP, keep non-enabled products minimal or hidden unless there is a clear sales or service reason to show them
-
-Reason:
-
-- too much “coming soon” or upsell noise will weaken the portal experience
-
-A quieter launcher will feel more credible and useful.
-
-## Recommended UI Rendering Order
-
-Within the active workspace, order products roughly as:
-
-1. enabled and ready
-2. entitled but in setup
-3. pilot/trial products
-4. optional non-enabled products, if shown at all
-
-This puts the user's next action first.
-
-## Failure and Edge States
-
-The launcher should handle:
-
-- missing entitlement data
-- stale workspace selection
-- product marked launchable but setup incomplete
-- launch target unavailable
-
-In those cases, the launcher should prefer:
-
-- a clear explanatory state
-- a non-destructive fallback action
-
-It should not encourage a redirect that immediately fails.
-
-## Recommended MVP Implementation Order
-
-1. define the product metadata registry inside the portal
-2. define the derived launcher-card object shape
-3. wire launcher state from entitlement and setup data
-4. implement `photovault` as the first real launchable product
-5. add secondary products only after the first product flow is stable
-
-## Relationship to Navigation
-
-The launcher should appear in:
-
-- workspace home/dashboard
-- products page
-- optionally a global quick-launch entry later
-
-The launcher is not a one-off page feature.
-
-It is a core platform interaction surface.
+Derived from the active workspace's entitlements. Computed in `getActionState()`.
+
+Fields:
+
+| Field | Type | Purpose |
+|-------|------|---------|
+| `state` | `ProductState` | Derived launcher state |
+| `stateLabel` | `string` | Human-readable state label for badge |
+| `canLaunch` | `boolean` | Whether the primary action is a real launch |
+| `primaryActionLabel` | `string` | Button/link label |
+| `primaryActionTarget` | `string` | Where the primary action routes to |
+| `secondaryActionLabel` | `string?` | Optional secondary link label |
+| `secondaryActionTarget` | `string?` | Optional secondary link target |
+| `planKey` | `string?` | Plan identifier when relevant |
+
+## Product States
+
+| State | Conditions | Card Behavior |
+|-------|-----------|---------------|
+| `enabled` | Active entitlement, setup complete | Show launch action; link to `externalUrl` or internal app |
+| `in_setup` | Entitlement exists, setup not complete | Show setup action; link to placeholder page |
+| `pilot` | Entitlement status is `pilot` | Show pilot label; link to `externalUrl` or internal app |
+| `paused` | Entitlement status is `paused` | No launch; link to placeholder page |
+| `not_enabled` | No entitlement | Show in "More from Canopy"; link to placeholder page |
+| `service` | Kind is `service` | Separate services section; link to service placeholder page |
+
+## Action Target Resolution
+
+`getPrimaryActionTarget()` resolves destinations automatically:
+
+```
+if externalUrl exists AND state is enabled/pilot → externalUrl
+if state is service                              → /app/services/[slug]
+otherwise                                        → /app/products/[slug]
+```
+
+Slugs are the hyphenated form of the product key: `community_canopy` → `community-canopy`.
+
+## Product Placeholder Pages
+
+Every product and service that doesn't have a live deployment gets a placeholder page inside the portal shell.
+
+- Products: `/app/products/[slug]`
+- Services: `/app/services/[slug]`
+
+These pages show:
+- Product icon (large, colored)
+- Product category (eyebrow label)
+- Product name and description (from catalog metadata)
+- A "Coming soon" or "Managed by Canopy" notice
+- A contact CTA (email link to `hello@canopy.school`)
+- "Back to dashboard" link
+
+Because these pages live inside the portal's `(portal)/app/` layout, they render with the full sidebar and header chrome — users stay inside the platform experience.
+
+## Card Contract
+
+Each launcher card renders from a `LauncherProduct` shape (= `ProductDefinition & WorkspaceProductState`):
+
+| Field | Used For |
+|-------|---------|
+| `displayName` | Card title |
+| `shortDescription` | Card body text |
+| `iconColor` | Icon background, top border accent, gradient tint |
+| `state` | Badge variant |
+| `stateLabel` | Badge text |
+| `primaryActionLabel` | Primary link label |
+| `primaryActionTarget` | Primary link href |
+| `secondaryActionLabel` | Optional secondary link |
+| `secondaryActionTarget` | Optional secondary link href |
+
+## Dashboard Rendering Order
+
+```
+1. Enabled and pilot products    → "Your Apps" grid
+2. Active services               → "Services" list
+3. Not-enabled products          → "More from Canopy" upsell panel (dimmed)
+```
+
+Products not entitled and `showWhenNotEnabled: false` are hidden entirely.
+
+## Product Switcher Contract
+
+The header chip lists `kind: "product"` items that are not `not_enabled`:
+
+- `externalUrl` set → real link, opens in new tab, shows external link icon
+- `externalUrl` not set → links to `/app/products/[slug]` within portal
+- "Back to portal home" always shown at bottom
+
+## Recommended MVP Implementation Status
+
+| Step | Status |
+|------|--------|
+| Product metadata registry in `products.ts` | Complete |
+| Derived launcher-card object shape | Complete |
+| Launcher state from entitlement and setup data | Complete (mock) |
+| PhotoVault as first real launchable product | Complete — links to `photovault.school` |
+| Product placeholder pages for all other products | Complete |
+| Real entitlement data from Supabase | Planned (Phase 5) |
 
 ## Summary
 
-The Canopy launcher contract should combine:
+The launcher contract combines:
 
-- a stable product metadata registry
-- workspace-specific entitlement and setup state
-- a consistent card/action shape
+- A stable product metadata registry with `externalUrl` for live products
+- Workspace-specific entitlement state
+- Automatic routing: external URL → live product, no URL → portal placeholder page
+- Product placeholder pages that keep users inside the portal shell
 
-That is what will make the portal feel like a real shared control plane rather than a static list of product ideas.
+That makes the portal feel like a real connected platform even when only one product is live.

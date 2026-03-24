@@ -101,13 +101,13 @@ These are distinct products with their own workflows and domain behavior.
 Current target product family:
 
 - `PhotoVault by Canopy`
-- `Canopy Web`
-- `Create Canopy`
-- `Publish Canopy`
-- `Community Canopy`
-- `Reach Canopy`
-- `Assist Canopy`
-- `Insights Canopy`
+- `Canopy Website`
+- `Canopy Create`
+- `Canopy Publish`
+- `Canopy Community`
+- `Canopy Reach`
+- `Canopy Assistant`
+- `Canopy Insights`
 
 Products may be implemented differently:
 
@@ -547,21 +547,27 @@ This model allows Canopy to act like one ecosystem even when products are techni
 
 ## Portal and Product Relationship
 
-The platform portal should answer:
+The portal is the **persistent shell** for the entire platform. It does not just launch products — it contains them.
+
+The portal answers:
 
 - who is the user
 - which workspace is active
 - which products are available
 - which permissions apply
 - which services are enabled
+- how do I navigate between products (product switcher chip)
 
-Products should answer:
+Products answer:
 
 - how does this workflow operate
 - what domain data does this product own
 - what outcomes does this product produce
+- what contextual nav does this product need in the sidebar
 
-That separation keeps the platform core clean.
+The portal's sidebar switches to product-specific navigation when a user is inside a product. The top bar remains constant at all times.
+
+This keeps the platform core clean while giving users a continuous sense of place across all products.
 
 ## Recommended Repository Direction
 
@@ -632,15 +638,26 @@ Success criteria:
 
 ### Phase 3: PhotoVault Integration Into the Portal
 
+**Phase A (complete):** Visual continuity between portal and PhotoVault.
+
 Deliverables:
 
-- unified launch path from `usecanopy.school`
-- shared identity and workspace context between portal and PhotoVault
-- shared navigation conventions and account experience
+- Canopy brand mark in PhotoVault's top bar (same `C` square + "Canopy" wordmark)
+- Product switcher chip in both apps — portal links to `photovault.school`, PhotoVault links back to `canopy.school`
+- Shared layout chrome (same h-14 top bar, same chip position, same avatar style)
+
+**Phase B (planned):** PhotoVault loads inside the portal shell as a module.
+
+Deliverables:
+
+- PhotoVault views become routes inside the portal (`/app/photovault/albums`, etc.)
+- Portal sidebar switches to PhotoVault nav (Albums, Photo Library, Brand Portal, Settings) when in PhotoVault context
+- Standalone PhotoVault landing page removed; portal becomes the entry point
 
 Success criteria:
 
-- PhotoVault feels like a connected Canopy product rather than a separate destination
+- Phase A: PhotoVault feels like a connected Canopy product, not a separate destination
+- Phase B: Users never navigate to a different domain; portal is the persistent shell
 
 ### Phase 4: Shared Event and Brand Layer
 
@@ -721,7 +738,7 @@ The strongest architecture for Canopy is:
 - shared services for cross-product cohesion
 - modular products with clear ownership boundaries
 
-PhotoVault should remain the first live product in the ecosystem.
+PhotoVault by Canopy should remain the first live product in the ecosystem.
 
 Canopy itself is the platform foundation.
 

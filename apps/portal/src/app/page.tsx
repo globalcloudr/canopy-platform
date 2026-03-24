@@ -1,15 +1,15 @@
 import Link from "next/link";
 
 const allProducts = [
-  { key: "photovault",        name: "PhotoVault",        desc: "Organize approved school photos, logos, and brand assets in one shared library.", color: "#0f1f3d" },
-  { key: "community",         name: "Community Canopy",  desc: "Create and send recurring newsletters that keep your school community informed.", color: "#7c3aed" },
-  { key: "reach",             name: "Reach Canopy",      desc: "Write, schedule, and publish social posts to Facebook, Instagram, LinkedIn, and more.", color: "#db2777" },
-  { key: "stories",           name: "Stories Canopy",    desc: "Turn student successes into blog posts, social content, and short video — automatically.", color: "#d97706" },
-  { key: "publish",           name: "Publish Canopy",    desc: "Give schools a digital home for class catalogs, brochures, and program guides.", color: "#0369a1" },
-  { key: "create",            name: "Create Canopy",     desc: "Submit design requests, track revisions, and download finished files — all in one place.", color: "#ea580c" },
-  { key: "web",               name: "Canopy Web",        desc: "Publish school websites and program pages that stay current and on-brand.", color: "#0d9488" },
-  { key: "assist",            name: "Assist Canopy",     desc: "Give staff a smart assistant for drafting communications and answering everyday questions.", color: "#4f46e5" },
-  { key: "insights",          name: "Insights Canopy",   desc: "Track campaign performance, social reach, and school visibility across every channel.", color: "#16a34a" },
+  { key: "photovault",        name: "PhotoVault by Canopy", desc: "Organize approved school photos, logos, and brand assets in one shared library.", color: "#0f1f3d" },
+  { key: "community",         name: "Canopy Community",     desc: "Create and send recurring newsletters that keep your school community informed.", color: "#7c3aed" },
+  { key: "reach",             name: "Canopy Reach",         desc: "Write, schedule, and publish social posts to Facebook, Instagram, LinkedIn, and more.", color: "#db2777" },
+  { key: "stories",           name: "Canopy Stories",       desc: "Turn student successes into blog posts, social content, and short video — automatically.", color: "#d97706" },
+  { key: "publish",           name: "Canopy Publish",       desc: "Give schools a digital home for class catalogs, brochures, and program guides.", color: "#0369a1" },
+  { key: "create",            name: "Canopy Create",        desc: "Submit design requests, track revisions, and download finished files — all in one place.", color: "#ea580c" },
+  { key: "web",               name: "Canopy Website",       desc: "Publish school websites and program pages that stay current and on-brand.", color: "#0d9488" },
+  { key: "assist",            name: "Canopy Assistant",     desc: "Give staff a smart assistant for drafting communications and answering everyday questions.", color: "#4f46e5" },
+  { key: "insights",          name: "Canopy Insights",      desc: "Track campaign performance, social reach, and school visibility across every channel.", color: "#16a34a" },
 ];
 
 const differentiators = [

@@ -1,134 +1,140 @@
-# Canopy Portal Technical Stack Recommendation
+# Canopy Portal Technical Stack
 
-Date: 2026-03-23
+Date: 2026-03-24 (updated)
 
-## Purpose
+## Current Stack
 
-Recommend a practical technical stack for the first Canopy portal implementation at `usecanopy.school`.
+The portal is a Next.js application in the `canopy-platform` monorepo at `apps/portal/`.
 
-This recommendation is optimized for:
+### Application
 
-- speed to first working portal
-- compatibility with the existing PhotoVault direction
-- low architectural regret
-- a clean path to shared auth and workspace context
-
-## Recommendation
-
-Build the first Canopy portal as a `Next.js` application.
-
-Recommended baseline:
-
-- `Next.js`
-- `React`
+- `Next.js 15` (App Router)
+- `React 19`
 - `TypeScript`
 - `Node 20`
 
-This is the strongest near-term choice because:
+### Styling
 
-- it aligns well with the existing PhotoVault stack
-- it supports a fast portal/dashboard build
-- it keeps the frontend and server boundary simple early on
-- it gives you flexibility for server-rendered auth and account surfaces
+- `Tailwind CSS v4` — `@import "tailwindcss"` + `@theme inline` block (no `tailwind.config.js`)
+- `@canopy/ui` — shared component package (see below)
+- `Plus Jakarta Sans` — portal font (via `next/font/google`)
 
-## Data and Backend Direction
+### Shared Design System — `@canopy/ui`
 
-Near-term recommendation:
+Located at `packages/ui/` in the monorepo. Installed in the portal as `"@canopy/ui": "*"`.
 
-- use a simple application backend that supports:
-  - auth
-  - workspace resolution
-  - memberships
-  - product entitlements
+Exports:
+- `Button` — CVA variants: primary (navy), blue, secondary, ghost, destructive, link
+- `Badge` — CVA variants matching `ProductState`: enabled, in_setup, pilot, paused, not_enabled, service
+- `Input` — forwarded-ref input with Canopy token focus styles
+- `cn()` — clsx + tailwind-merge utility
 
-Because PhotoVault already uses Supabase, a reasonable early path is:
+Dependencies inside `packages/ui`:
+- `@radix-ui/react-slot` — for `asChild` pattern in Button
+- `class-variance-authority` — component variants
+- `clsx` + `tailwind-merge` — class merging
 
-- shared Supabase-backed auth and database for the portal's foundational objects
+The portal's `next.config.ts` includes `transpilePackages: ["@canopy/ui"]` so the TypeScript source compiles correctly.
 
-This should be treated as a practical starting point, not a forever constraint.
+### Design Tokens (globals.css)
 
-The important thing is not the exact tool. The important thing is:
+```
+--navy:          #0f1f3d    bg-navy, text-navy
+--navy-mid:      #1a3260    bg-navy-mid
+--blue:          #2563eb    text-blue, bg-blue
+--bg:            #eef2ff    bg-bg (page background)
+--surface:       #ffffff    bg-surface
+--surface-muted: #f1f5f9
+--ink:           #0f1f3d    text-ink
+--ink-2:         #374151    text-ink-2
+--muted:         #6b7280    text-muted
+--muted-light:   #9ca3af    text-muted-light
+--success:       #059669
+--warning:       #d97706
+--planned:       #7c3aed
+```
 
-- one clear source of truth for platform identity and workspace access
+## Shell Layout
 
-## Why Not Overbuild the Portal Stack
+The authenticated portal (`apps/portal/src/app/(portal)/app/layout.tsx`) uses a two-panel layout:
 
-The portal MVP does not need:
+- `h-14` top bar — white, `border-b`, sticky
+- `260px` sidebar — `bg-[#f8faff]`, `border-r`, contextual nav
+- Flex-1 content area — `p-8`, scrollable
 
-- a microservice fleet
-- a complex event bus on day one
-- a custom auth platform from scratch
-- a heavy multi-repo shared package system before real duplication exists
+This matches PhotoVault's `MediaWorkspaceShell` layout so both feel like the same product family.
 
-It needs:
+## Key Components
 
-- clean auth
-- clean workspace resolution
-- clean entitlement-aware UI
-- a reliable launch path into products
+| Component | Location | Purpose |
+|-----------|----------|---------|
+| `PortalHeader` | `components/portal-header.tsx` | Top bar with brand, product switcher, avatar dropdown |
+| `PortalSidebar` | `components/portal-sidebar.tsx` | Left nav with contextual links and icons |
+| `ProductLauncherCard` | `components/product-launcher-card.tsx` | Product tile for dashboard grid |
+| `SignInForm` | `components/sign-in-form.tsx` | Mock sign-in form using `Input` and `Button` |
 
-## UI Direction
+## Key Data Files
 
-The portal should use a shared Canopy UI language, but the first implementation can stay lean.
+| File | Purpose |
+|------|---------|
+| `lib/platform.ts` | Mock session layer — resolves user, workspace, memberships, entitlements |
+| `lib/products.ts` | Product catalog — definitions, state derivation, action targets |
 
-Recommended approach:
+`products.ts` is the source of truth for:
+- Product metadata (name, description, category, iconColor, externalUrl)
+- State derivation from entitlements
+- Action label and target resolution (external URL vs. internal portal route)
 
-- establish a small shared UI baseline inside the portal app first
-- extract shared packages only after duplication appears
+## Routing
 
-Do not create a large shared design-system package prematurely.
+All authenticated portal routes live under `app/(portal)/app/`:
 
-## Initial Portal Responsibilities
+| Route | Description |
+|-------|-------------|
+| `/app` | Dashboard / product launcher |
+| `/app/account` | Account and workspace details |
+| `/app/products/[slug]` | Product placeholder page (coming soon) |
+| `/app/services/[slug]` | Service placeholder page |
 
-The portal app should own:
+Product slugs are hyphenated versions of product keys (`community_canopy` → `community-canopy`).
 
-- sign-in
-- workspace selection
-- product launcher
-- account overview
-- simple settings and service visibility
+## PhotoVault Alignment
 
-It should not own:
+The portal and PhotoVault share:
+- Same brand mark in the top bar (navy `C` square + "Canopy" wordmark)
+- Same product/workspace chip pattern (left of avatar)
+- Same avatar style and position
+- Same `h-14` top bar height and white background
 
-- PhotoVault workflows
-- social publishing workflows
-- website editing workflows
-- newsletter creation workflows
+PhotoVault's `media-workspace-shell.tsx` was updated to reflect Canopy branding. The portal links to PhotoVault at `https://photovault.school`. PhotoVault links back to the Canopy portal at `https://canopy.school`.
 
-Those belong to the products themselves.
+## Monorepo Structure
 
-## Recommended Near-Term Stack Summary
+```
+canopy-platform/
+  apps/
+    portal/           — Canopy portal app
+  packages/
+    ui/               — @canopy/ui shared design system
+  docs/               — Platform documentation
+```
 
-Application:
+Root `package.json` uses npm workspaces: `["apps/*", "packages/*"]`.
 
-- `Next.js`
-- `React`
-- `TypeScript`
+## What Is Not Yet In The Stack
 
-Runtime:
+- Real authentication (currently a mock session layer in `platform.ts`)
+- Supabase connection (planned for Phase 5)
+- Real entitlement data (currently hardcoded mock data in `platform.ts`)
+- Deployed URL (portal not yet live)
 
-- `Node 20`
+## Near-Term Stack Decisions (Phase 5)
 
-Initial backend/data direction:
+Before Phase 5, the mock layer needs to be replaced:
 
-- practical shared auth and database layer, likely Supabase-compatible in the near term
+1. Audit existing PhotoVault Supabase tables
+2. Add `product_entitlements` table to shared Supabase project
+3. Replace `platform.ts` mock with real Supabase queries
+4. Implement real sign-in (Supabase Auth)
 
-Styling:
-
-- keep it simple and consistent with the future Canopy brand system
-
-Deployment:
-
-- choose the simplest reliable deployment path for a web app and auth-aware portal
-
-## Summary
-
-The best first portal stack is one that gets `usecanopy.school` live quickly and cleanly.
-
-The recommendation is:
-
-- use `Next.js + React + TypeScript`
-- keep the backend model simple
-- focus on auth, workspace context, and product launch
-- avoid premature platform complexity
-
+See `docs/schema-implementation-path.md` for full detail.

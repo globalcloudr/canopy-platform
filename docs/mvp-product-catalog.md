@@ -26,15 +26,15 @@ This distinction matters in the portal: products have action buttons ("New Post"
 
 | Product Key | Display Name | Primary Action (enabled) | Purpose |
 |---|---|---|---|
-| `photovault` | PhotoVault | View Photos | School photo and brand asset management |
-| `canopy_web` | Canopy Web | Edit Website | School website CMS |
-| `create_canopy` | Create Canopy | New Design Request | Design request intake and delivery |
-| `publish_canopy` | Publish Canopy | View Publications | Digital publication library (Issuu-powered) |
-| `stories_canopy` | Stories Canopy | New Story | AI-powered success story production |
-| `community_canopy` | Community Canopy | Create Newsletter | Email newsletters (SendGrid-powered) |
-| `reach_canopy` | Reach Canopy | New Post | Social media posting and scheduling |
-| `assist_canopy` | Assist Canopy | Open Assistant | Staff knowledge and communications assistant |
-| `insights_canopy` | Insights Canopy | View Reports | Cross-channel analytics and visibility |
+| `photovault` | PhotoVault by Canopy | View Photos | School photo and brand asset management |
+| `canopy_web` | Canopy Website | Edit Website | School website CMS |
+| `create_canopy` | Canopy Create | New Design Request | Design request intake and delivery |
+| `publish_canopy` | Canopy Publish | View Publications | Digital publication library (Issuu-powered) |
+| `stories_canopy` | Canopy Stories | New Story | AI-powered success story production |
+| `community_canopy` | Canopy Community | Create Newsletter | Email newsletters (SendGrid-powered) |
+| `reach_canopy` | Canopy Reach | New Post | Social media posting and scheduling |
+| `assist_canopy` | Canopy Assistant | Open Assistant | Staff knowledge and communications assistant |
+| `insights_canopy` | Canopy Insights | View Reports | Cross-channel analytics and visibility |
 
 ### Services
 
@@ -90,15 +90,15 @@ Products the workspace does not yet have access to, shown in a dimmed style to s
 
 Products appear in the following order across the dashboard:
 
-1. PhotoVault — media and brand assets (most foundational)
-2. Canopy Web — website (high visibility, always-on)
-3. Create Canopy — design production (feeds other products)
-4. Publish Canopy — digital publications
-5. Stories Canopy — content production pipeline
-6. Community Canopy — newsletters
-7. Reach Canopy — social posting
-8. Assist Canopy — staff assistant
-9. Insights Canopy — analytics (reads from all other products)
+1. PhotoVault by Canopy — media and brand assets (most foundational)
+2. Canopy Website — website (high visibility, always-on)
+3. Canopy Create — design production (feeds other products)
+4. Canopy Publish — digital publications
+5. Canopy Stories — content production pipeline
+6. Canopy Community — newsletters
+7. Canopy Reach — social posting
+8. Canopy Assistant — staff assistant
+9. Canopy Insights — analytics (reads from all other products)
 
 Services follow products in the order: Website Setup, Creative Retainer, Communications Support.
 
@@ -115,19 +115,19 @@ At MVP, self-serve product activation does not exist. All product enablement is 
 
 ## Products vs. Services: Edge Cases
 
-### Create Canopy vs. Creative Retainer
+### Canopy Create vs. Creative Retainer
 
-`Create Canopy` is the product — the portal tool for submitting design requests, tracking status, and downloading delivered files. Any school can have it enabled and use it for one-off requests.
+`Canopy Create` is the product — the portal tool for submitting design requests, tracking status, and downloading delivered files. Any school can have it enabled and use it for one-off requests.
 
-`Creative Retainer` is the service — an ongoing monthly engagement where Canopy handles a set amount of design work on the school's behalf. Schools on a creative retainer use Create Canopy as the delivery mechanism but have a broader service relationship with Canopy.
+`Creative Retainer` is the service — an ongoing monthly engagement where Canopy handles a set amount of design work on the school's behalf. Schools on a creative retainer use Canopy Create as the delivery mechanism but have a broader service relationship with Canopy.
 
-A school can have Create Canopy without a Creative Retainer. A school on a Creative Retainer will always have Create Canopy enabled.
+A school can have Canopy Create without a Creative Retainer. A school on a Creative Retainer will always have Canopy Create enabled.
 
-### Community Canopy vs. Communications Support
+### Canopy Community vs. Communications Support
 
-`Community Canopy` is the product — school staff create and send their own newsletters.
+`Canopy Community` is the product — school staff create and send their own newsletters.
 
-`Communications Support` is the service — Canopy handles newsletter creation, social posting, and content management on the school's behalf. Schools using Communications Support access it through the same products (Community Canopy, Reach Canopy) but have Canopy staff operating those products for them.
+`Communications Support` is the service — Canopy handles newsletter creation, social posting, and content management on the school's behalf. Schools using Communications Support access it through the same products (Canopy Community, Canopy Reach) but have Canopy staff operating those products for them.
 
 ## Implementation Notes
 

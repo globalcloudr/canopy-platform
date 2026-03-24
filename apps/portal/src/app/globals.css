@@ -27,8 +27,9 @@
   --blue:         #2563eb;
   --blue-hover:   #1d4ed8;
   --blue-soft:    rgba(37, 99, 235, 0.08);
-  --bg:           #f0f4f8;
+  --bg:           #eef2ff;
   --surface:      #ffffff;
+  --surface-muted: #f1f5f9;
   --border:       rgba(15, 31, 61, 0.1);
   --border-mid:   rgba(15, 31, 61, 0.18);
   --ink:          #0f1f3d;
@@ -48,8 +49,6 @@
 
 html {
   background: var(--bg);
-  background-image: radial-gradient(rgba(15, 31, 61, 0.055) 1px, transparent 1px);
-  background-size: 22px 22px;
 }
 
 body {

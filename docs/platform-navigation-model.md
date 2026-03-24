@@ -1,10 +1,10 @@
 # Canopy Platform Navigation Model
 
-Date: 2026-03-23
+Date: 2026-03-24 (updated)
 
 ## Purpose
 
-Define a simple navigation model for Canopy so the platform feels unified as products are added.
+Define the navigation model for Canopy so the platform feels unified as products are added.
 
 Navigation should make three things obvious:
 
@@ -14,42 +14,66 @@ Navigation should make three things obvious:
 
 ## Core Principle
 
-Navigation should be organized around:
+The portal is the **persistent shell** for the entire Canopy platform.
 
-- the active organization/workspace
-- the portal as the control plane
-- products as launchable work areas
+Users never leave the portal chrome. Products load inside it. The top bar and sidebar remain visible at all times, giving users a continuous sense of place across every product.
 
-The platform should not bury the user in a huge left nav full of every future idea.
+## Shell Layout
 
-## Top-Level Navigation Model
+The authenticated shell uses a two-panel layout:
 
-Recommended top-level authenticated portal navigation:
+```
+┌────────────────────────────────────────────────────────────────┐
+│  [C] Canopy          [Org: School Name ▾]           [Avatar]  │  h-14 top bar
+├───────────────┬────────────────────────────────────────────────┤
+│               │                                                │
+│  Sidebar nav  │  Main content area                             │
+│  (contextual) │  (product or portal page loads here)          │
+│               │                                                │
+└───────────────┴────────────────────────────────────────────────┘
+     260px                    flex-1
+```
 
-- `Home`
-- `Products`
-- `Account`
+### Top Bar (persistent)
 
-Optional later additions:
+Always visible. Contains:
 
-- `Notifications`
-- `Support`
-- `Insights`
+- Canopy brand mark (navy `C` square) + "Canopy" wordmark — links to portal home
+- **Product/workspace chip** — shows active org name, opens product switcher on click
+- **Avatar** — opens account dropdown (user info, account settings, help, feedback, sign out)
+
+The product switcher chip is where users move between products. It shows:
+- The user's enabled products with links
+- Live products (currently PhotoVault) link to their deployed URL
+- Not-yet-live products link to their placeholder page within the portal
+- A "Back to portal home" link at the bottom
+
+### Sidebar (contextual)
+
+The sidebar changes based on which product context is active.
+
+**Portal context** (Home, Account pages):
+- Portal section label
+- Home
+- Account
+
+**Product context** (when a product loads inside the shell):
+- Product section label
+- Product-specific nav items (e.g., Albums, Photo Library, Brand Portal for PhotoVault)
+
+This gives each product its own navigation without polluting the portal's nav with every product's structure.
+
+### Main Content Area
+
+All portal pages and product views render here. Scrollable, full height.
 
 ## Public vs Authenticated Navigation
 
-Canopy has two navigation contexts:
-
 ### Public Site
 
-Purpose:
-
-- explain Canopy
-- present products and services
-- route users to sign-in
+Purpose: explain Canopy, present products, route users to sign-in.
 
 Recommended public navigation:
-
 - `Products`
 - `Services`
 - `About`
@@ -57,191 +81,101 @@ Recommended public navigation:
 
 ### Authenticated Portal
 
-Purpose:
-
-- orient the signed-in user
-- show the organization's products and services
-- provide account entry and launch actions
+Purpose: orient the signed-in user, show their products, provide account entry.
 
 The authenticated portal should feel operational, not promotional.
 
-The default authenticated landing destination should be the dashboard, not a chooser or intermediary routing screen unless a real edge case requires it.
+Default landing destination: dashboard (not a chooser or intermediary screen).
 
-## Primary Portal Behaviors
+## Portal Page Structure
 
-### Home
+### Home (Dashboard)
 
-Purpose:
-
-- workspace overview
-- product launcher
-- current service state
-- important tasks or setup prompts
-
-### Products
-
-Purpose:
-
-- list the organization's current products
-- show product status
-- provide product actions
-- optionally show additional Canopy products separately
+- Page header card (workspace name, role, active product count)
+- Your Apps — enabled product cards
+- Services — active managed services
+- More from Canopy — upsell panel for not-yet-enabled products
 
 ### Account
 
-Purpose:
+- Page header card (workspace name, user info, role)
+- Organization details stat cards
+- Products and services list
 
-- workspace profile
-- user profile
-- service/account visibility
-- billing visibility later
+### Product Pages (placeholder)
 
-## Global Header
+Each product the workspace doesn't yet have active gets a placeholder page inside the portal at `/app/products/[slug]`. These show:
 
-Recommended persistent header elements:
+- Product icon, name, category, description
+- "Coming soon" notice
+- Contact CTA
 
-- Canopy mark / home link
-- active organization/workspace name
-- primary navigation
-- account menu
-
-Recommended MVP rule:
-
-- do not expose a visible workspace switcher in the normal default shell unless the user actually belongs to more than one organization/workspace
-
-This is the minimum shell needed to make the portal feel like a real platform without making the user think about platform mechanics.
-
-## Portal Shell Contract
-
-For MVP, the authenticated shell should include:
-
-### Header
-
-- Canopy brand / home link
-- top-level nav:
-  - `Home`
-  - `Products`
-  - `Account`
-- passive organization/workspace label
-- account menu or account chip
-
-### Dashboard Body
-
-- welcome/context section
-- `Your Apps`
-- `Other Products`
-- `Services`
-- account/support entry
-
-### What Should Not Be In The MVP Shell
-
-- full left navigation
-- large admin control panels
-- deep settings architecture in the main shell
-- noisy notification systems
-- technical workspace controls as a default visible pattern
-
-## Product Launcher Model
-
-The product launcher should be treated as a core platform object, not an afterthought.
-
-Recommended product card content:
-
-- product name
-- short descriptor
-- status
-- primary action
-- optional secondary action
-
-Optional metadata:
-
-- setup in progress
-- pilot label
-- last activity later
-
-Recommended card rule:
-
-- product cards should be task-oriented
-- avoid generic `Launch Product` labels when a more specific action is available
+Services get a similar page at `/app/services/[slug]`.
 
 ## Product Naming Model
 
-Recommended visible naming:
+Visible naming stays consistent everywhere:
 
-- `PhotoVault`
-- `Canopy Web`
-- `Create Canopy`
-- `Publish Canopy`
-- `Community Canopy`
-- `Reach Canopy`
-- `Assist Canopy`
-- `Insights Canopy`
+- `PhotoVault by Canopy`
+- `Canopy Website`
+- `Canopy Create`
+- `Canopy Publish`
+- `Canopy Stories`
+- `Canopy Community`
+- `Canopy Reach`
+- `Canopy Assistant`
+- `Canopy Insights`
 
-Keep visible naming consistent everywhere:
+Pattern: **"Canopy [Function]"** — brand first, function second. Immediately readable without needing a description. PhotoVault keeps its established name with "by Canopy" appended to connect it to the platform.
 
-- portal
-- product launcher
-- account/service screens
-- customer-facing materials
+## Product Switcher Model
 
-## Relationship Between Portal Nav and Product Nav
+The org chip in the top bar acts as the global product switcher.
 
-Portal navigation should answer:
+Behavior:
+- Shows the active workspace name with a down chevron
+- Click opens a dropdown listing the user's enabled products
+- Products with a live deployed URL (e.g., PhotoVault → `photovault.school`) open externally with an external link indicator
+- Products without a live URL open their placeholder page inside the portal
+- "Back to portal home" link at the bottom for when users are deep inside a product
 
-- how do I move around the Canopy platform
+This pattern is mirrored in each product app: PhotoVault shows "App · PhotoVault ▾" which links back to the Canopy portal.
 
-Product navigation should answer:
+## Portal-to-Product Relationship
 
-- how do I work inside this product
+**Phase A (current):** Portal and products are separate deployments. The portal links out to live products. Visual continuity is maintained through shared chrome (same brand mark, same chip pattern, same avatar style).
 
-Do not force the portal nav to become the entire app nav for every product.
+**Phase B (planned):** Products load inside the portal shell as routes. The sidebar switches to product-specific nav. Users never navigate to a different domain.
 
-Instead:
+The shell layout was built with Phase B in mind — the sidebar and content area are already structured to support contextual product nav.
 
-- the portal launches the product
-- the product owns its internal workflow navigation
+## What Should Not Be In The Portal Nav
 
-## Workspace Visibility
-
-The active workspace should always be visible.
-
-Recommended behavior:
-
-- show organization/workspace name in the header
-- expose a switcher only when more than one workspace exists
-- carry workspace context into product launch URLs or auth/session state
-
-## Recommended MVP Navigation
-
-For the first portal version:
-
-- top header only
-- simple home/dashboard
-- products and services sections on home
-- account/settings page
-
-That is enough to feel coherent without overbuilding IA too early.
+- Full product-workflow navigation in the portal sidebar by default
+- Large admin control panels as a default visible pattern
+- Deep settings architecture in the main shell
+- Notification systems (until real workflows justify them)
 
 ## Future Navigation Expansion
 
 Later, the platform may support:
 
-- notifications center
-- support area
-- billing area
-- operator/admin tools
-- shared insights surfaces
+- Notifications center
+- Support area
+- Billing area
+- Operator/admin tools
+- Shared insights surfaces
 
-These should be added only when real workflows justify them.
+Add these only when real workflows justify them.
 
 ## Summary
 
-The best early navigation model for Canopy is:
+The Canopy navigation model is:
 
-- simple portal shell
-- active organization/workspace always visible
-- strong product launcher
-- clear products vs services separation
-- clear separation between portal navigation and product navigation
+- **Persistent shell** — top bar and sidebar always visible
+- **Contextual sidebar** — changes per product, always relevant
+- **Product switcher chip** — the universal cross-product navigation control
+- **Avatar dropdown** — account, help, support, sign out
+- **Portal as home** — always the default destination, always accessible
 
-That supports a connected platform without making the portal feel bloated.
+That gives users a sense of one connected platform without forcing every product into the same technical shape.
