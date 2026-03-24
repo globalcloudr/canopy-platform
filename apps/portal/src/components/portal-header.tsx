@@ -25,12 +25,10 @@ export function PortalHeader() {
 
   return (
     <header className="portal-header">
-      <div className="portal-brand">
-        <Link href={`/app${suffix}`} className="portal-brand-link">
-          <div className="brand-mark" aria-hidden="true">C</div>
-          <p className="brand-name">Canopy</p>
-        </Link>
-      </div>
+      <Link href={`/app${suffix}`} className="portal-brand-link">
+        <div className="brand-mark" aria-hidden="true">C</div>
+        <p className="brand-name">Canopy</p>
+      </Link>
 
       <nav className="portal-nav" aria-label="Primary">
         <Link href={`/app${suffix}`}>Home</Link>
@@ -39,12 +37,12 @@ export function PortalHeader() {
       </nav>
 
       <div className="portal-actions">
-        <div className="workspace-summary">
-          <span className="workspace-label">Organization</span>
-          <p className="workspace-pill">{workspaceName}</p>
+        <div className="workspace-chip">
+          <span className="workspace-chip-label">Org</span>
+          {workspaceName}
         </div>
-        <Link href={`/app/account${suffix}`} className="account-chip" aria-label="Account">
-          {initials || "SZ"}
+        <Link href={`/app/account${suffix}`} className="account-chip" aria-label="Account settings">
+          {initials || "??"}
         </Link>
       </div>
     </header>

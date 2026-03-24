@@ -15,75 +15,72 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
   const activeEntitlements = entitlements.filter((e) => e.status !== "paused");
 
   return (
-    <>
-      <header className="hero" id="account">
-        <div className="hero-copy">
-          <p className="eyebrow">Account</p>
-          <h1>{activeWorkspace.displayName}</h1>
-          <p className="lede">
-            Workspace settings, team access, and your active Canopy products and services.
-          </p>
+    <div className="shell">
+      <div className="page-header" id="account">
+        <h1>{activeWorkspace.displayName}</h1>
+        <div className="page-meta">
+          <span>{user.email}</span>
+          <span className="page-meta-dot">·</span>
+          <span>{activeMembership?.role ?? "staff"} access</span>
+          <span className="page-meta-dot">·</span>
+          <span>{memberships.length} workspace{memberships.length === 1 ? "" : "s"}</span>
         </div>
-        <div className="hero-card">
-          <p className="card-label">Signed in as</p>
-          <h2>{user.displayName}</h2>
-          <ul>
-            <li>{user.email}</li>
-            <li>{activeMembership?.role ?? "staff"} access</li>
-            <li>{memberships.length} workspace{memberships.length === 1 ? "" : "s"}</li>
-          </ul>
-        </div>
-      </header>
+      </div>
 
-      <section className="section" id="workspace">
+      <section className="section">
         <div className="section-heading">
           <div>
             <p className="eyebrow">Workspace</p>
             <h2>Organization details</h2>
           </div>
-          <p className="section-copy">
-            Your organization profile and workspace settings.
-          </p>
         </div>
         <div className="stats-grid">
-          <article className="stat-card">
+          <div className="stat-card">
             <p className="stat-label">Organization</p>
             <strong>{activeWorkspace.displayName}</strong>
             <span>{activeWorkspace.slug}</span>
-          </article>
-          <article className="stat-card">
+          </div>
+          <div className="stat-card">
             <p className="stat-label">Your role</p>
             <strong>{activeMembership?.role ?? "staff"}</strong>
-            <span>Workspace access level for {user.displayName}</span>
-          </article>
-          <article className="stat-card">
+            <span>Signed in as {user.displayName}</span>
+          </div>
+          <div className="stat-card">
             <p className="stat-label">Active products</p>
             <strong>{activeEntitlements.length}</strong>
-            <span>Products and services enabled for this workspace</span>
-          </article>
+            <span>Products and services enabled</span>
+          </div>
         </div>
       </section>
 
-      <section className="section" id="products">
+      <section className="section">
         <div className="section-heading">
           <div>
             <p className="eyebrow">Products &amp; Services</p>
-            <h2>What&apos;s enabled for {activeWorkspace.displayName}</h2>
+            <h2>What&apos;s enabled for your workspace</h2>
           </div>
-          <p className="section-copy">
-            Contact Canopy to add or change your product access.
-          </p>
+          <p className="section-copy">Contact Canopy to make changes to your product access.</p>
         </div>
-        <div className="stats-grid">
+        <div className="services-list">
           {activeEntitlements.map((entitlement) => (
-            <article key={entitlement.productKey} className="stat-card">
-              <p className="stat-label">{entitlement.productKey.replace(/_/g, " ")}</p>
-              <strong>{entitlement.status}</strong>
-              <span>Setup: {entitlement.setupState.replace(/_/g, " ")}</span>
-            </article>
+            <div key={entitlement.productKey} className="service-row">
+              <div className="service-row-left">
+                <div>
+                  <p className="service-name" style={{ textTransform: "capitalize" }}>
+                    {entitlement.productKey.replace(/_/g, " ")}
+                  </p>
+                  <p className="service-desc">Setup: {entitlement.setupState.replace(/_/g, " ")}</p>
+                </div>
+              </div>
+              <div className="service-row-right">
+                <span className={`pill pill-${entitlement.status === "active" ? "enabled" : entitlement.status}`}>
+                  {entitlement.status.charAt(0).toUpperCase() + entitlement.status.slice(1)}
+                </span>
+              </div>
+            </div>
           ))}
         </div>
       </section>
-    </>
+    </div>
   );
 }

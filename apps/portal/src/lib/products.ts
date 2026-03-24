@@ -10,6 +10,7 @@ export type ProductDefinition = {
   shortDescription: string;
   category: string;
   kind: CatalogKind;
+  iconColor: string;
   defaultLaunchPath: string;
   showWhenNotEnabled: boolean;
   sortOrder: number;
@@ -36,6 +37,7 @@ const catalogDefinitions: ProductDefinition[] = [
     shortDescription: "View school photos, brand assets, and approved media.",
     category: "Media and Brand",
     kind: "product",
+    iconColor: "#0f1f3d",
     defaultLaunchPath: "/launch/photovault",
     showWhenNotEnabled: false,
     sortOrder: 1,
@@ -46,6 +48,7 @@ const catalogDefinitions: ProductDefinition[] = [
     shortDescription: "Publish school websites, program pages, and public-facing information.",
     category: "Web Publishing",
     kind: "product",
+    iconColor: "#0d9488",
     defaultLaunchPath: "/products/canopy-web",
     showWhenNotEnabled: true,
     sortOrder: 2,
@@ -56,6 +59,7 @@ const catalogDefinitions: ProductDefinition[] = [
     shortDescription: "Create brochures, class catalogs, flyers, and campaign materials.",
     category: "Design Publishing",
     kind: "product",
+    iconColor: "#ea580c",
     defaultLaunchPath: "/products/create-canopy",
     showWhenNotEnabled: true,
     sortOrder: 3,
@@ -66,6 +70,7 @@ const catalogDefinitions: ProductDefinition[] = [
     shortDescription: "Manage digital publications, guides, and embedded catalogs.",
     category: "Publication Management",
     kind: "product",
+    iconColor: "#0369a1",
     defaultLaunchPath: "/products/publish-canopy",
     showWhenNotEnabled: true,
     sortOrder: 4,
@@ -76,6 +81,7 @@ const catalogDefinitions: ProductDefinition[] = [
     shortDescription: "Run recurring newsletters and school-to-community communication workflows.",
     category: "Community Communication",
     kind: "product",
+    iconColor: "#7c3aed",
     defaultLaunchPath: "/products/community-canopy",
     showWhenNotEnabled: true,
     sortOrder: 5,
@@ -86,6 +92,7 @@ const catalogDefinitions: ProductDefinition[] = [
     shortDescription: "Coordinate social storytelling, scheduling, and visibility workflows.",
     category: "Outreach and Storytelling",
     kind: "product",
+    iconColor: "#db2777",
     defaultLaunchPath: "/products/reach-canopy",
     showWhenNotEnabled: true,
     sortOrder: 6,
@@ -96,6 +103,7 @@ const catalogDefinitions: ProductDefinition[] = [
     shortDescription: "Give staff a knowledge and communications assistant for everyday work.",
     category: "Communication and Knowledge",
     kind: "product",
+    iconColor: "#4f46e5",
     defaultLaunchPath: "/products/assist-canopy",
     showWhenNotEnabled: true,
     sortOrder: 7,
@@ -106,6 +114,7 @@ const catalogDefinitions: ProductDefinition[] = [
     shortDescription: "Track visibility, campaign activity, and cross-channel performance.",
     category: "Measurement and Visibility",
     kind: "product",
+    iconColor: "#16a34a",
     defaultLaunchPath: "/products/insights-canopy",
     showWhenNotEnabled: true,
     sortOrder: 8,
@@ -116,6 +125,7 @@ const catalogDefinitions: ProductDefinition[] = [
     shortDescription: "Request or manage website setup and implementation support.",
     category: "Services",
     kind: "service",
+    iconColor: "#374151",
     defaultLaunchPath: "/services/website-setup",
     showWhenNotEnabled: true,
     sortOrder: 9,
@@ -126,6 +136,7 @@ const catalogDefinitions: ProductDefinition[] = [
     shortDescription: "Coordinate design requests, revisions, and campaign material support.",
     category: "Services",
     kind: "service",
+    iconColor: "#374151",
     defaultLaunchPath: "/services/design-support",
     showWhenNotEnabled: true,
     sortOrder: 10,
@@ -136,6 +147,7 @@ const catalogDefinitions: ProductDefinition[] = [
     shortDescription: "Manage communications help, publishing support, and platform guidance.",
     category: "Services",
     kind: "service",
+    iconColor: "#374151",
     defaultLaunchPath: "/services/communications-support",
     showWhenNotEnabled: true,
     sortOrder: 11,

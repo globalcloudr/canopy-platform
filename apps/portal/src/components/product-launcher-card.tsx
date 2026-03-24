@@ -2,26 +2,22 @@ import type { LauncherProduct } from "@/lib/products";
 
 type ProductLauncherCardProps = {
   product: LauncherProduct;
+  dim?: boolean;
 };
 
-export function ProductLauncherCard({ product }: ProductLauncherCardProps) {
+export function ProductLauncherCard({ product, dim }: ProductLauncherCardProps) {
   return (
-    <article className="product-card">
-      <div className="product-top">
-        <p className="product-category">{product.category}</p>
-        <span className={`pill pill-${product.state}`}>{product.stateLabel}</span>
+    <article className={`product-card${dim ? " product-card-dim" : ""}`}>
+      <div className="product-icon" style={{ background: product.iconColor }}>
+        {product.displayName[0]}
       </div>
       <h3>{product.displayName}</h3>
       <p>{product.shortDescription}</p>
-      <div className="product-actions">
-        <a className="launch-button" href={product.primaryActionTarget}>
-          {product.primaryActionLabel}
+      <div className="product-card-footer">
+        <span className={`pill pill-${product.state}`}>{product.stateLabel}</span>
+        <a className="card-action" href={product.primaryActionTarget}>
+          {product.primaryActionLabel} →
         </a>
-        {product.secondaryActionLabel && product.secondaryActionTarget ? (
-          <a className="secondary-link" href={product.secondaryActionTarget}>
-            {product.secondaryActionLabel}
-          </a>
-        ) : null}
       </div>
     </article>
   );
