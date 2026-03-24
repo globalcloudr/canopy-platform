@@ -104,7 +104,7 @@ These pages show:
 - Product category (eyebrow label)
 - Product name and description (from catalog metadata)
 - A "Coming soon" or "Managed by Canopy" notice
-- A contact CTA (email link to `hello@canopy.school`)
+- A contact CTA (email link to `info@akkedisdigital.com`)
 - "Back to dashboard" link
 
 Because these pages live inside the portal's `(portal)/app/` layout, they render with the full sidebar and header chrome — users stay inside the platform experience.
