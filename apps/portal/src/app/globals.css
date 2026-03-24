@@ -159,6 +159,14 @@ button {
   gap: 14px;
 }
 
+.portal-brand-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  color: inherit;
+}
+
 .brand-mark {
   display: grid;
   place-items: center;
@@ -216,6 +224,8 @@ button {
 }
 
 .account-chip {
+  display: grid;
+  place-items: center;
   width: 42px;
   height: 42px;
   border: 0;
@@ -223,6 +233,10 @@ button {
   background: var(--ink);
   color: #fff7ef;
   cursor: pointer;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  flex-shrink: 0;
 }
 
 .workspace-pill {

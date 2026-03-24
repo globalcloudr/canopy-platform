@@ -1,5 +1,6 @@
- "use client";
+"use client";
 
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { resolvePortalSession } from "@/lib/platform";
 
@@ -19,19 +20,22 @@ export function PortalHeader() {
     .map((part) => part[0]?.toUpperCase() ?? "")
     .join("");
 
+  const qs = searchParams.toString();
+  const suffix = qs ? `?${qs}` : "";
+
   return (
     <header className="portal-header">
       <div className="portal-brand">
-        <div className="brand-mark" aria-hidden="true">
-          C
-        </div>
-        <p className="brand-name">Canopy</p>
+        <Link href={`/app${suffix}`} className="portal-brand-link">
+          <div className="brand-mark" aria-hidden="true">C</div>
+          <p className="brand-name">Canopy</p>
+        </Link>
       </div>
 
       <nav className="portal-nav" aria-label="Primary">
-        <a href="#overview">Home</a>
-        <a href="#products">Products</a>
-        <a href="#account">Account</a>
+        <Link href={`/app${suffix}`}>Home</Link>
+        <Link href={`/app${suffix}#products`}>Products</Link>
+        <Link href={`/app/account${suffix}`}>Account</Link>
       </nav>
 
       <div className="portal-actions">
@@ -39,9 +43,9 @@ export function PortalHeader() {
           <span className="workspace-label">Organization</span>
           <p className="workspace-pill">{workspaceName}</p>
         </div>
-        <button className="account-chip" type="button">
+        <Link href={`/app/account${suffix}`} className="account-chip" aria-label="Account">
           {initials || "SZ"}
-        </button>
+        </Link>
       </div>
     </header>
   );
