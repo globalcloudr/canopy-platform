@@ -23,14 +23,36 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
   return (
     <div className="shell">
       <div className="page-header" id="overview">
-        <h1>Welcome back, {firstName}.</h1>
-        <div className="page-meta">
-          <span>{workspaceName}</span>
-          <span className="page-meta-dot">·</span>
-          <span>{launchableCount} product{launchableCount === 1 ? "" : "s"} active</span>
-          <span className="page-meta-dot">·</span>
-          <span>{activeMembership?.role ?? "staff"}</span>
+        <div className="page-header-content">
+          <h1>Welcome back, {firstName}.</h1>
+          <div className="page-meta">
+            <span>{workspaceName}</span>
+            <span className="page-meta-dot">·</span>
+            <span>{launchableCount} product{launchableCount === 1 ? "" : "s"} active</span>
+            <span className="page-meta-dot">·</span>
+            <span>{activeMembership?.role ?? "staff"}</span>
+          </div>
         </div>
+        <svg className="page-header-graphic" viewBox="0 0 220 100" fill="none" aria-hidden="true">
+          {/* Concentric arcs — signal/community motif */}
+          <circle cx="200" cy="50" r="20" stroke="#2563eb" strokeWidth="1.5" strokeOpacity="0.18" fill="none"/>
+          <circle cx="200" cy="50" r="38" stroke="#2563eb" strokeWidth="1.5" strokeOpacity="0.13" fill="none"/>
+          <circle cx="200" cy="50" r="56" stroke="#2563eb" strokeWidth="1.5" strokeOpacity="0.09" fill="none"/>
+          <circle cx="200" cy="50" r="74" stroke="#2563eb" strokeWidth="1.5" strokeOpacity="0.06" fill="none"/>
+          <circle cx="200" cy="50" r="92" stroke="#2563eb" strokeWidth="1.5" strokeOpacity="0.04" fill="none"/>
+          {/* Center dot */}
+          <circle cx="200" cy="50" r="4" fill="#2563eb" fillOpacity="0.35"/>
+          {/* Small satellite dots */}
+          <circle cx="162" cy="50" r="2.5" fill="#2563eb" fillOpacity="0.25"/>
+          <circle cx="175" cy="26" r="2" fill="#0f1f3d" fillOpacity="0.2"/>
+          <circle cx="175" cy="74" r="2" fill="#0f1f3d" fillOpacity="0.2"/>
+          <circle cx="144" cy="34" r="1.5" fill="#2563eb" fillOpacity="0.18"/>
+          <circle cx="144" cy="66" r="1.5" fill="#2563eb" fillOpacity="0.18"/>
+          {/* Connector lines */}
+          <line x1="200" y1="50" x2="162" y2="50" stroke="#2563eb" strokeWidth="1" strokeOpacity="0.2" strokeDasharray="3 3"/>
+          <line x1="162" y1="50" x2="144" y2="34" stroke="#2563eb" strokeWidth="1" strokeOpacity="0.15" strokeDasharray="3 3"/>
+          <line x1="162" y1="50" x2="144" y2="66" stroke="#2563eb" strokeWidth="1" strokeOpacity="0.15" strokeDasharray="3 3"/>
+        </svg>
       </div>
 
       {launcherProducts.length > 0 && (

@@ -89,6 +89,15 @@ export default function MarketingHomePage() {
               <Link className="btn-hero-outline" href="/app">View platform demo →</Link>
             </div>
           </section>
+
+          {/* Decorative floating product blobs */}
+          <div className="hero-floats" aria-hidden="true">
+            <div className="hero-float" style={{ background: "#7c3aed", top: "18%", right: "8%", width: 52, height: 52, animationDelay: "0s" }}>C</div>
+            <div className="hero-float" style={{ background: "#db2777", top: "52%", right: "18%", width: 40, height: 40, animationDelay: "0.6s" }}>R</div>
+            <div className="hero-float" style={{ background: "#d97706", top: "72%", right: "6%", width: 36, height: 36, animationDelay: "1.1s" }}>S</div>
+            <div className="hero-float" style={{ background: "#0369a1", top: "35%", right: "28%", width: 30, height: 30, animationDelay: "0.3s" }}>P</div>
+            <div className="hero-float" style={{ background: "#0d9488", top: "62%", right: "32%", width: 26, height: 26, animationDelay: "0.9s" }}>W</div>
+          </div>
         </div>
       </div>
 

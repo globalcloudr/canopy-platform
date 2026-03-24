@@ -9,7 +9,10 @@ export function ProductLauncherCard({ product, dim }: ProductLauncherCardProps) 
   return (
     <article
       className={`product-card${dim ? " product-card-dim" : ""}`}
-      style={{ borderTop: `3px solid ${product.iconColor}` }}
+      style={{
+        borderTop: `3px solid ${product.iconColor}`,
+        background: `linear-gradient(160deg, #fff 55%, ${product.iconColor}0d 100%)`,
+      }}
     >
       <div className="product-icon" style={{ background: product.iconColor }}>
         {product.displayName[0]}

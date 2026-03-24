@@ -1,5 +1,5 @@
 :root {
-  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
 
   /* Color system */
   --navy:        #0f1f3d;
@@ -39,6 +39,8 @@
 
 html {
   background: var(--bg);
+  background-image: radial-gradient(rgba(15, 31, 61, 0.055) 1px, transparent 1px);
+  background-size: 22px 22px;
 }
 
 body {
@@ -412,6 +414,22 @@ h3 {
   padding: 44px 0 36px;
   border-bottom: 1px solid var(--border);
   margin-bottom: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  overflow: hidden;
+}
+
+.page-header-content {
+  min-width: 0;
+}
+
+.page-header-graphic {
+  width: 220px;
+  height: 100px;
+  flex-shrink: 0;
+  opacity: 0.9;
 }
 
 .page-header h1 {
@@ -819,6 +837,8 @@ h3 {
 
 /* Dark hero band */
 .marketing-hero-band {
+  position: relative;
+  overflow: hidden;
   background: var(--navy);
   background-image:
     radial-gradient(ellipse 80% 60% at 60% 0%, rgba(37,99,235,0.18) 0%, transparent 70%),
@@ -949,6 +969,33 @@ h3 {
   border-color: rgba(255,255,255,0.45);
   color: #fff;
   background: rgba(255,255,255,0.05);
+}
+
+/* Floating product blobs in hero */
+.hero-floats {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.hero-float {
+  position: absolute;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  color: rgba(255,255,255,0.9);
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: 1rem;
+  animation: heroFloat 6s ease-in-out infinite;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+}
+
+@keyframes heroFloat {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33%       { transform: translateY(-10px) rotate(2deg); }
+  66%       { transform: translateY(-5px) rotate(-1deg); }
 }
 
 /* Light band below hero */
