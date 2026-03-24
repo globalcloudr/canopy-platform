@@ -22,7 +22,7 @@ export function ProductLauncherCard({ product, dim }: ProductLauncherCardProps) 
       <div className="product-card-footer">
         <span className={`pill pill-${product.state}`}>{product.stateLabel}</span>
         <div className="card-actions">
-          {product.secondaryActionLabel && product.secondaryActionTarget && (
+          {!dim && product.secondaryActionLabel && product.secondaryActionTarget && (
             <a className="card-action-secondary" href={product.secondaryActionTarget}>
               {product.secondaryActionLabel}
             </a>
