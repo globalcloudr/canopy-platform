@@ -140,13 +140,37 @@ h3 {
   border-radius: 8px;
   font-size: 0.875rem;
   font-weight: 600;
+  letter-spacing: 0.01em;
   text-decoration: none;
-  transition: background 0.15s;
+  transition: background 0.15s, transform 0.15s;
   white-space: nowrap;
 }
 
 .btn-primary:hover {
   background: var(--navy-mid);
+  transform: translateY(-1px);
+}
+
+.btn-blue {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition: background 0.15s, transform 0.15s;
+  white-space: nowrap;
+}
+
+.btn-blue:hover {
+  background: var(--blue-hover);
+  transform: translateY(-1px);
 }
 
 .btn-outline {
@@ -366,13 +390,14 @@ h3 {
 /* ─── Page header (dashboard/account) ───────────────────── */
 
 .page-header {
-  padding: 40px 0 32px;
+  padding: 44px 0 36px;
   border-bottom: 1px solid var(--border);
-  margin-bottom: 36px;
+  margin-bottom: 40px;
 }
 
 .page-header h1 {
-  margin-bottom: 6px;
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  margin-bottom: 8px;
 }
 
 .page-meta {
@@ -413,39 +438,44 @@ h3 {
 .product-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: 14px;
+  padding: 22px 22px 18px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
   box-shadow: var(--shadow-sm);
-  transition: box-shadow 0.2s, border-color 0.2s;
+  transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+  cursor: default;
 }
 
 .product-card:hover {
   box-shadow: var(--shadow);
   border-color: var(--border-mid);
+  transform: translateY(-2px);
 }
 
 .product-icon {
   display: grid;
   place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 9px;
+  width: 44px;
+  height: 44px;
+  border-radius: 11px;
   color: #fff;
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 800;
   letter-spacing: -0.02em;
   flex-shrink: 0;
+  margin-bottom: 14px;
+}
+
+.product-card h3 {
+  margin-bottom: 5px;
 }
 
 .product-card p {
-  margin: 0;
-  font-size: 0.85rem;
+  margin: 0 0 auto;
+  font-size: 0.845rem;
   color: var(--muted);
-  line-height: 1.55;
-  flex: 1;
+  line-height: 1.6;
 }
 
 .product-card-footer {
@@ -453,9 +483,9 @@ h3 {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding-top: 12px;
+  padding-top: 14px;
   border-top: 1px solid var(--border);
-  margin-top: auto;
+  margin-top: 16px;
 }
 
 /* ─── Services list ──────────────────────────────────────── */
@@ -526,14 +556,16 @@ h3 {
 
 .product-grid-dim .product-card,
 .product-card-dim {
-  opacity: 0.6;
+  opacity: 0.55;
   box-shadow: none;
+  border-style: dashed;
 }
 
 .product-grid-dim .product-card:hover,
 .product-card-dim:hover {
-  opacity: 1;
+  opacity: 0.85;
   box-shadow: var(--shadow-sm);
+  transform: none;
 }
 
 /* ─── Stat cards ─────────────────────────────────────────── */
@@ -750,17 +782,29 @@ h3 {
 /* ─── Marketing homepage ─────────────────────────────────── */
 
 .marketing-shell {
-  max-width: 1160px;
-  margin: 0 auto;
-  padding: 0 24px 80px;
+  overflow: hidden;
 }
 
+/* Dark hero band */
+.marketing-hero-band {
+  background: var(--navy);
+  background-image:
+    radial-gradient(ellipse 80% 60% at 60% 0%, rgba(37,99,235,0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 95% 80%, rgba(37,99,235,0.1) 0%, transparent 70%);
+}
+
+.marketing-hero-inner {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Nav inside dark band */
 .marketing-nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 0;
-  margin-bottom: 0;
+  padding: 22px 0;
 }
 
 .marketing-nav-brand {
@@ -768,40 +812,59 @@ h3 {
   align-items: center;
   gap: 10px;
   text-decoration: none;
-  color: inherit;
+  color: #fff;
+}
+
+.marketing-nav-brand .brand-mark {
+  background: rgba(255,255,255,0.12);
+}
+
+.marketing-nav-brand .brand-name {
+  color: #fff;
 }
 
 .marketing-nav-links {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 8px;
 }
 
 .marketing-nav-links a {
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--ink-2);
+  color: rgba(255,255,255,0.6);
   text-decoration: none;
-  transition: color 0.15s;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: color 0.15s, background 0.15s;
 }
 
 .marketing-nav-links a:hover {
-  color: var(--ink);
+  color: #fff;
+  background: rgba(255,255,255,0.08);
 }
 
+/* Hero */
 .marketing-hero {
-  padding: 80px 0 72px;
-  max-width: 680px;
+  padding: 80px 0 96px;
+  max-width: 700px;
+}
+
+.marketing-hero .eyebrow {
+  color: var(--blue);
+  opacity: 0.9;
 }
 
 .marketing-hero h1 {
-  font-size: clamp(2.4rem, 5vw, 3.5rem);
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  color: #fff;
   margin-bottom: 20px;
 }
 
 .marketing-hero .lede {
   font-size: 1.1rem;
-  margin-bottom: 32px;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 36px;
   max-width: 52ch;
 }
 
@@ -812,6 +875,57 @@ h3 {
   flex-wrap: wrap;
 }
 
+.btn-hero-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 11px 24px;
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition: background 0.15s, transform 0.15s;
+  white-space: nowrap;
+}
+
+.btn-hero-primary:hover {
+  background: var(--blue-hover);
+  transform: translateY(-1px);
+}
+
+.btn-hero-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 11px 24px;
+  background: transparent;
+  color: rgba(255,255,255,0.85);
+  border: 1.5px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+  white-space: nowrap;
+}
+
+.btn-hero-outline:hover {
+  border-color: rgba(255,255,255,0.45);
+  color: #fff;
+  background: rgba(255,255,255,0.05);
+}
+
+/* Light band below hero */
+.marketing-content {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
 .marketing-divider {
   height: 1px;
   background: var(--border);
@@ -820,46 +934,61 @@ h3 {
 
 .marketing-products {
   margin-bottom: 80px;
+  padding-top: 72px;
 }
 
 .marketing-product-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 2px;
-  background: var(--border);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  overflow: hidden;
-  margin-top: 32px;
+  gap: 12px;
+  margin-top: 36px;
 }
 
 .marketing-product-cell {
   background: var(--surface);
-  padding: 28px 24px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px 24px 24px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 0;
+  transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.marketing-product-cell:hover {
+  box-shadow: var(--shadow);
+  border-color: var(--border-mid);
+  transform: translateY(-2px);
+}
+
+.marketing-product-cell .product-icon {
+  margin-bottom: 16px;
 }
 
 .marketing-product-cell h3 {
   font-size: 0.95rem;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .marketing-product-cell p {
-  font-size: 0.85rem;
+  font-size: 0.845rem;
   color: var(--muted);
   margin: 0;
-  line-height: 1.55;
+  line-height: 1.6;
 }
 
 /* ─── Responsive ─────────────────────────────────────────── */
 
-@media (max-width: 900px) {
-  .product-grid,
-  .stats-grid,
+@media (max-width: 960px) {
   .marketing-product-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 840px) {
+  .product-grid,
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .section-heading {
@@ -890,13 +1019,25 @@ h3 {
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 580px) {
+  .product-grid,
+  .stats-grid,
+  .marketing-product-grid {
+    grid-template-columns: 1fr;
+  }
+
   .shell {
     padding: 0 16px 60px;
   }
 
-  .marketing-shell {
-    padding: 0 16px 60px;
+  .marketing-hero-inner,
+  .marketing-content {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .marketing-hero {
+    padding: 56px 0 72px;
   }
 
   .page-header {
