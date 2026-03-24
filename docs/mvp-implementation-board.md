@@ -69,6 +69,10 @@ The MVP product sequence is:
 3. `Reach Canopy`
    - third MVP product
    - social posting and scheduling
+4. `Stories Canopy`
+   - fourth MVP product
+   - AI-powered success story production
+   - working prototype exists in `/references/replit/success-story-engine/`
 
 Important product rule:
 
@@ -448,8 +452,10 @@ These decisions should now be treated as settled unless a strong reason appears 
   - `Reach Canopy` is defined clearly enough to design and plan
   - social posting is framed as a Canopy product, not an external tool
   - no dependency on `PhotoVault` is assumed for MVP
+- Primary docs:
+  - `/Users/zylstra/Code/canopy-platform/docs/reach-canopy-mvp.md`
 - Status:
-  - `Planned`
+  - `Complete`
 
 ### CP-014: MVP Product Catalog and Packaging
 
@@ -468,9 +474,32 @@ These decisions should now be treated as settled unless a strong reason appears 
   - `Started`
   - current dashboard mock reflects this direction
 
+### CP-022: Stories Canopy MVP Definition
+
+- Goal: Define `Stories Canopy` as the fourth MVP product inside the Canopy platform.
+- Scope:
+  - product purpose
+  - intake form and story type model
+  - AI content generation pipeline
+  - video generation
+  - content package and delivery
+  - cross-product integration points (Community Canopy, Reach Canopy, PhotoVault, Canopy Web)
+  - what is in MVP and what is not
+- Acceptance:
+  - `Stories Canopy` is defined clearly enough to design and build without ambiguity
+  - relationship to the Replit prototype is documented
+  - cross-product content handoffs are defined
+  - no hard dependency on other products is assumed for MVP
+- Primary docs:
+  - `/Users/zylstra/Code/canopy-platform/docs/stories-canopy-mvp.md`
+- Reference implementation:
+  - `/Users/zylstra/Code/canopy-platform/references/replit/success-story-engine/`
+- Status:
+  - `Complete`
+
 ### Phase 3 Exit Criteria
 
-- `PhotoVault`, `Community Canopy`, and `Reach Canopy` each have a clear MVP definition
+- `PhotoVault`, `Community Canopy`, `Reach Canopy`, and `Stories Canopy` each have a clear MVP definition
 - the portal knows how to present products versus services
 - no unnecessary cross-product dependency is assumed for MVP
 
