@@ -62,7 +62,7 @@ The root workspace scripts currently run the portal app in `apps/portal`.
 PhotoVault remains its own product repository and should continue to evolve as:
 
 - `PhotoVault by Canopy`
-- the asset foundation of the platform
+- one product within the broader Canopy platform.
 
 The PhotoVault repo should hold product-specific docs and implementation details.
 

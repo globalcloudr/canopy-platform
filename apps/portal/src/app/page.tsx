@@ -15,8 +15,8 @@ const allProducts = [
 const differentiators = [
   {
     n: "01",
-    title: "Content that works together",
-    body: "A success story flows straight to social, newsletter, and your website. Every tool shares the same assets and school context — no copy-pasting.",
+    title: "One platform for school communications",
+    body: "Canopy brings newsletters, social media, websites, stories, and publications into one platform with one login and one dashboard.",
   },
   {
     n: "02",
@@ -107,7 +107,7 @@ export default function MarketingHomePage() {
           <p className="eyebrow">The platform</p>
           <h2>Nine tools. One login. One dashboard.</h2>
           <p className="text-muted text-[0.9rem] max-w-[44ch] mt-2 mb-0">
-            Everything is connected. Content you create in one product flows into the others.
+            A connected platform for the products and services your school uses every day.
           </p>
           <div className="grid grid-cols-3 gap-3 mt-9 max-[960px]:grid-cols-2 max-[580px]:grid-cols-1">
             {allProducts.map((product) => (
@@ -159,7 +159,7 @@ export default function MarketingHomePage() {
             </Link>
             <a
               className="text-sm font-medium text-muted no-underline transition-colors hover:text-ink"
-              href="mailto:hello@usecanopy.school"
+              href="mailto:info@akkedisdigital.com"
             >
               Contact us →
             </a>

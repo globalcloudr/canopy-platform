@@ -44,7 +44,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
           </p>
           <div className="flex items-center justify-center gap-3 flex-wrap">
             <a
-              href="mailto:hello@canopy.school"
+              href="mailto:info@akkedisdigital.com"
               className="inline-flex items-center gap-2 px-5 py-2.5 bg-navy text-white text-[0.875rem] font-semibold rounded-lg no-underline transition-colors hover:bg-navy-mid"
             >
               Contact Canopy
