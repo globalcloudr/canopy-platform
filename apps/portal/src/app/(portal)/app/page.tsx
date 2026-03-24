@@ -1,5 +1,5 @@
 import { ProductLauncherCard } from "@/components/product-launcher-card";
-import { getWorkspaceName } from "@/lib/mock-session";
+import { resolvePortalSession } from "@/lib/platform";
 import { getAdditionalLauncherProducts, getEnabledLauncherProducts, getLauncherServices } from "@/lib/products";
 
 type PortalDashboardPageProps = {
@@ -11,13 +11,16 @@ type PortalDashboardPageProps = {
 
 export default async function PortalDashboardPage({ searchParams }: PortalDashboardPageProps) {
   const params = (await searchParams) ?? {};
-  const launcherProducts = getEnabledLauncherProducts();
-  const additionalProducts = getAdditionalLauncherProducts();
-  const launcherServices = getLauncherServices();
+  const session = resolvePortalSession(params);
+  const launcherProducts = getEnabledLauncherProducts(session.entitlements);
+  const additionalProducts = getAdditionalLauncherProducts(session.entitlements);
+  const launcherServices = getLauncherServices(session.entitlements);
   const launchableProducts = launcherProducts.filter((product) => product.canLaunch);
   const nextActionProduct = launcherProducts[0];
-  const workspaceName = getWorkspaceName(params.workspace);
-  const email = params.email ?? "sarah.zylstra@school.edu";
+  const workspaceName = session.activeWorkspace.displayName;
+  const email = session.user.email;
+  const activeMembership = session.memberships.find((membership) => membership.workspaceId === session.activeWorkspace.id);
+  const organizationCount = session.memberships.length;
 
   return (
     <>
@@ -35,7 +38,7 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
           <h2>{workspaceName}</h2>
           <ul>
             <li>{launchableProducts.length} ready to use today</li>
-            <li>1 organization dashboard</li>
+            <li>{organizationCount} organization access{organizationCount === 1 ? "" : " points"}</li>
             <li>{email}</li>
           </ul>
         </div>
@@ -60,9 +63,9 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
             <span>Your dashboard should show the products your organization can use or is actively setting up.</span>
           </article>
           <article className="stat-card">
-            <p className="stat-label">Signed in as</p>
-            <strong>{email}</strong>
-            <span>{email} is working inside this organization through one shared Canopy account.</span>
+            <p className="stat-label">Access role</p>
+            <strong>{activeMembership?.role ?? "staff"}</strong>
+            <span>{session.user.displayName} is signed in through one shared Canopy account for this organization.</span>
           </article>
           <article className="stat-card">
             <p className="stat-label">Suggested next step</p>

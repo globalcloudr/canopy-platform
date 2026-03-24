@@ -1,17 +1,6 @@
-export type CatalogKind = "product" | "service";
+import type { MockEntitlement, ProductKey } from "@/lib/platform";
 
-export type ProductKey =
-  | "photovault"
-  | "canopy_web"
-  | "create_canopy"
-  | "publish_canopy"
-  | "community_canopy"
-  | "reach_canopy"
-  | "assist_canopy"
-  | "insights_canopy"
-  | "website_setup"
-  | "design_support"
-  | "communications_support";
+export type CatalogKind = "product" | "service";
 
 export type ProductState = "enabled" | "in_setup" | "pilot" | "paused" | "not_enabled" | "service";
 
@@ -153,142 +142,279 @@ const catalogDefinitions: ProductDefinition[] = [
   },
 ];
 
-const workspaceCatalogStates: Record<ProductKey, WorkspaceProductState> = {
-  photovault: {
-    productKey: "photovault",
-    state: "enabled",
-    stateLabel: "Enabled",
-    canLaunch: true,
-    primaryActionLabel: "View Photos",
-    primaryActionTarget: "/launch/photovault?workspace=example-adult-school",
-    secondaryActionLabel: "Open Brand Portal",
-    secondaryActionTarget: "/products/photovault/brand-portal",
-    planKey: "standard",
-  },
-  canopy_web: {
-    productKey: "canopy_web",
-    state: "in_setup",
-    stateLabel: "In Setup",
-    canLaunch: false,
-    primaryActionLabel: "Start Website Setup",
-    primaryActionTarget: "/products/canopy-web/setup",
-    secondaryActionLabel: "View Plan",
-    secondaryActionTarget: "/products/canopy-web",
-  },
-  create_canopy: {
-    productKey: "create_canopy",
-    state: "not_enabled",
-    stateLabel: "Not Enabled",
-    canLaunch: false,
-    primaryActionLabel: "View Product",
-    primaryActionTarget: "/products/create-canopy",
-    secondaryActionLabel: "Request Access",
-    secondaryActionTarget: "/account/services",
-  },
-  publish_canopy: {
-    productKey: "publish_canopy",
-    state: "not_enabled",
-    stateLabel: "Not Enabled",
-    canLaunch: false,
-    primaryActionLabel: "View Product",
-    primaryActionTarget: "/products/publish-canopy",
-    secondaryActionLabel: "Request Access",
-    secondaryActionTarget: "/account/services",
-  },
-  community_canopy: {
-    productKey: "community_canopy",
-    state: "pilot",
-    stateLabel: "Pilot",
-    canLaunch: false,
-    primaryActionLabel: "Create Newsletter",
-    primaryActionTarget: "/products/community-canopy",
-    secondaryActionLabel: "View Campaigns",
-    secondaryActionTarget: "/products/community-canopy/campaigns",
-  },
-  reach_canopy: {
-    productKey: "reach_canopy",
-    state: "not_enabled",
-    stateLabel: "Not Enabled",
-    canLaunch: false,
-    primaryActionLabel: "View Product",
-    primaryActionTarget: "/products/reach-canopy",
-    secondaryActionLabel: "Request Access",
-    secondaryActionTarget: "/account/services",
-  },
-  assist_canopy: {
-    productKey: "assist_canopy",
-    state: "in_setup",
-    stateLabel: "In Setup",
-    canLaunch: false,
-    primaryActionLabel: "View Setup",
-    primaryActionTarget: "/products/assist-canopy/setup",
-    secondaryActionLabel: "View Product",
-    secondaryActionTarget: "/products/assist-canopy",
-  },
-  insights_canopy: {
-    productKey: "insights_canopy",
-    state: "not_enabled",
-    stateLabel: "Not Enabled",
-    canLaunch: false,
-    primaryActionLabel: "View Product",
-    primaryActionTarget: "/products/insights-canopy",
-    secondaryActionLabel: "Request Access",
-    secondaryActionTarget: "/account/services",
-  },
-  website_setup: {
-    productKey: "website_setup",
-    state: "service",
-    stateLabel: "Service",
-    canLaunch: false,
-    primaryActionLabel: "View Request",
-    primaryActionTarget: "/services/website-setup",
-    secondaryActionLabel: "Contact Canopy",
-    secondaryActionTarget: "/support",
-  },
-  design_support: {
-    productKey: "design_support",
-    state: "service",
-    stateLabel: "Service",
-    canLaunch: false,
-    primaryActionLabel: "Submit Request",
-    primaryActionTarget: "/services/design-support",
-    secondaryActionLabel: "View Status",
-    secondaryActionTarget: "/services/design-support/status",
-  },
-  communications_support: {
-    productKey: "communications_support",
-    state: "service",
-    stateLabel: "Service",
-    canLaunch: false,
-    primaryActionLabel: "View Support",
-    primaryActionTarget: "/services/communications-support",
-    secondaryActionLabel: "Contact Canopy",
-    secondaryActionTarget: "/support",
-  },
-};
+function getDefaultState(definition: ProductDefinition): WorkspaceProductState {
+  if (definition.kind === "service") {
+    return {
+      productKey: definition.productKey,
+      state: "service",
+      stateLabel: "Available",
+      canLaunch: false,
+      primaryActionLabel: "Learn More",
+      primaryActionTarget: definition.defaultLaunchPath,
+    };
+  }
 
-function getCatalogItems() {
+  return {
+    productKey: definition.productKey,
+    state: "not_enabled",
+    stateLabel: "Not Enabled",
+    canLaunch: false,
+    primaryActionLabel: "View Product",
+    primaryActionTarget: definition.defaultLaunchPath,
+    secondaryActionLabel: "Request Access",
+    secondaryActionTarget: "/account/services",
+  };
+}
+
+function getActionState(definition: ProductDefinition, entitlement?: MockEntitlement): WorkspaceProductState {
+  if (!entitlement) {
+    return getDefaultState(definition);
+  }
+
+  if (definition.kind === "service") {
+    return {
+      productKey: definition.productKey,
+      state: "service",
+      stateLabel: entitlement.setupState === "in_setup" ? "In Progress" : "Service",
+      canLaunch: false,
+      primaryActionLabel: getPrimaryActionLabel(definition.productKey, "service"),
+      primaryActionTarget: definition.defaultLaunchPath,
+      secondaryActionLabel: getSecondaryActionLabel(definition.productKey, "service"),
+      secondaryActionTarget: getSecondaryActionTarget(definition.productKey, "service"),
+      planKey: entitlement.planKey,
+    };
+  }
+
+  const state = deriveProductState(entitlement);
+
+  return {
+    productKey: definition.productKey,
+    state,
+    stateLabel: getStateLabel(state, entitlement),
+    canLaunch: state === "enabled",
+    primaryActionLabel: getPrimaryActionLabel(definition.productKey, state),
+    primaryActionTarget: getPrimaryActionTarget(definition.productKey, state),
+    secondaryActionLabel: getSecondaryActionLabel(definition.productKey, state),
+    secondaryActionTarget: getSecondaryActionTarget(definition.productKey, state),
+    planKey: entitlement.planKey,
+  };
+}
+
+function deriveProductState(entitlement: MockEntitlement): ProductState {
+  if (entitlement.status === "paused") return "paused";
+  if (entitlement.setupState === "in_setup" || entitlement.setupState === "blocked") return "in_setup";
+  if (entitlement.status === "pilot") return "pilot";
+  return "enabled";
+}
+
+function getStateLabel(state: ProductState, entitlement: MockEntitlement) {
+  if (state === "pilot") return "Pilot";
+  if (state === "paused") return "Paused";
+  if (state === "in_setup") return entitlement.setupState === "blocked" ? "Blocked" : "In Setup";
+  if (entitlement.status === "trial") return "Trial";
+  return "Enabled";
+}
+
+function getPrimaryActionLabel(productKey: ProductKey, state: ProductState) {
+  const actionMap: Record<ProductKey, Partial<Record<ProductState, string>>> = {
+    photovault: {
+      enabled: "View Photos",
+      in_setup: "Continue Setup",
+      pilot: "Open Pilot",
+      not_enabled: "View Product",
+    },
+    canopy_web: {
+      enabled: "Edit Website",
+      in_setup: "Start Website Setup",
+      not_enabled: "View Product",
+    },
+    create_canopy: {
+      enabled: "Open Create Canopy",
+      not_enabled: "View Product",
+    },
+    publish_canopy: {
+      enabled: "Open Publish Canopy",
+      not_enabled: "View Product",
+    },
+    community_canopy: {
+      enabled: "Create Newsletter",
+      in_setup: "View Setup",
+      pilot: "Create Newsletter",
+      not_enabled: "View Product",
+    },
+    reach_canopy: {
+      enabled: "Create Social Post",
+      in_setup: "View Setup",
+      pilot: "Open Pilot",
+      not_enabled: "View Product",
+    },
+    assist_canopy: {
+      enabled: "Open Assistant",
+      in_setup: "View Setup",
+      not_enabled: "View Product",
+    },
+    insights_canopy: {
+      enabled: "View Reports",
+      not_enabled: "View Product",
+    },
+    website_setup: {
+      service: "View Request",
+    },
+    design_support: {
+      service: "Submit Request",
+    },
+    communications_support: {
+      service: "View Support",
+    },
+  };
+
+  return actionMap[productKey][state] ?? "View Product";
+}
+
+function getPrimaryActionTarget(productKey: ProductKey, state: ProductState) {
+  const targetMap: Record<ProductKey, Partial<Record<ProductState, string>>> = {
+    photovault: {
+      enabled: "/launch/photovault",
+      in_setup: "/products/photovault/setup",
+      pilot: "/products/photovault",
+      not_enabled: "/products/photovault",
+    },
+    canopy_web: {
+      enabled: "/products/canopy-web",
+      in_setup: "/products/canopy-web/setup",
+      not_enabled: "/products/canopy-web",
+    },
+    create_canopy: {
+      enabled: "/products/create-canopy",
+      not_enabled: "/products/create-canopy",
+    },
+    publish_canopy: {
+      enabled: "/products/publish-canopy",
+      not_enabled: "/products/publish-canopy",
+    },
+    community_canopy: {
+      enabled: "/products/community-canopy/newsletters/new",
+      in_setup: "/products/community-canopy/setup",
+      pilot: "/products/community-canopy/newsletters/new",
+      not_enabled: "/products/community-canopy",
+    },
+    reach_canopy: {
+      enabled: "/products/reach-canopy/posts/new",
+      in_setup: "/products/reach-canopy/setup",
+      pilot: "/products/reach-canopy",
+      not_enabled: "/products/reach-canopy",
+    },
+    assist_canopy: {
+      enabled: "/products/assist-canopy",
+      in_setup: "/products/assist-canopy/setup",
+      not_enabled: "/products/assist-canopy",
+    },
+    insights_canopy: {
+      enabled: "/products/insights-canopy",
+      not_enabled: "/products/insights-canopy",
+    },
+    website_setup: {
+      service: "/services/website-setup",
+    },
+    design_support: {
+      service: "/services/design-support",
+    },
+    communications_support: {
+      service: "/services/communications-support",
+    },
+  };
+
+  return targetMap[productKey][state] ?? "/account/services";
+}
+
+function getSecondaryActionLabel(productKey: ProductKey, state: ProductState) {
+  const labelMap: Partial<Record<ProductKey, Partial<Record<ProductState, string>>>> = {
+    photovault: {
+      enabled: "Open Brand Portal",
+    },
+    canopy_web: {
+      in_setup: "View Plan",
+    },
+    community_canopy: {
+      enabled: "View Campaigns",
+      pilot: "View Campaigns",
+    },
+    reach_canopy: {
+      enabled: "View Calendar",
+    },
+    assist_canopy: {
+      in_setup: "View Product",
+    },
+    website_setup: {
+      service: "Contact Canopy",
+    },
+    design_support: {
+      service: "View Status",
+    },
+    communications_support: {
+      service: "Contact Canopy",
+    },
+  };
+
+  return labelMap[productKey]?.[state];
+}
+
+function getSecondaryActionTarget(productKey: ProductKey, state: ProductState) {
+  const targetMap: Partial<Record<ProductKey, Partial<Record<ProductState, string>>>> = {
+    photovault: {
+      enabled: "/products/photovault/brand-portal",
+    },
+    canopy_web: {
+      in_setup: "/products/canopy-web",
+    },
+    community_canopy: {
+      enabled: "/products/community-canopy/campaigns",
+      pilot: "/products/community-canopy/campaigns",
+    },
+    reach_canopy: {
+      enabled: "/products/reach-canopy/calendar",
+    },
+    assist_canopy: {
+      in_setup: "/products/assist-canopy",
+    },
+    website_setup: {
+      service: "/support",
+    },
+    design_support: {
+      service: "/services/design-support/status",
+    },
+    communications_support: {
+      service: "/support",
+    },
+  };
+
+  return targetMap[productKey]?.[state];
+}
+
+function getCatalogItems(entitlements: MockEntitlement[]) {
+  const entitlementMap = new Map(entitlements.map((entitlement) => [entitlement.productKey, entitlement]));
+
   return catalogDefinitions
     .map((definition) => ({
       ...definition,
-      ...workspaceCatalogStates[definition.productKey],
+      ...getActionState(definition, entitlementMap.get(definition.productKey)),
     }))
     .filter((item) => item.showWhenNotEnabled || item.state !== "not_enabled")
     .sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
-export function getLauncherProducts(): LauncherProduct[] {
-  return getCatalogItems().filter((item) => item.kind === "product");
+export function getLauncherProducts(entitlements: MockEntitlement[]): LauncherProduct[] {
+  return getCatalogItems(entitlements).filter((item) => item.kind === "product");
 }
 
-export function getEnabledLauncherProducts(): LauncherProduct[] {
-  return getLauncherProducts().filter((item) => item.state !== "not_enabled");
+export function getEnabledLauncherProducts(entitlements: MockEntitlement[]): LauncherProduct[] {
+  return getLauncherProducts(entitlements).filter((item) => item.state !== "not_enabled");
 }
 
-export function getAdditionalLauncherProducts(): LauncherProduct[] {
-  return getLauncherProducts().filter((item) => item.state === "not_enabled");
+export function getAdditionalLauncherProducts(entitlements: MockEntitlement[]): LauncherProduct[] {
+  return getLauncherProducts(entitlements).filter((item) => item.state === "not_enabled");
 }
 
-export function getLauncherServices(): LauncherProduct[] {
-  return getCatalogItems().filter((item) => item.kind === "service");
+export function getLauncherServices(entitlements: MockEntitlement[]): LauncherProduct[] {
+  return getCatalogItems(entitlements).filter((item) => item.kind === "service" && item.state !== "not_enabled");
 }

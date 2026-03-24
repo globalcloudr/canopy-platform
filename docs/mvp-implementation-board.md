@@ -19,24 +19,26 @@ We should not create parallel planning tracks that drift away from this board.
 
 Current active phase:
 
-- `Phase 1: Platform Core Model`
+- `Phase 2: Portal Structure and Workflow`
 
 Next phase after that:
 
-- `Phase 2: Portal Structure and Workflow`
+- `Phase 3: MVP Product Definition`
 
 Important sequencing rule:
 
 - We can explore later-phase concepts early, but we should only treat one phase as the active implementation phase at a time.
-- Right now, portal/dashboard work that goes beyond the platform core should be treated as exploratory until Phase 1 is stable.
+- Right now, portal/dashboard work should be treated as the active implementation focus.
+- Product-definition work for specific MVP products should stay secondary until the portal structure is stable enough to support it.
 
 ## Immediate Next Priorities
 
-1. Finish `CP-001`, `CP-002`, and `CP-003` so the platform core model is stable.
-2. Finish `CP-009` so the implementation-level object model matches the platform definitions.
-3. Keep `CP-004` through `CP-008` treated as exploratory portal work until Phase 1 is complete.
-4. After Phase 1 is complete, move formally into Phase 2 portal workflow work.
-5. Enter Phase 3 only after the platform core and portal structure are stable enough to define `Community Canopy` and `Reach Canopy` cleanly.
+1. Finish `CP-004` so the portal shell and navigation baseline are structurally stable.
+2. Finish `CP-005` so the sign-in and authenticated entry flow are defined cleanly.
+3. Finish `CP-006` so workspace resolution behavior is documented without making it the main user-facing workflow.
+4. Finish `CP-007` so the dashboard product launcher follows the entitlement model consistently.
+5. Keep `CP-008` focused on launch-handoff structure, not deep product integration yet.
+6. Enter Phase 3 only after the portal structure is stable enough to define `Community Canopy` and `Reach Canopy` cleanly.
 
 ## MVP Definition
 
@@ -303,7 +305,7 @@ These decisions should now be treated as settled unless a strong reason appears 
 - Scope:
   - sign-in page
   - session handling direction
-  - post-auth routing into workspace-aware portal home
+  - post-auth routing into dashboard-first portal home
 - Files:
   - `/Users/zylstra/Code/canopy-platform/apps/portal/`
   - `/Users/zylstra/Code/canopy-platform/docs/portal-mvp-scope.md`
@@ -311,9 +313,13 @@ These decisions should now be treated as settled unless a strong reason appears 
 - Acceptance:
   - platform has a clear authentication entry point
   - user can reach an authenticated portal state
+  - single-workspace users land directly on their dashboard
+  - multi-workspace behavior does not disrupt the default sign-in flow
   - auth flow is compatible with future cross-product SSO
 - Status:
-  - `Not started`
+  - `Started`
+  - sign-in and dashboard mock exist
+  - flow direction now documented as dashboard-first
 
 ### CP-006: Workspace Resolution and Switcher Logic
 
@@ -326,12 +332,13 @@ These decisions should now be treated as settled unless a strong reason appears 
   - `/Users/zylstra/Code/canopy-platform/apps/portal/`
   - `/Users/zylstra/Code/canopy-platform/docs/workspace-identity-model.md`
 - Acceptance:
-  - user can enter the correct active workspace
+  - single-workspace users land directly on their dashboard
   - products do not need to guess workspace context
   - switcher behavior is predictable and documented
+  - workspace switching is not promoted as a default visible workflow
 - Status:
-  - `Not started`
-  - UI placeholder exists in the portal mock
+  - `Started`
+  - decision direction documented as dashboard-first with passive workspace visibility
 
 ### CP-007: Entitlement-Aware Product Launcher
 

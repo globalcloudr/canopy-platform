@@ -308,6 +308,37 @@ Recommended behavior:
 
 Products should not have to guess the active account from inconsistent local state.
 
+## MVP Workspace Resolution Rules
+
+For MVP, workspace resolution should follow these rules:
+
+1. after sign-in, Canopy resolves all active memberships for the user
+2. if the user has one active workspace, Canopy routes directly to that dashboard
+3. if the user has more than one active workspace, Canopy resolves a default workspace when possible
+4. only if a default workspace cannot be resolved cleanly should the user be asked to choose
+
+Recommended default resolution order:
+
+1. last-used active workspace
+2. explicitly assigned default workspace if one exists later
+3. first active workspace by stable fallback order
+
+Recommended user-experience rule:
+
+- workspace resolution is a platform responsibility, not a main visible task for most users
+
+Recommended shell rule:
+
+- show the active organization/workspace passively in the header
+- expose a switcher only when the user truly has more than one active workspace
+
+## Why This Matters
+
+This model protects two things at once:
+
+- users get the familiar "sign in -> dashboard" experience
+- the platform still carries the active organization/workspace explicitly for product launch and authorization
+
 ## Canonical Questions the Platform Must Answer
 
 Before any product launches, the platform should be able to answer:

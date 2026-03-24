@@ -1,13 +1,16 @@
  "use client";
 
 import { useSearchParams } from "next/navigation";
-import { getWorkspaceName, mockWorkspaces } from "@/lib/mock-session";
+import { resolvePortalSession } from "@/lib/platform";
 
 export function PortalHeader() {
   const searchParams = useSearchParams();
-  const workspace = searchParams.get("workspace") ?? mockWorkspaces[0].slug;
-  const workspaceName = getWorkspaceName(workspace);
-  const email = searchParams.get("email") ?? "sarah.zylstra@school.edu";
+  const session = resolvePortalSession({
+    email: searchParams.get("email") ?? undefined,
+    workspace: searchParams.get("workspace") ?? undefined,
+  });
+  const workspaceName = session.activeWorkspace.displayName;
+  const email = session.user.email;
   const initials = email
     .split("@")[0]
     .split(/[.\-_]/)

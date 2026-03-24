@@ -33,17 +33,24 @@ If the portal can do that well, it becomes a real platform center instead of jus
 - sign in
 - sign out
 - password reset or equivalent auth recovery flow
+- post-sign-in routing into the authenticated dashboard
 
 ### Workspace Resolution
 
 - resolve which workspace or school account the user belongs to
-- support a simple workspace switcher if a user belongs to more than one workspace
+- support a simple workspace switcher only if a user belongs to more than one workspace
 
 ### Product Launcher
 
 - show enabled products for the active workspace
 - show product status such as active, pilot, or setup in progress
 - launch the user into the correct product destination
+- support action-oriented product cards instead of generic launch behavior
+
+### Services Visibility
+
+- show managed services separately from software products
+- make services visible without implying they are identical to apps
 
 ### Account Overview
 
@@ -56,6 +63,7 @@ If the portal can do that well, it becomes a real platform center instead of jus
 - top-level portal navigation
 - account/settings entry
 - product launcher/dashboard home
+- passive organization/workspace context in the header
 
 ## Out of Scope for MVP
 
@@ -76,6 +84,7 @@ Those can come later once the portal core exists.
 Primary purpose:
 
 - authenticate the user into Canopy
+- send the user into the correct post-login dashboard flow
 
 ### 2. Workspace Home / Dashboard
 
@@ -84,12 +93,13 @@ Primary purpose:
 - orient the user
 - show the active workspace
 - show enabled products and their state
+- show services separately
 
 ### 3. Product Launcher
 
 Primary purpose:
 
-- help the user enter PhotoVault or any other enabled product
+- help the user enter enabled products through task-oriented actions
 
 This can be part of the dashboard at first rather than a separate page.
 
@@ -135,7 +145,8 @@ The portal MVP is successful if:
 2. the system can resolve the active workspace
 3. the portal clearly shows which products are enabled
 4. the user can launch PhotoVault from the portal
-5. the portal feels like the beginning of a real shared Canopy experience
+5. the portal separates products and services clearly
+6. the portal feels like the beginning of a real shared Canopy experience
 
 ## Recommended Build Order
 
@@ -145,6 +156,49 @@ The portal MVP is successful if:
 4. PhotoVault launch integration
 5. lightweight settings/account surface
 
+## Authentication Entry Rules
+
+For MVP, the entry flow should follow normal SaaS expectations.
+
+Recommended default flow:
+
+1. user visits the public Canopy homepage
+2. user clicks `Sign in`
+3. user authenticates
+4. user lands on the dashboard
+
+Recommended routing behavior:
+
+- if the user belongs to one organization/workspace, route directly to that dashboard
+- if the user belongs to more than one organization/workspace, resolve a default workspace or show a lightweight chooser only when necessary
+- do not make workspace selection the normal visible sign-in experience
+
+Recommended sign-in page rule:
+
+- the sign-in page should ask only for what is needed to authenticate
+- it should not ask the user to think about platform structure
+
+Recommended post-auth rule:
+
+- the dashboard is the default destination after sign-in
+- the user should feel like they signed into Canopy, not into a technical account-resolution flow
+
+## Workspace Resolution Rules
+
+The portal must always know the active organization/workspace.
+
+For MVP:
+
+- this should usually happen behind the scenes
+- single-workspace users should not need to choose anything
+- multi-workspace behavior should be treated as an edge case, not the main flow
+
+Recommended portal behavior:
+
+- persist the active workspace across product launches where possible
+- carry explicit workspace context into product launch flows
+- avoid showing technical workspace controls unless they are actually needed
+
 ## Summary
 
 The portal MVP should be small, clean, and useful.
@@ -152,7 +206,7 @@ The portal MVP should be small, clean, and useful.
 It should prove the Canopy platform model by establishing:
 
 - one login
-- one workspace context
-- one product launcher
+- one organization/workspace context
+- one product and services dashboard
 
 That is enough to make `usecanopy.school` real.
