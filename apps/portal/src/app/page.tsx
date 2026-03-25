@@ -105,7 +105,7 @@ export default function MarketingHomePage() {
         {/* Product grid */}
         <section className="pt-18 mb-20" id="products">
           <p className="eyebrow">The platform</p>
-          <h2>Nine tools. One login. One dashboard.</h2>
+          <h2>Nine tools to grow your school. One centralized dashboard.</h2>
           <p className="text-muted text-[0.9rem] max-w-[44ch] mt-2 mb-0">
             A connected platform for the products and services your school uses every day.
           </p>
