@@ -20,9 +20,15 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
     redirect("/sign-in");
   }
 
-  const launcherProducts = getEnabledLauncherProducts(session.entitlements);
-  const additionalProducts = getAdditionalLauncherProducts(session.entitlements);
-  const launcherServices = getLauncherServices(session.entitlements);
+  const launcherProducts = getEnabledLauncherProducts(session.entitlements, {
+    workspaceSlug: session.activeWorkspace.slug,
+  });
+  const additionalProducts = getAdditionalLauncherProducts(session.entitlements, {
+    workspaceSlug: session.activeWorkspace.slug,
+  });
+  const launcherServices = getLauncherServices(session.entitlements, {
+    workspaceSlug: session.activeWorkspace.slug,
+  });
   const launchableCount = launcherProducts.filter((p) => p.canLaunch).length;
   const workspaceName = session.activeWorkspace.displayName;
   const firstName = session.user.displayName.split(" ")[0];

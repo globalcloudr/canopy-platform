@@ -31,6 +31,10 @@ export type WorkspaceProductState = {
 
 export type LauncherProduct = ProductDefinition & WorkspaceProductState;
 
+type LauncherOptions = {
+  workspaceSlug?: string;
+};
+
 const catalogDefinitions: ProductDefinition[] = [
   {
     productKey: "photovault",
@@ -195,7 +199,29 @@ function getDefaultState(definition: ProductDefinition): WorkspaceProductState {
   };
 }
 
-function getActionState(definition: ProductDefinition, entitlement?: PortalEntitlement): WorkspaceProductState {
+function appendWorkspaceContext(target: string, workspaceSlug?: string) {
+  if (!workspaceSlug) {
+    return target;
+  }
+
+  try {
+    const url = target.startsWith("http")
+      ? new URL(target)
+      : new URL(target, "https://usecanopy.school");
+    url.searchParams.set("workspace", workspaceSlug);
+    return target.startsWith("http")
+      ? url.toString()
+      : `${url.pathname}${url.search}${url.hash}`;
+  } catch {
+    return target;
+  }
+}
+
+function getActionState(
+  definition: ProductDefinition,
+  entitlement?: PortalEntitlement,
+  options?: LauncherOptions
+): WorkspaceProductState {
   if (!entitlement) {
     return getDefaultState(definition);
   }
@@ -207,9 +233,12 @@ function getActionState(definition: ProductDefinition, entitlement?: PortalEntit
       stateLabel: entitlement.setupState === "in_setup" ? "In Progress" : "Service",
       canLaunch: false,
       primaryActionLabel: getPrimaryActionLabel(definition.productKey, "service"),
-      primaryActionTarget: definition.defaultLaunchPath,
+      primaryActionTarget: appendWorkspaceContext(definition.defaultLaunchPath, options?.workspaceSlug),
       secondaryActionLabel: getSecondaryActionLabel(definition.productKey, "service"),
-      secondaryActionTarget: getSecondaryActionTarget(definition.productKey, "service"),
+      secondaryActionTarget: appendWorkspaceContext(
+        getSecondaryActionTarget(definition.productKey, "service") ?? "",
+        options?.workspaceSlug
+      ) || undefined,
       planKey: entitlement.planKey,
     };
   }
@@ -222,9 +251,15 @@ function getActionState(definition: ProductDefinition, entitlement?: PortalEntit
     stateLabel: getStateLabel(state, entitlement),
     canLaunch: state === "enabled",
     primaryActionLabel: getPrimaryActionLabel(definition.productKey, state),
-    primaryActionTarget: getPrimaryActionTarget(definition.productKey, state),
+    primaryActionTarget: appendWorkspaceContext(
+      getPrimaryActionTarget(definition.productKey, state),
+      options?.workspaceSlug
+    ),
     secondaryActionLabel: getSecondaryActionLabel(definition.productKey, state),
-    secondaryActionTarget: getSecondaryActionTarget(definition.productKey, state),
+    secondaryActionTarget: appendWorkspaceContext(
+      getSecondaryActionTarget(definition.productKey, state) ?? "",
+      options?.workspaceSlug
+    ) || undefined,
     planKey: entitlement.planKey,
   };
 }
@@ -370,7 +405,7 @@ function getSecondaryActionLabel(productKey: ProductKey, state: ProductState) {
 function getSecondaryActionTarget(productKey: ProductKey, state: ProductState) {
   const targetMap: Partial<Record<ProductKey, Partial<Record<ProductState, string>>>> = {
     photovault: {
-      enabled: "/products/photovault/brand-portal",
+      enabled: "https://photovault.school/collections/brand-guidelines",
     },
     canopy_web: {
       in_setup: "/products/canopy-web",
@@ -409,32 +444,32 @@ function getSecondaryActionTarget(productKey: ProductKey, state: ProductState) {
   return targetMap[productKey]?.[state];
 }
 
-function getCatalogItems(entitlements: PortalEntitlement[]) {
+function getCatalogItems(entitlements: PortalEntitlement[], options?: LauncherOptions) {
   const entitlementMap = new Map(entitlements.map((entitlement) => [entitlement.productKey, entitlement]));
 
   return catalogDefinitions
     .map((definition) => ({
       ...definition,
-      ...getActionState(definition, entitlementMap.get(definition.productKey)),
+      ...getActionState(definition, entitlementMap.get(definition.productKey), options),
     }))
     .filter((item) => item.showWhenNotEnabled || item.state !== "not_enabled")
     .sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
-export function getLauncherProducts(entitlements: PortalEntitlement[]): LauncherProduct[] {
-  return getCatalogItems(entitlements).filter((item) => item.kind === "product");
+export function getLauncherProducts(entitlements: PortalEntitlement[], options?: LauncherOptions): LauncherProduct[] {
+  return getCatalogItems(entitlements, options).filter((item) => item.kind === "product");
 }
 
-export function getEnabledLauncherProducts(entitlements: PortalEntitlement[]): LauncherProduct[] {
-  return getLauncherProducts(entitlements).filter((item) => item.state !== "not_enabled");
+export function getEnabledLauncherProducts(entitlements: PortalEntitlement[], options?: LauncherOptions): LauncherProduct[] {
+  return getLauncherProducts(entitlements, options).filter((item) => item.state !== "not_enabled");
 }
 
-export function getAdditionalLauncherProducts(entitlements: PortalEntitlement[]): LauncherProduct[] {
-  return getLauncherProducts(entitlements).filter((item) => item.state === "not_enabled");
+export function getAdditionalLauncherProducts(entitlements: PortalEntitlement[], options?: LauncherOptions): LauncherProduct[] {
+  return getLauncherProducts(entitlements, options).filter((item) => item.state === "not_enabled");
 }
 
-export function getLauncherServices(entitlements: PortalEntitlement[]): LauncherProduct[] {
-  return getCatalogItems(entitlements).filter((item) => item.kind === "service" && item.state !== "not_enabled");
+export function getLauncherServices(entitlements: PortalEntitlement[], options?: LauncherOptions): LauncherProduct[] {
+  return getCatalogItems(entitlements, options).filter((item) => item.kind === "service" && item.state !== "not_enabled");
 }
 
 export function getProductDefinition(key: ProductKey): ProductDefinition | undefined {
