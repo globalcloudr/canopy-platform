@@ -358,22 +358,6 @@ async function getEntitlementsForWorkspace(workspaceId: string) {
   return [];
 }
 
-function buildSyntheticEntitlements(activeWorkspaceId: string, memberships: PortalMembership[]) {
-  if (!memberships.some((membership) => membership.workspaceId === activeWorkspaceId)) {
-    return [];
-  }
-
-  return [
-    {
-      workspaceId: activeWorkspaceId,
-      productKey: "photovault" as const,
-      status: "active" as const,
-      setupState: "ready" as const,
-      planKey: "bridge",
-    },
-  ];
-}
-
 async function resolveUserFromRequest(options?: { email?: string }) {
   const store = await cookies();
   const accessToken = store.get(ACCESS_TOKEN_COOKIE)?.value;
@@ -453,11 +437,7 @@ export async function resolvePortalSession(options?: {
   });
 
   const activeWorkspace = workspaces.find((workspace) => workspace.slug === options?.workspace) ?? workspaces[0];
-  let entitlements = await getEntitlementsForWorkspace(activeWorkspace.id);
-
-  if (entitlements.length === 0) {
-    entitlements = buildSyntheticEntitlements(activeWorkspace.id, memberships);
-  }
+  const entitlements = await getEntitlementsForWorkspace(activeWorkspace.id);
 
   return {
     user: {
