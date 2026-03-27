@@ -6,7 +6,11 @@ import {
 } from "@/lib/platform";
 
 function buildRedirect(request: NextRequest, path: string) {
-  return new URL(path, request.url);
+  const url = new URL(path, request.url);
+  if (url.hostname === "0.0.0.0") {
+    url.hostname = "localhost";
+  }
+  return url;
 }
 
 export async function POST(request: NextRequest) {

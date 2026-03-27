@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "@/lib/platform";
 
+function buildRedirect(request: NextRequest, path: string) {
+  const url = new URL(path, request.url);
+  if (url.hostname === "0.0.0.0") {
+    url.hostname = "localhost";
+  }
+  return url;
+}
+
 export async function GET(request: NextRequest) {
-  const response = NextResponse.redirect(new URL("/sign-in", request.url));
+  const response = NextResponse.redirect(buildRedirect(request, "/sign-in"));
 
   response.cookies.set({
     name: ACCESS_TOKEN_COOKIE,
