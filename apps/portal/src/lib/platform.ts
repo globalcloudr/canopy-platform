@@ -1,4 +1,4 @@
-export type WorkspaceRole = "owner" | "admin" | "staff";
+export type WorkspaceRole = "owner" | "admin" | "staff" | "uploader" | "viewer";
 export type MembershipStatus = "invited" | "active" | "suspended";
 export type EntitlementStatus = "trial" | "active" | "pilot" | "paused";
 export type SetupState = "not_started" | "in_setup" | "ready" | "blocked";
@@ -17,26 +17,27 @@ export type ProductKey =
   | "design_support"
   | "communications_support";
 
-type MockUser = {
+export type PortalUser = {
   id: string;
   email: string;
   displayName: string;
 };
 
-type MockWorkspace = {
+export type PortalWorkspace = {
   id: string;
   slug: string;
   displayName: string;
 };
 
-type MockMembership = {
+export type PortalMembership = {
   userId: string;
   workspaceId: string;
   role: WorkspaceRole;
   status: MembershipStatus;
+  workspace: PortalWorkspace;
 };
 
-export type MockEntitlement = {
+export type PortalEntitlement = {
   workspaceId: string;
   productKey: ProductKey;
   status: EntitlementStatus;
@@ -45,187 +46,352 @@ export type MockEntitlement = {
 };
 
 export type PortalSession = {
-  user: MockUser;
-  activeWorkspace: MockWorkspace;
-  memberships: Array<MockMembership & { workspace: MockWorkspace }>;
-  entitlements: MockEntitlement[];
+  user: PortalUser;
+  activeWorkspace: PortalWorkspace;
+  memberships: PortalMembership[];
+  entitlements: PortalEntitlement[];
 };
 
-const users: MockUser[] = [
-  {
-    id: "user-sarah",
-    email: "sarah.zylstra@school.edu",
-    displayName: "Sarah Zylstra",
-  },
-  {
-    id: "user-maria",
-    email: "maria.admin@northvalley.edu",
-    displayName: "Maria Flores",
-  },
-  {
-    id: "user-jordan",
-    email: "jordan@usecanopy.school",
-    displayName: "Jordan Canopy",
-  },
-];
+type ServiceEnv = {
+  supabaseUrl: string;
+  serviceRoleKey: string;
+};
 
-const workspaces: MockWorkspace[] = [
-  {
-    id: "ws-example",
-    slug: "example-adult-school",
-    displayName: "Example Adult School",
-  },
-  {
-    id: "ws-north-valley",
-    slug: "north-valley-campus",
-    displayName: "North Valley Campus",
-  },
-  {
-    id: "ws-bay-learning",
-    slug: "bay-learning-center",
-    displayName: "Bay Learning Center",
-  },
-];
+type AuthAdminUser = {
+  id: string;
+  email?: string | null;
+  user_metadata?: {
+    full_name?: string | null;
+    name?: string | null;
+  } | null;
+};
 
-const memberships: MockMembership[] = [
-  {
-    userId: "user-sarah",
-    workspaceId: "ws-example",
-    role: "owner",
-    status: "active",
-  },
-  {
-    userId: "user-maria",
-    workspaceId: "ws-north-valley",
-    role: "admin",
-    status: "active",
-  },
-  {
-    userId: "user-jordan",
-    workspaceId: "ws-example",
-    role: "admin",
-    status: "active",
-  },
-  {
-    userId: "user-jordan",
-    workspaceId: "ws-north-valley",
-    role: "admin",
-    status: "active",
-  },
-  {
-    userId: "user-jordan",
-    workspaceId: "ws-bay-learning",
-    role: "admin",
-    status: "active",
-  },
-];
+type MembershipRow = {
+  user_id: string;
+  org_id: string;
+  role: string | null;
+};
 
-const entitlements: MockEntitlement[] = [
-  {
-    workspaceId: "ws-example",
-    productKey: "photovault",
-    status: "active",
-    setupState: "ready",
-    planKey: "standard",
-  },
-  {
-    workspaceId: "ws-example",
-    productKey: "community_canopy",
-    status: "pilot",
-    setupState: "in_setup",
-  },
-  {
-    workspaceId: "ws-example",
-    productKey: "canopy_web",
-    status: "active",
-    setupState: "in_setup",
-  },
-  {
-    workspaceId: "ws-example",
-    productKey: "assist_canopy",
-    status: "trial",
-    setupState: "in_setup",
-  },
-  {
-    workspaceId: "ws-example",
-    productKey: "website_setup",
-    status: "active",
-    setupState: "in_setup",
-  },
-  {
-    workspaceId: "ws-example",
-    productKey: "communications_support",
-    status: "active",
-    setupState: "ready",
-  },
-  {
-    workspaceId: "ws-north-valley",
-    productKey: "photovault",
-    status: "active",
-    setupState: "ready",
-  },
-  {
-    workspaceId: "ws-north-valley",
-    productKey: "community_canopy",
-    status: "active",
-    setupState: "ready",
-  },
-  {
-    workspaceId: "ws-north-valley",
-    productKey: "stories_canopy",
-    status: "pilot",
-    setupState: "ready",
-  },
-  {
-    workspaceId: "ws-bay-learning",
-    productKey: "photovault",
-    status: "pilot",
-    setupState: "in_setup",
-  },
-];
+type OrganizationRow = {
+  id: string;
+  name: string | null;
+  slug: string | null;
+};
 
-function getUserByEmail(email?: string) {
-  return users.find((user) => user.email === email) ?? users[0];
+type ProfileRow = {
+  user_id: string;
+  is_super_admin: boolean | null;
+  platform_role: string | null;
+};
+
+type EntitlementRow = {
+  workspace_id?: string | null;
+  organization_id?: string | null;
+  org_id?: string | null;
+  product_key?: string | null;
+  status?: string | null;
+  setup_state?: string | null;
+  plan_key?: string | null;
+};
+
+function getServiceEnv(): ServiceEnv | null {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !serviceRoleKey) {
+    return null;
+  }
+
+  return { supabaseUrl, serviceRoleKey };
 }
 
-function getWorkspaceBySlug(workspaceSlug?: string) {
-  return workspaces.find((workspace) => workspace.slug === workspaceSlug) ?? null;
+function formatDisplayName(user: AuthAdminUser) {
+  const fullName = user.user_metadata?.full_name?.trim() || user.user_metadata?.name?.trim();
+  if (fullName) {
+    return fullName;
+  }
+
+  const email = user.email?.trim();
+  if (!email) {
+    return "Canopy User";
+  }
+
+  return email
+    .split("@")[0]
+    .split(/[.\-_]/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
 }
 
-function getMembershipsForUser(userId: string) {
-  return memberships
-    .filter((membership) => membership.userId === userId && membership.status === "active")
-    .map((membership) => ({
-      ...membership,
-      workspace: workspaces.find((workspace) => workspace.id === membership.workspaceId)!,
-    }));
+async function requestJson<T>(path: string, searchParams?: URLSearchParams): Promise<T> {
+  const env = getServiceEnv();
+  if (!env) {
+    throw new Error("Missing Supabase service-role environment variables.");
+  }
+
+  const url = new URL(path, env.supabaseUrl);
+  if (searchParams) {
+    url.search = searchParams.toString();
+  }
+
+  const response = await fetch(url.toString(), {
+    headers: {
+      apikey: env.serviceRoleKey,
+      Authorization: `Bearer ${env.serviceRoleKey}`,
+      "Content-Type": "application/json",
+    },
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Supabase request failed (${response.status}): ${text}`);
+  }
+
+  return (await response.json()) as T;
 }
 
-export function resolvePortalSession(options?: { email?: string; workspace?: string }): PortalSession {
-  const user = getUserByEmail(options?.email);
-  const userMemberships = getMembershipsForUser(user.id);
+async function findUserByEmail(email?: string) {
+  const normalizedEmail = email?.trim().toLowerCase();
+  if (!normalizedEmail) {
+    return null;
+  }
 
-  const requestedWorkspace = options?.workspace ? getWorkspaceBySlug(options.workspace) : null;
-  const lastUsedWorkspace =
-    requestedWorkspace && userMemberships.some((membership) => membership.workspaceId === requestedWorkspace.id)
-      ? requestedWorkspace
-      : null;
+  const payload = await requestJson<{ users?: AuthAdminUser[] }>(
+    "/auth/v1/admin/users",
+    new URLSearchParams({
+      page: "1",
+      per_page: "1000",
+    })
+  );
 
-  const activeWorkspace = lastUsedWorkspace ?? userMemberships[0]?.workspace ?? workspaces[0];
+  return payload.users?.find((candidate) => candidate.email?.trim().toLowerCase() === normalizedEmail) ?? null;
+}
+
+async function getProfile(userId: string) {
+  const rows = await requestJson<ProfileRow[]>(
+    "/rest/v1/profiles",
+    new URLSearchParams({
+      select: "user_id,is_super_admin,platform_role",
+      user_id: `eq.${userId}`,
+      limit: "1",
+    })
+  );
+
+  return rows[0] ?? null;
+}
+
+async function getMembershipRows(userId: string) {
+  return requestJson<MembershipRow[]>(
+    "/rest/v1/memberships",
+    new URLSearchParams({
+      select: "user_id,org_id,role",
+      user_id: `eq.${userId}`,
+    })
+  );
+}
+
+async function getOrganizationsByIds(ids: string[]) {
+  if (ids.length === 0) {
+    return [];
+  }
+
+  return requestJson<OrganizationRow[]>(
+    "/rest/v1/organizations",
+    new URLSearchParams({
+      select: "id,name,slug",
+      id: `in.(${ids.join(",")})`,
+      order: "name.asc",
+    })
+  );
+}
+
+async function getAllOrganizations() {
+  return requestJson<OrganizationRow[]>(
+    "/rest/v1/organizations",
+    new URLSearchParams({
+      select: "id,name,slug",
+      order: "name.asc",
+    })
+  );
+}
+
+function isPlatformOperator(profile: ProfileRow | null) {
+  return Boolean(profile?.is_super_admin) || profile?.platform_role === "super_admin" || profile?.platform_role === "platform_staff";
+}
+
+function normalizeWorkspaceRole(value: string | null | undefined): WorkspaceRole {
+  if (value === "owner" || value === "admin" || value === "staff" || value === "uploader" || value === "viewer") {
+    return value;
+  }
+
+  return "viewer";
+}
+
+function normalizeWorkspace(row: OrganizationRow): PortalWorkspace | null {
+  if (!row.id || !row.slug) {
+    return null;
+  }
 
   return {
-    user,
-    activeWorkspace,
-    memberships: userMemberships,
-    entitlements: entitlements.filter((entitlement) => entitlement.workspaceId === activeWorkspace.id),
+    id: row.id,
+    slug: row.slug,
+    displayName: row.name?.trim() || row.slug,
   };
 }
 
-export function getWorkspaceName(workspaceSlug?: string) {
-  return getWorkspaceBySlug(workspaceSlug)?.displayName ?? workspaces[0].displayName;
+function normalizeEntitlement(row: EntitlementRow, fallbackWorkspaceId: string): PortalEntitlement | null {
+  const productKey = row.product_key;
+  if (!productKey) {
+    return null;
+  }
+
+  if (
+    productKey !== "photovault" &&
+    productKey !== "canopy_web" &&
+    productKey !== "create_canopy" &&
+    productKey !== "publish_canopy" &&
+    productKey !== "stories_canopy" &&
+    productKey !== "community_canopy" &&
+    productKey !== "reach_canopy" &&
+    productKey !== "assist_canopy" &&
+    productKey !== "insights_canopy" &&
+    productKey !== "website_setup" &&
+    productKey !== "design_support" &&
+    productKey !== "communications_support"
+  ) {
+    return null;
+  }
+
+  const workspaceId = row.workspace_id || row.organization_id || row.org_id || fallbackWorkspaceId;
+  const status = row.status;
+  const setupState = row.setup_state;
+
+  return {
+    workspaceId,
+    productKey,
+    status:
+      status === "trial" || status === "pilot" || status === "paused" || status === "active"
+        ? status
+        : "active",
+    setupState:
+      setupState === "not_started" || setupState === "in_setup" || setupState === "blocked" || setupState === "ready"
+        ? setupState
+        : "ready",
+    planKey: row.plan_key ?? undefined,
+  };
 }
 
-export const mockWorkspaces = workspaces.map((workspace) => ({
-  slug: workspace.slug,
-  displayName: workspace.displayName,
-}));
+async function getEntitlementsForWorkspace(workspaceId: string) {
+  const attempts = [
+    new URLSearchParams({
+      select: "workspace_id,product_key,status,setup_state,plan_key",
+      workspace_id: `eq.${workspaceId}`,
+    }),
+    new URLSearchParams({
+      select: "organization_id,product_key,status,setup_state,plan_key",
+      organization_id: `eq.${workspaceId}`,
+    }),
+    new URLSearchParams({
+      select: "org_id,product_key,status,setup_state,plan_key",
+      org_id: `eq.${workspaceId}`,
+    }),
+  ];
+
+  for (const params of attempts) {
+    try {
+      const rows = await requestJson<EntitlementRow[]>("/rest/v1/product_entitlements", params);
+      return rows
+        .map((row) => normalizeEntitlement(row, workspaceId))
+        .filter((value): value is PortalEntitlement => value !== null);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      if (
+        !message.includes("product_entitlements") &&
+        !message.includes("workspace_id") &&
+        !message.includes("organization_id") &&
+        !message.includes("org_id")
+      ) {
+        throw error;
+      }
+    }
+  }
+
+  return [];
+}
+
+function buildSyntheticEntitlements(activeWorkspaceId: string, memberships: PortalMembership[]) {
+  if (!memberships.some((membership) => membership.workspaceId === activeWorkspaceId)) {
+    return [];
+  }
+
+  return [
+    {
+      workspaceId: activeWorkspaceId,
+      productKey: "photovault" as const,
+      status: "active" as const,
+      setupState: "ready" as const,
+      planKey: "bridge",
+    },
+  ];
+}
+
+export async function resolvePortalSession(options?: {
+  email?: string;
+  workspace?: string;
+}): Promise<PortalSession | null> {
+  if (!getServiceEnv()) {
+    return null;
+  }
+
+  const user = await findUserByEmail(options?.email);
+  if (!user?.id || !user.email) {
+    return null;
+  }
+
+  const profile = await getProfile(user.id);
+  const membershipRows = await getMembershipRows(user.id);
+  const organizations = isPlatformOperator(profile)
+    ? await getAllOrganizations()
+    : await getOrganizationsByIds(
+        Array.from(new Set(membershipRows.map((membership) => membership.org_id).filter(Boolean)))
+      );
+
+  const workspaces = organizations
+    .map(normalizeWorkspace)
+    .filter((workspace): workspace is PortalWorkspace => workspace !== null);
+
+  if (workspaces.length === 0) {
+    return null;
+  }
+
+  const memberships: PortalMembership[] = workspaces.map((workspace) => {
+    const membership = membershipRows.find((row) => row.org_id === workspace.id);
+    return {
+      userId: user.id,
+      workspaceId: workspace.id,
+      role: normalizeWorkspaceRole(membership?.role),
+      status: "active",
+      workspace,
+    };
+  });
+
+  const activeWorkspace = workspaces.find((workspace) => workspace.slug === options?.workspace) ?? workspaces[0];
+  let entitlements = await getEntitlementsForWorkspace(activeWorkspace.id);
+
+  if (entitlements.length === 0) {
+    entitlements = buildSyntheticEntitlements(activeWorkspace.id, memberships);
+  }
+
+  return {
+    user: {
+      id: user.id,
+      email: user.email,
+      displayName: formatDisplayName(user),
+    },
+    activeWorkspace,
+    memberships,
+    entitlements,
+  };
+}

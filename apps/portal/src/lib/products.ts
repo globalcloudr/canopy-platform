@@ -1,4 +1,4 @@
-import type { MockEntitlement, ProductKey } from "@/lib/platform";
+import type { PortalEntitlement, ProductKey } from "@/lib/platform";
 
 export type CatalogKind = "product" | "service";
 
@@ -195,7 +195,7 @@ function getDefaultState(definition: ProductDefinition): WorkspaceProductState {
   };
 }
 
-function getActionState(definition: ProductDefinition, entitlement?: MockEntitlement): WorkspaceProductState {
+function getActionState(definition: ProductDefinition, entitlement?: PortalEntitlement): WorkspaceProductState {
   if (!entitlement) {
     return getDefaultState(definition);
   }
@@ -229,14 +229,14 @@ function getActionState(definition: ProductDefinition, entitlement?: MockEntitle
   };
 }
 
-function deriveProductState(entitlement: MockEntitlement): ProductState {
+function deriveProductState(entitlement: PortalEntitlement): ProductState {
   if (entitlement.status === "paused") return "paused";
   if (entitlement.setupState === "in_setup" || entitlement.setupState === "blocked") return "in_setup";
   if (entitlement.status === "pilot") return "pilot";
   return "enabled";
 }
 
-function getStateLabel(state: ProductState, entitlement: MockEntitlement) {
+function getStateLabel(state: ProductState, entitlement: PortalEntitlement) {
   if (state === "pilot") return "Pilot";
   if (state === "paused") return "Paused";
   if (state === "in_setup") return entitlement.setupState === "blocked" ? "Blocked" : "In Setup";
@@ -409,7 +409,7 @@ function getSecondaryActionTarget(productKey: ProductKey, state: ProductState) {
   return targetMap[productKey]?.[state];
 }
 
-function getCatalogItems(entitlements: MockEntitlement[]) {
+function getCatalogItems(entitlements: PortalEntitlement[]) {
   const entitlementMap = new Map(entitlements.map((entitlement) => [entitlement.productKey, entitlement]));
 
   return catalogDefinitions
@@ -421,19 +421,19 @@ function getCatalogItems(entitlements: MockEntitlement[]) {
     .sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
-export function getLauncherProducts(entitlements: MockEntitlement[]): LauncherProduct[] {
+export function getLauncherProducts(entitlements: PortalEntitlement[]): LauncherProduct[] {
   return getCatalogItems(entitlements).filter((item) => item.kind === "product");
 }
 
-export function getEnabledLauncherProducts(entitlements: MockEntitlement[]): LauncherProduct[] {
+export function getEnabledLauncherProducts(entitlements: PortalEntitlement[]): LauncherProduct[] {
   return getLauncherProducts(entitlements).filter((item) => item.state !== "not_enabled");
 }
 
-export function getAdditionalLauncherProducts(entitlements: MockEntitlement[]): LauncherProduct[] {
+export function getAdditionalLauncherProducts(entitlements: PortalEntitlement[]): LauncherProduct[] {
   return getLauncherProducts(entitlements).filter((item) => item.state === "not_enabled");
 }
 
-export function getLauncherServices(entitlements: MockEntitlement[]): LauncherProduct[] {
+export function getLauncherServices(entitlements: PortalEntitlement[]): LauncherProduct[] {
   return getCatalogItems(entitlements).filter((item) => item.kind === "service" && item.state !== "not_enabled");
 }
 

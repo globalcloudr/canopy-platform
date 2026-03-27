@@ -35,7 +35,7 @@ export function SignInForm() {
       </Button>
 
       <div className="flex items-center justify-between mt-1">
-        <p className="text-[0.825rem] text-muted leading-relaxed m-0">Mock sign-in — any email will work.</p>
+        <p className="text-[0.825rem] text-muted leading-relaxed m-0">Preview sign-in — uses real workspace data when the account email is found.</p>
         <a className="text-sm font-medium text-muted no-underline transition-colors hover:text-ink" href="/password-reset">
           Forgot password?
         </a>

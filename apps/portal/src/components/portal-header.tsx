@@ -3,34 +3,45 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { resolvePortalSession } from "@/lib/platform";
+import type { PortalSession } from "@/lib/platform";
 import { getEnabledLauncherProducts } from "@/lib/products";
 
 export function PortalHeader() {
   const searchParams = useSearchParams();
-  const session = resolvePortalSession({
-    email: searchParams.get("email") ?? undefined,
-    workspace: searchParams.get("workspace") ?? undefined,
-  });
-  const { activeWorkspace, user, memberships, entitlements } = session;
-  const activeMembership = memberships.find((m) => m.workspaceId === activeWorkspace.id);
-  const enabledProducts = getEnabledLauncherProducts(entitlements).filter((p) => p.kind === "product");
-
-  const initials = user.email
-    .split("@")[0]
-    .split(/[.\-_]/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? "")
-    .join("");
-
   const qs = searchParams.toString();
   const suffix = qs ? `?${qs}` : "";
-
+  const [session, setSession] = useState<PortalSession | null>(null);
   const [switcherOpen, setSwitcherOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const switcherRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function loadSession() {
+      try {
+        const response = await fetch(`/api/portal-session${suffix}`, {
+          cache: "no-store",
+          signal: controller.signal,
+        });
+
+        if (!response.ok) {
+          return;
+        }
+
+        const payload = (await response.json()) as { session?: PortalSession | null };
+        setSession(payload.session ?? null);
+      } catch {
+        if (!controller.signal.aborted) {
+          setSession(null);
+        }
+      }
+    }
+
+    void loadSession();
+    return () => controller.abort();
+  }, [suffix]);
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -41,11 +52,27 @@ export function PortalHeader() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
+  const activeWorkspace = session?.activeWorkspace ?? null;
+  const user = session?.user ?? null;
+  const memberships = session?.memberships ?? [];
+  const entitlements = session?.entitlements ?? [];
+  const activeMembership = activeWorkspace
+    ? memberships.find((membership) => membership.workspaceId === activeWorkspace.id)
+    : null;
+  const enabledProducts = getEnabledLauncherProducts(entitlements).filter((p) => p.kind === "product");
+  const initials = user?.email
+    ? user.email
+        .split("@")[0]
+        .split(/[.\-_]/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0]?.toUpperCase() ?? "")
+        .join("")
+    : "C";
+
   return (
     <div className="border-b border-[rgba(15,31,61,0.1)] bg-white/95 backdrop-blur-sm">
       <div className="flex h-14 items-center justify-between gap-3 px-4 sm:px-6">
-
-        {/* Brand */}
         <Link href={`/app${suffix}`} className="flex items-center gap-2.5 no-underline text-inherit shrink-0">
           <div
             className="grid place-items-center w-8 h-8 rounded-[7px] bg-navy text-white text-[0.95rem] font-extrabold tracking-[-0.02em] shrink-0"
@@ -56,10 +83,7 @@ export function PortalHeader() {
           <p className="m-0 text-[0.95rem] font-bold text-ink tracking-[-0.01em]">Canopy</p>
         </Link>
 
-        {/* Right side */}
         <div className="flex items-center gap-3 shrink-0">
-
-          {/* Product switcher chip */}
           <div className="relative hidden sm:block" ref={switcherRef}>
             <button
               onClick={() => setSwitcherOpen((o) => !o)}
@@ -67,7 +91,7 @@ export function PortalHeader() {
               aria-expanded={switcherOpen}
             >
               <span className="text-[0.7rem] font-bold uppercase tracking-[0.06em] text-muted-light mr-0.5">Org</span>
-              {activeWorkspace.displayName}
+              {activeWorkspace?.displayName ?? "Workspace"}
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="ml-0.5 text-muted-light">
                 <polyline points="6 9 12 15 18 9"/>
               </svg>
@@ -120,7 +144,6 @@ export function PortalHeader() {
             )}
           </div>
 
-          {/* Avatar + dropdown */}
           <div className="relative" ref={menuRef}>
             <button
               onClick={() => setMenuOpen((o) => !o)}
@@ -128,14 +151,14 @@ export function PortalHeader() {
               aria-label="Open account menu"
               aria-expanded={menuOpen}
             >
-              {initials || "??"}
+              {initials || "C"}
             </button>
 
             {menuOpen && (
               <div className="absolute top-[calc(100%+8px)] right-0 w-72 bg-white border border-[rgba(15,31,61,0.1)] rounded-xl shadow-[0_8px_24px_rgba(15,31,61,0.12)] z-[200] overflow-hidden">
                 <div className="px-4 py-3 border-b border-[rgba(15,31,61,0.08)]">
-                  <p className="text-[0.9rem] font-semibold text-ink m-0">{user.displayName}</p>
-                  <p className="text-[0.8rem] text-muted m-0">{user.email}</p>
+                  <p className="text-[0.9rem] font-semibold text-ink m-0">{user?.displayName ?? "Canopy User"}</p>
+                  <p className="text-[0.8rem] text-muted m-0">{user?.email ?? "Sign in to load account data"}</p>
                   <span className="inline-block mt-1.5 px-2 py-0.5 rounded-full border border-[rgba(15,31,61,0.15)] text-[0.7rem] font-semibold uppercase tracking-[0.06em] text-muted">
                     {activeMembership?.role ?? "staff"}
                   </span>

@@ -13,7 +13,22 @@ type PortalDashboardPageProps = {
 
 export default async function PortalDashboardPage({ searchParams }: PortalDashboardPageProps) {
   const params = (await searchParams) ?? {};
-  const session = resolvePortalSession(params);
+  const session = await resolvePortalSession(params);
+
+  if (!session) {
+    return (
+      <div className="space-y-8 pb-10">
+        <header className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-5 shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
+          <p className="eyebrow">Dashboard</p>
+          <h2 className="mb-1">Sign in required</h2>
+          <p className="m-0 text-sm text-muted">
+            Enter a valid account email on the sign-in screen to load your real Canopy workspace data.
+          </p>
+        </header>
+      </div>
+    );
+  }
+
   const launcherProducts = getEnabledLauncherProducts(session.entitlements);
   const additionalProducts = getAdditionalLauncherProducts(session.entitlements);
   const launcherServices = getLauncherServices(session.entitlements);
