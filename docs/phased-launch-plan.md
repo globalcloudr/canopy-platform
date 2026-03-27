@@ -239,6 +239,23 @@ Rule:
 
 - build one next product/workflow at a time
 
+## Admin Invite Direction
+
+Invitation ownership should move toward Canopy, not remain split across product apps.
+
+Near-term rule:
+
+- keep the existing PhotoVault invite flow available while the portal is still hardening
+
+Long-term rule:
+
+- super admin and workspace-admin invitation should be initiated from Canopy
+- products should consume the resulting membership and entitlement state rather than owning separate invite loops
+
+Transition constraint:
+
+- do not remove PhotoVault's current invite path until Canopy can create the same practical outcome for school admins
+
 Exit criteria:
 
 - Canopy and PhotoVault launch flow is stable enough that the next product can plug into the same model
