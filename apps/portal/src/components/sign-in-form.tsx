@@ -1,14 +1,18 @@
 import { Button, Input } from "@canopy/ui";
 
-export function SignInForm() {
+type SignInFormProps = {
+  defaultEmail?: string;
+};
+
+export function SignInForm({ defaultEmail }: SignInFormProps) {
   return (
-    <form action="/app" className="flex flex-col gap-4 mt-6" method="GET">
+    <form action="/auth/sign-in" className="flex flex-col gap-4 mt-6" method="POST">
       <div className="flex flex-col gap-1.5">
         <label htmlFor="email" className="text-sm font-medium text-ink-2">
           Email address
         </label>
         <Input
-          defaultValue="sarah.zylstra@school.edu"
+          defaultValue={defaultEmail ?? "sarah.zylstra@school.edu"}
           id="email"
           name="email"
           type="email"
@@ -35,7 +39,7 @@ export function SignInForm() {
       </Button>
 
       <div className="flex items-center justify-between mt-1">
-        <p className="text-[0.825rem] text-muted leading-relaxed m-0">Preview sign-in — uses real workspace data when the account email is found.</p>
+        <p className="text-[0.825rem] text-muted leading-relaxed m-0">Sign in with your shared Canopy and PhotoVault account.</p>
         <a className="text-sm font-medium text-muted no-underline transition-colors hover:text-ink" href="/password-reset">
           Forgot password?
         </a>

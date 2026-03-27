@@ -1,6 +1,26 @@
 import { SignInForm } from "@/components/sign-in-form";
 
-export default function SignInPage() {
+type SignInPageProps = {
+  searchParams?: Promise<{
+    error?: string;
+    email?: string;
+  }>;
+};
+
+function getErrorMessage(error?: string) {
+  if (error === "missing_credentials") {
+    return "Enter both your email and password to sign in.";
+  }
+  if (error === "invalid_credentials") {
+    return "That email and password combination was not recognized.";
+  }
+  return null;
+}
+
+export default async function SignInPage({ searchParams }: SignInPageProps) {
+  const params = (await searchParams) ?? {};
+  const errorMessage = getErrorMessage(params.error);
+
   return (
     <div className="grid grid-cols-[2fr_3fr] min-h-screen max-[840px]:grid-cols-1">
 
@@ -50,7 +70,12 @@ export default function SignInPage() {
           <p className="m-0 text-muted text-[0.9rem]">
             Enter your credentials to access your organization&apos;s tools.
           </p>
-          <SignInForm />
+          {errorMessage && (
+            <div className="mt-4 rounded-xl border border-[rgba(220,38,38,0.18)] bg-[rgba(220,38,38,0.06)] px-4 py-3 text-[0.875rem] text-[rgb(153,27,27)]">
+              {errorMessage}
+            </div>
+          )}
+          <SignInForm defaultEmail={params.email} />
         </div>
       </main>
 

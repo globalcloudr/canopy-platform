@@ -189,7 +189,7 @@ export function PortalHeader() {
                 </div>
                 <div className="p-1.5 border-t border-[rgba(15,31,61,0.08)]">
                   <Link
-                    href="/sign-in"
+                    href="/auth/sign-out"
                     className="flex items-center gap-2.5 px-3 py-2 rounded-md text-[0.875rem] text-muted no-underline hover:bg-[rgba(15,31,61,0.04)] hover:text-ink-2 transition-colors"
                     onClick={() => setMenuOpen(false)}
                   >

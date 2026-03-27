@@ -1,3 +1,5 @@
+import { cookies } from "next/headers";
+
 export type WorkspaceRole = "owner" | "admin" | "staff" | "uploader" | "viewer";
 export type MembershipStatus = "invited" | "active" | "suspended";
 export type EntitlementStatus = "trial" | "active" | "pilot" | "paused";
@@ -52,9 +54,13 @@ export type PortalSession = {
   entitlements: PortalEntitlement[];
 };
 
+export const ACCESS_TOKEN_COOKIE = "canopy_portal_access_token";
+export const REFRESH_TOKEN_COOKIE = "canopy_portal_refresh_token";
+
 type ServiceEnv = {
   supabaseUrl: string;
   serviceRoleKey: string;
+  anonKey: string;
 };
 
 type AuthAdminUser = {
@@ -64,6 +70,14 @@ type AuthAdminUser = {
     full_name?: string | null;
     name?: string | null;
   } | null;
+};
+
+export type SupabasePasswordAuthResult = {
+  access_token: string;
+  refresh_token: string;
+  expires_in: number;
+  token_type: string;
+  user: AuthAdminUser;
 };
 
 type MembershipRow = {
@@ -97,12 +111,13 @@ type EntitlementRow = {
 function getServiceEnv(): ServiceEnv | null {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  if (!supabaseUrl || !serviceRoleKey) {
+  if (!supabaseUrl || !serviceRoleKey || !anonKey) {
     return null;
   }
 
-  return { supabaseUrl, serviceRoleKey };
+  return { supabaseUrl, serviceRoleKey, anonKey };
 }
 
 function formatDisplayName(user: AuthAdminUser) {
@@ -127,7 +142,7 @@ function formatDisplayName(user: AuthAdminUser) {
 async function requestJson<T>(path: string, searchParams?: URLSearchParams): Promise<T> {
   const env = getServiceEnv();
   if (!env) {
-    throw new Error("Missing Supabase service-role environment variables.");
+    throw new Error("Missing Supabase environment variables.");
   }
 
   const url = new URL(path, env.supabaseUrl);
@@ -150,6 +165,28 @@ async function requestJson<T>(path: string, searchParams?: URLSearchParams): Pro
   }
 
   return (await response.json()) as T;
+}
+
+async function getUserFromAccessToken(accessToken: string) {
+  const env = getServiceEnv();
+  if (!env) {
+    return null;
+  }
+
+  const response = await fetch(new URL("/auth/v1/user", env.supabaseUrl), {
+    headers: {
+      apikey: env.anonKey,
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    return null;
+  }
+
+  return (await response.json()) as AuthAdminUser;
 }
 
 async function findUserByEmail(email?: string) {
@@ -337,6 +374,44 @@ function buildSyntheticEntitlements(activeWorkspaceId: string, memberships: Port
   ];
 }
 
+async function resolveUserFromRequest(options?: { email?: string }) {
+  const store = await cookies();
+  const accessToken = store.get(ACCESS_TOKEN_COOKIE)?.value;
+
+  if (accessToken) {
+    const authedUser = await getUserFromAccessToken(accessToken);
+    if (authedUser?.id && authedUser.email) {
+      return authedUser;
+    }
+  }
+
+  return findUserByEmail(options?.email);
+}
+
+export async function signInWithSupabasePassword(email: string, password: string): Promise<SupabasePasswordAuthResult> {
+  const env = getServiceEnv();
+  if (!env) {
+    throw new Error("Missing Supabase environment variables.");
+  }
+
+  const response = await fetch(new URL("/auth/v1/token?grant_type=password", env.supabaseUrl), {
+    method: "POST",
+    headers: {
+      apikey: env.anonKey,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, password }),
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Supabase sign-in failed (${response.status}): ${text}`);
+  }
+
+  return (await response.json()) as SupabasePasswordAuthResult;
+}
+
 export async function resolvePortalSession(options?: {
   email?: string;
   workspace?: string;
@@ -345,7 +420,7 @@ export async function resolvePortalSession(options?: {
     return null;
   }
 
-  const user = await findUserByEmail(options?.email);
+  const user = await resolveUserFromRequest(options);
   if (!user?.id || !user.email) {
     return null;
   }

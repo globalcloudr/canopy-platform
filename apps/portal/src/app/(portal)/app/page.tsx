@@ -1,4 +1,5 @@
 import { Badge } from "@canopy/ui";
+import { redirect } from "next/navigation";
 import { ProductLauncherCard } from "@/components/product-launcher-card";
 import { resolvePortalSession } from "@/lib/platform";
 import { getAdditionalLauncherProducts, getEnabledLauncherProducts, getLauncherServices } from "@/lib/products";
@@ -16,17 +17,7 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
   const session = await resolvePortalSession(params);
 
   if (!session) {
-    return (
-      <div className="space-y-8 pb-10">
-        <header className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-5 shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
-          <p className="eyebrow">Dashboard</p>
-          <h2 className="mb-1">Sign in required</h2>
-          <p className="m-0 text-sm text-muted">
-            Enter a valid account email on the sign-in screen to load your real Canopy workspace data.
-          </p>
-        </header>
-      </div>
-    );
+    redirect("/sign-in");
   }
 
   const launcherProducts = getEnabledLauncherProducts(session.entitlements);

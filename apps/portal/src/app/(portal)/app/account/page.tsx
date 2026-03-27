@@ -1,4 +1,5 @@
 import { Badge } from "@canopy/ui";
+import { redirect } from "next/navigation";
 import { resolvePortalSession } from "@/lib/platform";
 import { getProductDefinition } from "@/lib/products";
 import type { ProductState } from "@/lib/products";
@@ -15,17 +16,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
   const session = await resolvePortalSession(params);
 
   if (!session) {
-    return (
-      <div className="space-y-8 pb-10">
-        <header className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-5 shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
-          <p className="eyebrow">Account</p>
-          <h2 className="mb-1">No workspace loaded</h2>
-          <p className="m-0 text-sm text-muted">
-            Sign in with a valid account email to load account and workspace details from the shared Supabase project.
-          </p>
-        </header>
-      </div>
-    );
+    redirect("/sign-in");
   }
 
   const { activeWorkspace, user, memberships, entitlements } = session;
