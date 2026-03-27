@@ -34,7 +34,7 @@ export function SignInForm({ defaultEmail }: SignInFormProps) {
         />
       </div>
 
-      <Button variant="primary" size="lg" className="w-full justify-center mt-1">
+      <Button type="submit" variant="primary" size="lg" className="w-full justify-center mt-1">
         Sign in
       </Button>
 
