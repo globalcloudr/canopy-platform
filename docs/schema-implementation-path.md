@@ -19,6 +19,18 @@ It focuses on:
 - the minimum constraints needed for the portal MVP
 - how this work should relate to PhotoVault and future products
 
+## Implementation Status
+
+This document started as the path into the first real portal build. Several of those steps are now implemented:
+
+- Canopy uses the shared Supabase project that originally powered PhotoVault
+- the portal has real auth and session persistence
+- real `product_entitlements` are in place
+- real `workspace_service_states` are in place
+- real `workspace_admin_invitations` are in place
+
+The remaining value of this doc is the shape and sequencing guidance, not the assumption that the portal is still mock-backed.
+
 ## Recommended Near-Term Backend Choice
 
 Recommended starting point:
@@ -58,6 +70,12 @@ Do not try to model:
 The first schema should be small, explicit, and stable.
 
 ## Recommended Implementation Order
+
+The early implementation order below is still the right conceptual order, but it should now be read as:
+
+- implemented already where Canopy now has live support
+- still transitional where Canopy is bridging from existing PhotoVault tables
+- still future where a cleaner dedicated platform table has not been introduced yet
 
 ### Step 1: `users`
 
@@ -337,7 +355,7 @@ This means:
 - PhotoVault should eventually consume platform context
 - the platform should not duplicate PhotoVault's asset, album, or product-domain tables
 
-## Phase 5 Entry Point: Shared Supabase Project
+## Shared Supabase Project
 
 **Decision (confirmed 2026-03-23):** PhotoVault's existing Supabase project will be promoted to the Canopy platform core. A separate Supabase project will not be created.
 
@@ -351,15 +369,26 @@ This means:
 - The portal and PhotoVault can share `auth.users` and `workspaces` natively
 - One source of truth from day one
 
-### Phase 5 Pre-Build Checklist
+### Original Pre-Build Checklist
 
-Before writing any Phase 5 portal code against Supabase, complete these steps in order:
+This checklist is preserved for historical context. The major items below are now complete.
+
+Before writing the first real portal code against Supabase, these were the required steps:
 
 1. **Audit existing PhotoVault tables** — identify which are platform-core-safe (users, auth) vs. PhotoVault-specific (assets, albums, etc.). Document the boundary.
-2. **Add `product_entitlements` table** — this is the only new platform-core table needed. Use the schema defined in Step 5 above.
+2. **Add `product_entitlements` table** — completed.
 3. **Review and tighten RLS policies** — PhotoVault's existing policies were written for a single-product context. Update them to account for platform-level workspace and role concepts.
-4. **Switch portal auth to server-side Supabase calls** — replace the `platform.ts` mock layer with real Supabase queries using the same Supabase project.
+4. **Switch portal auth to server-side Supabase calls** — completed.
 5. **Keep PhotoVault domain tables separate** — do not merge or rename PhotoVault's product-specific tables into platform-core names. Platform core and PhotoVault domain live in the same project but remain logically distinct.
+
+### Additional Implemented Platform Tables
+
+The live Canopy build also introduced:
+
+- `workspace_service_states`
+- `workspace_admin_invitations`
+
+Those tables support Canopy-owned provisioning, service visibility, invite send/resend, and invite acceptance.
 
 ## Resolved Questions
 
@@ -377,7 +406,7 @@ These decisions can remain open until Phase 5 build begins:
 
 1. What is the first auth/session handoff path from portal to PhotoVault? (token passing vs. shared session)
 2. How should active workspace context be persisted across product launches? (URL param, cookie, or Supabase session metadata)
-3. What is the first operational flow for provisioning a new workspace and its initial entitlements? (manual Supabase insert at MVP, or a lightweight admin UI)
+3. What is the long-term operational model for provisioning after the current lightweight Canopy admin UI?
 
 ## Recommended Near-Term Implementation Bias
 

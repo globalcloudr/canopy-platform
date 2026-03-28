@@ -2,6 +2,26 @@
 
 Date: 2026-03-27
 
+## Current Status
+
+Completed:
+
+- Ticket 1: Lock the provisioning contract
+- Ticket 2: Add service visibility persistence plan
+- Ticket 3: Add Canopy provisioning server action/route
+- Ticket 4: Build minimal workspace provisioning page
+- Ticket 5: Add provisioning success summary
+- Ticket 6: Add invitation and membership status view
+
+Partially completed:
+
+- invitation delivery, resend, and acceptance flow are now implemented even though they were not broken out as separate tickets here originally
+
+Still open:
+
+- Ticket 7: Limit PhotoVault to compatibility during transition
+- Ticket 8: Plan PhotoVault invite flow retirement
+
 ## Purpose
 
 Break the workspace provisioning plan into a small, safe implementation sequence for `canopy-platform`.
@@ -235,6 +255,11 @@ Reason:
 
 - keep long-term ownership clean
 
+Current status:
+
+- in progress conceptually
+- new provisioning/invitation work is now happening in Canopy, but PhotoVault still exists as a compatibility fallback
+
 Test steps:
 
 - future provisioning changes are proposed in Canopy first
@@ -260,6 +285,11 @@ Files to edit:
 Reason:
 
 - avoid a half-migration where both apps remain permanent provisioning surfaces
+
+Current status:
+
+- still open
+- Canopy now covers the main provisioning flow, but operator retirement criteria and final workflow cutover should be documented explicitly before PhotoVault is treated as retired
 
 Test steps:
 

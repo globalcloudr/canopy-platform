@@ -4,6 +4,11 @@ Repository: `/Users/zylstra/Code/canopy-platform`
 Scope: `usecanopy.school` platform MVP  
 Purpose: Define the complete path from platform concept to a usable Canopy MVP
 
+Implementation note:
+
+- for the current live state of the portal, provisioning, invitations, and PhotoVault integration, read `docs/current-state/` first
+- this document remains useful as the higher-level MVP roadmap and sequencing rationale
+
 ## MVP Definition
 
 The Canopy MVP is not "every future product fully built."

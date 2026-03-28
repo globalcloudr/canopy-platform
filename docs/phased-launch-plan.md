@@ -2,6 +2,26 @@
 
 Date: 2026-03-27
 
+## Implementation Status
+
+Implemented now:
+
+- real Canopy portal auth with Supabase-backed session cookies
+- real workspace resolution in the portal
+- real `product_entitlements` for launcher visibility
+- real `workspace_service_states` for service visibility
+- workspace-aware Canopy-to-PhotoVault launch handoff
+- Canopy-owned workspace provisioning UI and backend
+- Canopy invitation records, resend flow, and invite acceptance completion
+- neutral platform overview for platform operators with explicit workspace selection
+
+Still transitional or incomplete:
+
+- production domain is still the Vercel URL rather than the final Canopy domain
+- invite email branding is Canopy-owned, but auth email delivery still rides through shared Supabase project settings
+- cross-domain seamless SSO between Canopy and PhotoVault is still not complete
+- PhotoVault remains a compatibility path for some operational workflows until Canopy fully replaces them
+
 ## Purpose
 
 Define the safest practical path to launch Canopy as the live platform front door while preserving PhotoVault as the first real product.
@@ -141,6 +161,10 @@ Exit criteria:
 3. Canopy shows PhotoVault as enabled when appropriate
 4. the portal is no longer driven by mock session data
 
+Status:
+
+- completed
+
 ## Phase 2: Add The Minimum Shared Platform Schema
 
 Goal:
@@ -165,6 +189,11 @@ Exit criteria:
 
 - entitlement-aware dashboard logic is backed by real data
 - platform/operator access is stable enough for portal behavior
+
+Status:
+
+- substantially completed for MVP
+- `product_entitlements`, `workspace_service_states`, and `workspace_admin_invitations` now exist as platform tables in the shared Supabase model
 
 ## Phase 3: Portal-To-PhotoVault Launch Handoff
 
@@ -192,6 +221,12 @@ Exit criteria:
 - wrong-workspace access is rejected
 - stale or direct product entry does not bypass access checks
 
+Status:
+
+- completed for the current MVP handoff model
+- Canopy passes explicit workspace context and PhotoVault honors it on entry
+- fully seamless cross-domain login is still a later refinement
+
 ## Phase 4: Launch Canopy Live
 
 Goal:
@@ -216,6 +251,12 @@ Exit criteria:
 - Canopy is live
 - users can sign in and launch PhotoVault
 - the dashboard clearly separates products and services
+
+Status:
+
+- partially completed
+- Canopy is live on the Vercel deployment URL and is being used as the active portal environment
+- final production domain cutover is still pending
 
 ## Phase 5: Stabilize Before Expanding
 
@@ -259,6 +300,11 @@ Long-term rule:
 Transition constraint:
 
 - do not remove PhotoVault's current operational path until Canopy can create the same practical outcome for workspace setup and school-admin onboarding
+
+Current status:
+
+- Canopy can now provision workspaces, enable products/services, send invites, resend invites, and complete invite acceptance into membership
+- PhotoVault should now be treated as a compatibility fallback, not the preferred place for new provisioning work
 
 Exit criteria:
 

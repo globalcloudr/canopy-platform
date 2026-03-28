@@ -71,13 +71,13 @@ This matches PhotoVault's `MediaWorkspaceShell` layout so both feel like the sam
 | `PortalHeader` | `components/portal-header.tsx` | Top bar with brand, product switcher, avatar dropdown |
 | `PortalSidebar` | `components/portal-sidebar.tsx` | Left nav with contextual links and icons |
 | `ProductLauncherCard` | `components/product-launcher-card.tsx` | Product tile for dashboard grid |
-| `SignInForm` | `components/sign-in-form.tsx` | Mock sign-in form using `Input` and `Button` |
+| `SignInForm` | `components/sign-in-form.tsx` | Real Supabase sign-in form using `Input` and `Button` |
 
 ## Key Data Files
 
 | File | Purpose |
 |------|---------|
-| `lib/platform.ts` | Mock session layer — resolves user, workspace, memberships, entitlements |
+| `lib/platform.ts` | Portal session layer — resolves signed-in user, workspace context, memberships, entitlements, and operator state |
 | `lib/products.ts` | Product catalog — definitions, state derivation, action targets |
 
 `products.ts` is the source of truth for:
@@ -121,20 +121,29 @@ canopy-platform/
 
 Root `package.json` uses npm workspaces: `["apps/*", "packages/*"]`.
 
+## What Is In The Stack Now
+
+- Real Supabase authentication with cookie-backed portal sessions
+- Real workspace and membership resolution from the shared Supabase project
+- Real `product_entitlements` reads for launcher visibility
+- Workspace-aware launch handoff into PhotoVault
+- Operator-only workspace provisioning, service enablement, invitation send/resend, and invitation acceptance
+- Live deployment at `https://canopy-platform-portal.vercel.app`
+
 ## What Is Not Yet In The Stack
 
-- Real authentication (currently a mock session layer in `platform.ts`)
-- Supabase connection (planned for Phase 5)
-- Real entitlement data (currently hardcoded mock data in `platform.ts`)
-- Deployed URL (portal not yet live)
+- Final production domain (`usecanopy.school`) is not attached yet
+- Seamless cross-domain session sharing between Canopy and PhotoVault is not finished yet
+- Dedicated Canopy-owned email templates and admin tooling may still evolve
+- Future products remain placeholder surfaces until they are actually built
 
-## Near-Term Stack Decisions (Phase 5)
+## Near-Term Stack Decisions
 
-Before Phase 5, the mock layer needs to be replaced:
+The next backend and platform steps are:
 
-1. Audit existing PhotoVault Supabase tables
-2. Add `product_entitlements` table to shared Supabase project
-3. Replace `platform.ts` mock with real Supabase queries
-4. Implement real sign-in (Supabase Auth)
+1. Finish invite acceptance polish and operator follow-up tools
+2. Improve cross-domain auth/session handoff between Canopy and PhotoVault
+3. Continue moving platform-owned workflows from PhotoVault into Canopy
+4. Keep product-specific PhotoVault workflows out of platform core
 
 See `docs/schema-implementation-path.md` for full detail.

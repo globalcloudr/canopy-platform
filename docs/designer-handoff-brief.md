@@ -8,7 +8,7 @@ Purpose: Give a designer a clear, practical starting point for Canopy visual des
 
 The Canopy platform structure, product definitions, and portal architecture are now stable enough for production-quality design work to begin.
 
-The current portal is a working concept mock — the dashboard structure, navigation model, and component patterns are implemented and functional, but the visual design is a baseline, not a final direction. The goal of this phase is to take everything that is structurally right about the current portal and make it look and feel like a product that can compete in the market.
+The current portal is a working implemented baseline — the dashboard structure, navigation model, and component patterns are implemented and functional, but the visual design is a baseline, not a final direction. The goal of this phase is to take everything that is structurally right about the current portal and make it look and feel like a product that can compete in the market.
 
 This brief gives a designer:
 - a clear picture of what Canopy is and who uses it
@@ -83,7 +83,7 @@ Reference aesthetic: Stripe, Vercel, Linear — clean, fast, confident, purposef
 
 ## Approved Visual Direction
 
-A visual direction has been approved and is already implemented in the portal concept mock. The designer should build on this direction, not replace it.
+A visual direction has been approved and is already implemented in the current portal baseline. The designer should build on this direction, not replace it.
 
 ### Color System
 
@@ -129,7 +129,7 @@ Services:          #374151  (gray)
 
 ## Portal Design: What Already Exists
 
-The portal concept mock at `apps/portal` includes:
+The portal at `apps/portal` includes:
 
 - **Marketing homepage** — nav, hero, 6-product showcase grid
 - **Sign-in page** — split layout (40% navy panel, 60% form)
@@ -184,7 +184,7 @@ Public-facing, more expressive than the portal. Needs:
 - Nav with sign-in CTA
 - Hero with headline, lede, and two CTAs
 - Product showcase section (3-col grid)
-- Stronger visual storytelling than the current mock
+- Stronger visual storytelling than the current baseline
 
 ### 6. Account Page
 
@@ -239,7 +239,7 @@ All planning docs are in `/Users/zylstra/Code/canopy-platform/docs/`:
 | Doc | What it covers |
 |---|---|
 | `mvp-product-catalog.md` | Full product/service catalog and dashboard grouping model |
-| `mvp-implementation-board.md` | Phase overview and current implementation status |
+| `archive/mvp-implementation-board.md` | Historical phase overview and implementation history |
 | `platform-navigation-model.md` | Portal navigation and header structure |
 | `portal-mvp-scope.md` | Portal feature scope and constraints |
 | `community-canopy-mvp.md` | Canopy Community product definition |

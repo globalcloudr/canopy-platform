@@ -2,6 +2,26 @@
 
 Date: 2026-03-27
 
+## Implementation Status
+
+Implemented now:
+
+- Canopy workspace provisioning page at `/app/provisioning`
+- create/select workspace flow
+- product entitlement provisioning
+- service visibility provisioning
+- invitation record creation
+- invitation delivery through Supabase auth invite flow
+- invitation resend flow
+- invitation acceptance completion into real membership
+- invitation status visibility in the provisioning UI
+
+Still incomplete or transitional:
+
+- invite delivery still depends on shared Supabase auth email infrastructure
+- PhotoVault remains a compatibility fallback for any operator workflows not yet fully moved into Canopy
+- broader staff invitation and richer admin tooling are still later expansions
+
 ## Purpose
 
 Define how workspace provisioning moves from today's PhotoVault-heavy operational flow into a Canopy-owned platform workflow.
@@ -23,7 +43,7 @@ Today:
 - PhotoVault already has a practical super-admin invite flow
 - Canopy now has real auth, workspace resolution, entitlement visibility, and product launch behavior
 - `product_entitlements` already exists in the shared Supabase project
-- Canopy does not yet have the super-admin workflow needed to replace PhotoVault provisioning fully
+- Canopy now has a working first super-admin provisioning workflow, but the overall migration away from PhotoVault is still transitional
 
 That means:
 
@@ -248,11 +268,11 @@ Recommended minimum fields:
 Submitting the first Canopy provisioning form should produce these results:
 
 1. workspace exists
-2. school-admin invitation is recorded when the admin is not yet a known user
+2. school-admin invitation is recorded and, when possible, sent
 3. workspace membership is created or prepared when the admin already exists
 4. selected product entitlements are created
 5. selected services are marked visible or active according to the chosen status
-6. the invited admin can sign in through Canopy and see the provisioned workspace
+6. the invited admin can accept through Canopy and see the provisioned workspace
 
 ## MVP UI Rules
 

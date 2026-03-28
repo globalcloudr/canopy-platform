@@ -149,10 +149,16 @@ The header chip lists `kind: "product"` items that are not `not_enabled`:
 |------|--------|
 | Product metadata registry in `products.ts` | Complete |
 | Derived launcher-card object shape | Complete |
-| Launcher state from entitlement and setup data | Complete (mock) |
+| Launcher state from entitlement and setup data | Complete |
 | PhotoVault as first real launchable product | Complete — links to `photovault.school` |
 | Product placeholder pages for all other products | Complete |
-| Real entitlement data from Supabase | Planned (Phase 5) |
+| Real entitlement data from Supabase | Complete |
+
+## Current Notes
+
+- The launcher now reads real `product_entitlements` rows from the shared Supabase project.
+- PhotoVault launch targets can carry explicit workspace context from Canopy into PhotoVault.
+- Platform operators can now land in a neutral platform state with no active client workspace until they choose one.
 
 ## Summary
 

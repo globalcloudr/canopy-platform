@@ -2,6 +2,11 @@
 
 Date: 2026-03-23
 
+Implementation note:
+
+- for the current live Canopy setup, read `docs/current-state/README.md` first
+- this brief remains the architecture and boundary reference for how the platform should evolve
+
 ## Purpose
 
 Define a practical technical architecture for Canopy so the platform can grow beyond PhotoVault without collapsing into either:

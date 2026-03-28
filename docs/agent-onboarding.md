@@ -2,6 +2,8 @@ You are helping develop Canopy Platform.
 
 Before doing anything read:
 
+docs/current-state/README.md
+
 docs/canopy-technical-platform-architecture-brief.md
 docs/workspace-identity-model.md
 docs/product-entitlements.md
@@ -22,6 +24,10 @@ After reading them:
 1. Summarize the current platform state.
 2. Identify whether the task belongs to the platform core, the portal app, or reference material.
 3. Propose the smallest safe change.
+
+Use `docs/current-state/` for the fastest accurate picture of what is already implemented.
+Use the rest of `docs/` for architecture rationale, boundaries, and longer-term planning.
+Treat `docs/archive/` as historical reference unless a task specifically requires implementation history.
 
 Rules:
 

@@ -2,6 +2,25 @@
 
 Date: 2026-03-27
 
+## Implementation Status
+
+Implemented now in the shared Supabase project:
+
+- `product_entitlements`
+- `workspace_service_states`
+- `workspace_admin_invitations`
+
+Implemented now in the portal:
+
+- Canopy reads shared auth identity from the same Supabase project as PhotoVault
+- Canopy provisions workspace-level products and services against the shared database
+- Canopy records, resends, and accepts workspace-admin invitations against the shared database
+
+Important current reality:
+
+- this shared Supabase project still reflects PhotoVault-era origins in some auth/email settings
+- Canopy is now the intended provisioning/front-door owner even though infrastructure is still shared
+
 ## Purpose
 
 Define the near-term backend strategy for launching Canopy quickly and safely using the existing PhotoVault Supabase foundation.
@@ -111,6 +130,11 @@ Use for:
 - canonical auth user record
 - email resolution where app-local tables do not store email directly
 
+Canopy also now uses `auth.users` for:
+
+- determining whether a provisioned admin already exists
+- finalizing pending invitation acceptance into real membership
+
 ## New Platform Tables To Add First
 
 The portal does not need the full long-term platform schema on day one.
@@ -200,7 +224,37 @@ If delayed for MVP:
 
 - continue using PhotoVault's current compatibility model
 
-### 4. `subscriptions` (optional for early MVP)
+### 4. `workspace_admin_invitations`
+
+Purpose:
+
+- track Canopy-owned invitation state for workspace admins
+- distinguish pending, accepted, and cancelled invite state
+- support resend and acceptance flows without relying on product-local invite tracking
+
+Recommended minimum fields:
+
+- `id`
+- `organization_id`
+- `email`
+- `role`
+- `status`
+- `delivery_status`
+- `sent_at`
+- `invited_by_user_id`
+- `accepted_by_user_id`
+- `accepted_at`
+- `notes`
+- timestamps
+
+Current portal usage:
+
+- provisioning result status
+- invitation status list in the provisioning page
+- resend invite flow
+- invite acceptance completion
+
+### 5. `subscriptions` (optional for early MVP)
 
 Purpose:
 
@@ -261,6 +315,12 @@ Use `workspace_service_states` for:
 - managed services
 - service visibility in the portal
 - basic service lifecycle/status
+
+Use `workspace_admin_invitations` for:
+
+- Canopy-owned invitation lifecycle
+- delivery tracking
+- acceptance tracking
 
 Do not:
 

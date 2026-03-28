@@ -2,6 +2,12 @@
 
 Date: 2026-03-23
 
+Implementation note:
+
+- the portal is no longer a concept-only scope item
+- for the live portal behavior today, read `docs/current-state/portal-overview.md` and `docs/current-state/auth-and-invitations.md`
+- this doc remains the scope guard for what belongs in the portal
+
 ## Purpose
 
 Define the smallest believable first version of the Canopy platform portal at `usecanopy.school`.

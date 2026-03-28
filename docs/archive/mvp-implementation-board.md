@@ -6,25 +6,26 @@
 |-------|------|--------|
 | 0 | Platform Strategy and Shape | Complete |
 | 1 | Platform Core Model | Complete (concept level) |
-| 2 | Portal Structure and Workflow | Complete (mock level) |
+| 2 | Portal Structure and Workflow | Complete |
 | 3 | MVP Product Definition | Complete |
 | 4 | Design System and Visual Design | **Complete** |
-| **5** | **MVP Build** | **Next phase** |
-| 6 | MVP Validation and Launch Readiness | Planned |
+| **5** | **MVP Build** | **In progress** |
+| 6 | MVP Validation and Launch Readiness | In progress |
 
 ---
 
-## Right Now — Phase 5 Entry Checklist
+## Current Implementation Status
 
-Before writing Phase 5 code, complete these steps:
+The mock-to-real portal transition is no longer a future step. These items are now complete:
 
 | Step | Status |
 |------|--------|
-| Audit existing PhotoVault Supabase tables | Planned |
-| Add `product_entitlements` table | Planned |
-| Review and tighten RLS policies | Planned |
-| Replace `platform.ts` mock with real Supabase queries | Planned |
-| Keep PhotoVault domain tables logically separate | Planned |
+| Audit existing PhotoVault Supabase tables | Complete |
+| Add `product_entitlements` table | Complete |
+| Add `workspace_service_states` table | Complete |
+| Add `workspace_admin_invitations` table | Complete |
+| Replace `platform.ts` mock with real Supabase queries | Complete |
+| Keep PhotoVault domain tables logically separate | Active rule |
 
 Full detail: `docs/schema-implementation-path.md`
 
@@ -85,7 +86,7 @@ Purpose: Define how the portal works before final design.
 | Task | Status | Notes |
 |------|--------|-------|
 | CP-004 — Portal Shell and Navigation | Complete | Sidebar layout, contextual nav, product switcher chip |
-| CP-005 — Authentication Entry Flow | Complete | Sign-in page, split-panel layout, mock session layer |
+| CP-005 — Authentication Entry Flow | Complete | Sign-in page, split-panel layout, real Supabase auth |
 | CP-006 — Workspace Resolution and Switcher | Complete | Single-workspace lands on dashboard; multi-workspace via URL param |
 | CP-007 — Entitlement-Aware Product Launcher | Complete | Full product catalog; all states; placeholder pages for non-live products |
 | CP-008 — PhotoVault as First Connected Product | Complete | Brand aligned; links to `photovault.school`; switcher chip in both apps |
@@ -136,25 +137,26 @@ Purpose: Turn the portal structure and product definitions into a real visual de
 
 ### Phase 5: MVP Build
 
-Purpose: Replace the mock layer with real auth, real data, and real connected products.
+Purpose: Turn the portal into the live platform front door with real auth, real data, provisioning, and connected-product launch.
 
 | Task | Status | Notes |
 |------|--------|-------|
-| CP-018 — Real Auth and Supabase Connection | Planned | Replace `platform.ts` mock layer |
+| CP-018 — Real Auth and Supabase Connection | Complete | Portal auth, sessions, and workspace resolution use Supabase |
 | CP-019 — Community Canopy Launch | Planned | Second product through the portal |
 | CP-020 — Reach Canopy Launch | Planned | Third product through the portal |
-| CP-021 — Operator and Account Surfaces | Planned | Workspace settings, service visibility, staff views |
+| CP-021 — Operator and Account Surfaces | In progress | Account views, provisioning, invitation status, neutral platform overview |
+| CP-026 — Workspace Provisioning | Complete | Workspace provisioning UI, product entitlements, service state, invitations |
+| CP-027 — Invitation Delivery and Acceptance | Complete | Invite send, resend, Canopy-branded acceptance path, membership activation |
 
-**Phase 5 entry — before writing any code:**
-1. Audit existing PhotoVault Supabase tables (platform-safe vs. product-specific)
-2. Add `product_entitlements` table
-3. Review and tighten RLS policies for platform-level workspace/role concepts
-4. Replace `platform.ts` mock layer with real Supabase queries
-5. Keep PhotoVault domain tables separate (same project, logically distinct)
+**Current Phase 5 focus:**
+1. Improve invite follow-up tooling and operator workflows
+2. Continue tightening workspace and role handling
+3. Improve cross-domain auth/session handoff between Canopy and PhotoVault
+4. Add the next real connected product without moving product workflows into platform core
 
 Full detail: `docs/schema-implementation-path.md`
 
-**Exit criteria:** Real sign-in works. Dashboard reflects real account state. PhotoVault launches through the portal with real workspace context. Community Canopy is available as the second product.
+**Exit criteria:** Real sign-in works. Dashboard reflects real account state. PhotoVault launches through the portal with real workspace context. Workspace provisioning and invitations are Canopy-owned. The next connected product path is ready.
 
 ---
 

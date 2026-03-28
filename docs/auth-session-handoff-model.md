@@ -2,6 +2,22 @@
 
 Date: 2026-03-23
 
+## Implementation Status
+
+Implemented now:
+
+- Canopy portal sign-in with Supabase-backed session cookies
+- Canopy workspace resolution and entitlement-aware dashboard behavior
+- explicit workspace context passed from Canopy into PhotoVault launch URLs
+- PhotoVault honoring workspace launch context instead of defaulting silently to the first org
+- Canopy invitation send, resend, and acceptance completion for workspace-admin onboarding
+
+Not implemented yet:
+
+- seamless cross-domain shared login between `canopy-platform-portal.vercel.app` and `photovault.school`
+- final production-domain auth configuration under the permanent Canopy domain
+- a fully custom Canopy invitation email delivery stack outside shared Supabase auth email infrastructure
+
 ## Purpose
 
 Define the first practical auth and session handoff model between:
@@ -89,6 +105,10 @@ The portal resolves:
 - active `Workspace`
 - `ProductEntitlement` for `photovault`
 
+Current implementation note:
+
+- platform operators can now land in a neutral platform overview with no active client workspace until one is explicitly chosen
+
 ### Step 2: Portal Validates Launch Eligibility
 
 Before launching PhotoVault, the portal checks:
@@ -111,6 +131,11 @@ The portal sends the user into PhotoVault with:
 Near-term implementation bias:
 
 - prefer a shared auth-compatible session approach over custom token exchange if possible
+
+Current implementation note:
+
+- Canopy now launches PhotoVault with explicit `workspace` context in the URL
+- the session itself is still not shared seamlessly across domains, so PhotoVault may still require its own login until stronger shared login is implemented
 
 ### Step 4: PhotoVault Verifies Session and Context
 
@@ -196,6 +221,11 @@ Near-term bias:
 
 - seamless product access is the target
 - product-local invite loops are a temporary compatibility pattern, not the final Canopy model
+
+Current implementation note:
+
+- Canopy now owns workspace-admin invitation records, resend handling, and acceptance completion
+- PhotoVault invite behavior should now be treated as compatibility-era behavior, not the preferred future model
 
 ## Recommended MVP Architecture Options
 
@@ -304,3 +334,10 @@ The first Canopy-to-PhotoVault auth and session model should be:
 - simple enough to implement without a heavyweight custom SSO system
 
 That approach keeps the platform real, keeps PhotoVault independent as a product, and preserves a path toward stronger unified login later.
+
+In practice today, the model is:
+
+- Canopy owns provisioning and invitation lifecycle
+- Canopy passes explicit workspace context into PhotoVault
+- PhotoVault remains responsible for product-side access enforcement
+- cross-domain auth still needs a later refinement pass
