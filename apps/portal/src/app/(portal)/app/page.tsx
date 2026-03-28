@@ -21,18 +21,47 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
   }
 
   const launcherProducts = getEnabledLauncherProducts(session.entitlements, {
-    workspaceSlug: session.activeWorkspace.slug,
+    workspaceSlug: session.activeWorkspace?.slug,
   });
   const additionalProducts = getAdditionalLauncherProducts(session.entitlements, {
-    workspaceSlug: session.activeWorkspace.slug,
+    workspaceSlug: session.activeWorkspace?.slug,
   });
   const launcherServices = getLauncherServices(session.entitlements, {
-    workspaceSlug: session.activeWorkspace.slug,
+    workspaceSlug: session.activeWorkspace?.slug,
   });
   const launchableCount = launcherProducts.filter((p) => p.canLaunch).length;
-  const workspaceName = session.activeWorkspace.displayName;
   const firstName = session.user.displayName.split(" ")[0];
-  const activeMembership = session.memberships.find((m) => m.workspaceId === session.activeWorkspace.id);
+  const activeWorkspace = session.activeWorkspace;
+  const activeMembership = activeWorkspace
+    ? session.memberships.find((m) => m.workspaceId === activeWorkspace.id)
+    : null;
+
+  if (session.isPlatformOperator && !activeWorkspace) {
+    return (
+      <div className="space-y-8 pb-10">
+        <header className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-5 shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
+          <p className="eyebrow">Platform</p>
+          <h2 className="mb-1">Welcome back, {firstName}.</h2>
+          <div className="flex items-center gap-2 text-sm text-muted flex-wrap">
+            <span>Platform overview</span>
+            <span className="text-[rgba(15,31,61,0.25)]">·</span>
+            <span>{session.memberships.length} workspaces visible</span>
+            <span className="text-[rgba(15,31,61,0.25)]">·</span>
+            <span>{session.platformRole?.replace(/_/g, " ") ?? "platform operator"}</span>
+          </div>
+        </header>
+
+        <section className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-6 shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
+          <p className="eyebrow">Workspace Context</p>
+          <h2>Select a workspace when you want product context</h2>
+          <p className="m-0 max-w-[56ch] text-sm text-muted">
+            Platform staff should land in a neutral overview by default. Use the org menu in the header to pick a
+            workspace when you want to inspect launcher state or enter a product in client context.
+          </p>
+        </section>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 pb-10">
@@ -42,7 +71,7 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
         <p className="eyebrow">Dashboard</p>
         <h2 className="mb-1">Welcome back, {firstName}.</h2>
         <div className="flex items-center gap-2 text-sm text-muted flex-wrap">
-          <span>{workspaceName}</span>
+          <span>{activeWorkspace?.displayName ?? "Platform"}</span>
           <span className="text-[rgba(15,31,61,0.25)]">·</span>
           <span>{launchableCount} product{launchableCount === 1 ? "" : "s"} active</span>
           <span className="text-[rgba(15,31,61,0.25)]">·</span>

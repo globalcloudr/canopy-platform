@@ -1,4 +1,5 @@
 import { SignInForm } from "@/components/sign-in-form";
+import { InviteAcceptanceHandler } from "@/components/invite-acceptance-handler";
 
 type SignInPageProps = {
   searchParams?: Promise<{
@@ -75,6 +76,7 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
               {errorMessage}
             </div>
           )}
+          <InviteAcceptanceHandler />
           <SignInForm defaultEmail={params.email} />
         </div>
       </main>

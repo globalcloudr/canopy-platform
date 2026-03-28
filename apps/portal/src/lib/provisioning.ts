@@ -36,6 +36,7 @@ export type ProvisionWorkspaceInput = {
   services: ProvisionedServiceInput[];
   notes?: string;
   provisionedByUserId: string;
+  inviteRedirectTo?: string;
 };
 
 export type ProvisionWorkspaceResult = {
@@ -43,7 +44,7 @@ export type ProvisionWorkspaceResult = {
   invitation: {
     id?: string;
     email: string;
-    status: "existing_membership" | "membership_prepared" | "invitation_recorded";
+    status: "existing_membership" | "membership_prepared" | "invitation_recorded" | "invitation_sent";
     role?: WorkspaceRole;
     invitationStatus?: "pending" | "accepted" | "cancelled";
     createdAt?: string;
@@ -72,7 +73,9 @@ export type WorkspaceAdminInvitation = {
   email: string;
   role: WorkspaceRole;
   status: "pending" | "accepted" | "cancelled";
+  deliveryStatus: "pending_unsent" | "sent" | "failed";
   createdAt: string;
+  sentAt?: string | null;
   acceptedAt?: string | null;
 };
 
@@ -87,6 +90,10 @@ type AuthAdminUser = {
   email?: string | null;
 };
 
+type InviteUserResponse = {
+  user?: AuthAdminUser | null;
+};
+
 type MembershipRow = {
   user_id: string;
   org_id: string;
@@ -99,7 +106,9 @@ type InvitationRow = {
   email: string;
   role?: string | null;
   status: "pending" | "accepted" | "cancelled";
+  delivery_status?: "pending_unsent" | "sent" | "failed" | null;
   created_at?: string | null;
+  sent_at?: string | null;
   accepted_at?: string | null;
 };
 
@@ -117,7 +126,7 @@ function getProvisioningEnv(): ProvisioningEnv {
 async function requestJson<T>(
   path: string,
   options?: {
-    method?: "GET" | "POST";
+    method?: "GET" | "POST" | "PATCH";
     searchParams?: URLSearchParams;
     body?: unknown;
     prefer?: string;
@@ -291,6 +300,36 @@ async function findUserByEmail(email: string) {
   return payload.users?.find((candidate) => normalizeEmail(candidate.email ?? "") === email) ?? null;
 }
 
+async function inviteUserByEmail(email: string, input: ProvisionWorkspaceInput, workspace: PortalWorkspace) {
+  const env = getProvisioningEnv();
+  const response = await fetch(new URL("/auth/v1/invite", env.supabaseUrl), {
+    method: "POST",
+    headers: {
+      apikey: env.serviceRoleKey,
+      Authorization: `Bearer ${env.serviceRoleKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email,
+      data: {
+        workspace_id: workspace.id,
+        workspace_slug: workspace.slug,
+        workspace_name: workspace.displayName,
+        platform_role_hint: input.initialRole,
+      },
+      redirect_to: input.inviteRedirectTo,
+    }),
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Invite send failed (${response.status}): ${text}`);
+  }
+
+  return (await response.json()) as InviteUserResponse;
+}
+
 async function getMembership(userId: string, workspaceId: string) {
   const rows = await requestJson<MembershipRow[]>(
     "/rest/v1/memberships",
@@ -408,7 +447,8 @@ async function upsertInvitation(
   email: string,
   role: WorkspaceRole,
   provisionedByUserId: string,
-  notes: string | undefined
+  notes: string | undefined,
+  delivery?: { sentAt?: string | null; deliveryStatus?: "pending_unsent" | "sent" | "failed" }
 ) {
   const rows = await requestJson<InvitationRow[]>(
     "/rest/v1/workspace_admin_invitations",
@@ -425,6 +465,8 @@ async function upsertInvitation(
         status: "pending",
         source: "manual_provisioning",
         invited_by_user_id: provisionedByUserId,
+        sent_at: delivery?.sentAt ?? null,
+        delivery_status: delivery?.deliveryStatus ?? "pending_unsent",
         notes: notes?.trim() || null,
       },
     }
@@ -452,7 +494,9 @@ function normalizeWorkspaceInvitation(row: InvitationRow): WorkspaceAdminInvitat
     email: row.email,
     role: normalizeInvitationRole(row.role),
     status: row.status,
+    deliveryStatus: row.delivery_status === "sent" || row.delivery_status === "failed" ? row.delivery_status : "pending_unsent",
     createdAt: row.created_at,
+    sentAt: row.sent_at ?? null,
     acceptedAt: row.accepted_at ?? null,
   };
 }
@@ -466,7 +510,7 @@ export async function listWorkspaceAdminInvitations(workspaceIds: string[]): Pro
     "/rest/v1/workspace_admin_invitations",
     {
       searchParams: new URLSearchParams({
-        select: "id,organization_id,email,role,status,created_at,accepted_at",
+        select: "id,organization_id,email,role,status,delivery_status,created_at,sent_at,accepted_at",
         organization_id: `in.(${workspaceIds.join(",")})`,
         order: "created_at.desc",
       }),
@@ -478,12 +522,173 @@ export async function listWorkspaceAdminInvitations(workspaceIds: string[]): Pro
     .filter((row): row is WorkspaceAdminInvitation => row !== null);
 }
 
+async function listPendingInvitationsByEmail(email: string) {
+  const rows = await requestJson<InvitationRow[]>(
+    "/rest/v1/workspace_admin_invitations",
+    {
+      searchParams: new URLSearchParams({
+        select: "id,organization_id,email,role,status,delivery_status,created_at,sent_at,accepted_at",
+        email: `eq.${email}`,
+        status: "eq.pending",
+        order: "created_at.asc",
+      }),
+    }
+  );
+
+  return rows
+    .map(normalizeWorkspaceInvitation)
+    .filter((row): row is WorkspaceAdminInvitation => row !== null);
+}
+
+async function getWorkspaceById(workspaceId: string) {
+  const rows = await requestJson<OrganizationRow[]>(
+    "/rest/v1/organizations",
+    {
+      searchParams: new URLSearchParams({
+        select: "id,name,slug",
+        id: `eq.${workspaceId}`,
+        limit: "1",
+      }),
+    }
+  );
+
+  const row = rows[0];
+  return row?.id ? normalizeWorkspace(row) : null;
+}
+
+export async function resendWorkspaceAdminInvitation(options: {
+  invitationId: string;
+  provisionedByUserId: string;
+  inviteRedirectTo?: string;
+}) {
+  const rows = await requestJson<InvitationRow[]>(
+    "/rest/v1/workspace_admin_invitations",
+    {
+      searchParams: new URLSearchParams({
+        select: "id,organization_id,email,role,status,delivery_status,created_at,sent_at,accepted_at",
+        id: `eq.${options.invitationId}`,
+        limit: "1",
+      }),
+    }
+  );
+
+  const invitation = rows[0];
+  if (!invitation?.id || !invitation.organization_id || !invitation.email) {
+    throw new Error("Invitation not found.");
+  }
+
+  if (invitation.status !== "pending") {
+    throw new Error("Only pending invitations can be resent.");
+  }
+
+  const workspace = await getWorkspaceById(invitation.organization_id);
+  if (!workspace) {
+    throw new Error("Workspace not found for invitation.");
+  }
+
+  await inviteUserByEmail(invitation.email, {
+    workspaceMode: "existing",
+    workspaceId: workspace.id,
+    primaryAdminEmail: invitation.email,
+    initialRole: normalizeInvitationRole(invitation.role),
+    products: [],
+    services: [],
+    provisionedByUserId: options.provisionedByUserId,
+    inviteRedirectTo: options.inviteRedirectTo,
+  }, workspace);
+
+  const sentAt = new Date().toISOString();
+
+  const updatedRows = await requestJson<InvitationRow[]>(
+    "/rest/v1/workspace_admin_invitations",
+    {
+      method: "POST",
+      prefer: "resolution=merge-duplicates,return=representation",
+      searchParams: new URLSearchParams({
+        on_conflict: "organization_id,email",
+      }),
+      body: {
+        organization_id: workspace.id,
+        email: invitation.email,
+        role: normalizeInvitationRole(invitation.role),
+        status: "pending",
+        source: "manual_provisioning",
+        invited_by_user_id: options.provisionedByUserId,
+        sent_at: sentAt,
+        delivery_status: "sent",
+      },
+    }
+  );
+
+  const updated = updatedRows.map(normalizeWorkspaceInvitation).find((row): row is WorkspaceAdminInvitation => row !== null);
+  if (!updated) {
+    throw new Error("Invitation resend was sent, but the invitation row could not be updated.");
+  }
+
+  return updated;
+}
+
+export async function finalizeWorkspaceAdminInvitationsForUser(user: { id: string; email: string }) {
+  const pendingInvitations = await listPendingInvitationsByEmail(normalizeEmail(user.email));
+  if (pendingInvitations.length === 0) {
+    return {
+      acceptedInvitations: [] as WorkspaceAdminInvitation[],
+      preferredWorkspaceSlug: null as string | null,
+    };
+  }
+
+  const acceptedInvitations: WorkspaceAdminInvitation[] = [];
+
+  for (const invitation of pendingInvitations) {
+    await ensureMembership(user.id, invitation.workspaceId, invitation.role);
+
+    const updatedRows = await requestJson<InvitationRow[]>(
+      "/rest/v1/workspace_admin_invitations",
+      {
+        method: "PATCH",
+        prefer: "return=representation",
+        searchParams: new URLSearchParams({
+          id: `eq.${invitation.id}`,
+        }),
+        body: {
+          status: "accepted",
+          accepted_by_user_id: user.id,
+          accepted_at: new Date().toISOString(),
+        },
+      }
+    );
+
+    const updated = updatedRows.map(normalizeWorkspaceInvitation).find((row): row is WorkspaceAdminInvitation => row !== null);
+    if (updated) {
+      acceptedInvitations.push(updated);
+    }
+  }
+
+  const firstWorkspace = pendingInvitations[0]
+    ? await getWorkspaceById(pendingInvitations[0].workspaceId)
+    : null;
+
+  return {
+    acceptedInvitations,
+    preferredWorkspaceSlug: firstWorkspace?.slug ?? null,
+  };
+}
+
 export async function provisionWorkspace(input: ProvisionWorkspaceInput): Promise<ProvisionWorkspaceResult> {
   assertValidInput(input);
 
   const workspace = await resolveWorkspace(input);
   const normalizedEmail = normalizeEmail(input.primaryAdminEmail);
-  const existingUser = await findUserByEmail(normalizedEmail);
+  let existingUser = await findUserByEmail(normalizedEmail);
+  let inviteSent = false;
+  let inviteSentAt: string | null = null;
+
+  if (!existingUser) {
+    const invite = await inviteUserByEmail(normalizedEmail, input, workspace);
+    existingUser = invite.user?.id ? { id: invite.user.id, email: invite.user.email ?? normalizedEmail } : null;
+    inviteSent = true;
+    inviteSentAt = new Date().toISOString();
+  }
 
   const membership = existingUser?.id
     ? await ensureMembership(existingUser.id, workspace.id, normalizeWorkspaceRole(input.initialRole))
@@ -495,7 +700,11 @@ export async function provisionWorkspace(input: ProvisionWorkspaceInput): Promis
         normalizedEmail,
         normalizeWorkspaceRole(input.initialRole),
         input.provisionedByUserId,
-        input.notes
+        input.notes,
+        {
+          sentAt: inviteSentAt,
+          deliveryStatus: inviteSent ? "sent" : "pending_unsent",
+        }
       );
 
   const entitlements = await upsertEntitlements(workspace.id, input.products, input.notes);
@@ -506,7 +715,19 @@ export async function provisionWorkspace(input: ProvisionWorkspaceInput): Promis
     invitation: {
       id: invitation?.id,
       email: normalizedEmail,
-      status: membership ? (membership.created ? "membership_prepared" : "existing_membership") : invitation ? "invitation_recorded" : "invitation_recorded",
+      status: membership
+        ? inviteSent
+          ? "invitation_sent"
+          : membership.created
+            ? "membership_prepared"
+            : "existing_membership"
+        : invitation
+          ? inviteSent
+            ? "invitation_sent"
+            : "invitation_recorded"
+          : inviteSent
+            ? "invitation_sent"
+            : "invitation_recorded",
       role: normalizeWorkspaceRole(input.initialRole),
       invitationStatus: invitation?.status,
       createdAt: invitation?.created_at ?? undefined,

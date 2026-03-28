@@ -14,7 +14,7 @@ type ProvisioningResult = {
   invitation: {
     id?: string;
     email: string;
-    status: "existing_membership" | "membership_prepared" | "invitation_recorded";
+    status: "existing_membership" | "membership_prepared" | "invitation_recorded" | "invitation_sent";
     role?: WorkspaceRole;
     invitationStatus?: "pending" | "accepted" | "cancelled";
     createdAt?: string;
@@ -54,6 +54,7 @@ function slugify(value: string) {
 function invitationStatusLabel(status: ProvisioningResult["invitation"]["status"]) {
   if (status === "existing_membership") return "Existing member";
   if (status === "membership_prepared") return "Membership prepared";
+  if (status === "invitation_sent") return "Invitation sent";
   return "Invitation recorded";
 }
 
@@ -61,6 +62,22 @@ function storedInvitationStatusLabel(status: WorkspaceAdminInvitation["status"])
   if (status === "accepted") return "Accepted";
   if (status === "cancelled") return "Cancelled";
   return "Pending";
+}
+
+function deliveryStatusLabel(invitation: WorkspaceAdminInvitation) {
+  if (invitation.status !== "pending") {
+    return storedInvitationStatusLabel(invitation.status);
+  }
+
+  if (invitation.deliveryStatus === "sent") {
+    return "Invite sent";
+  }
+
+  if (invitation.deliveryStatus === "failed") {
+    return "Send failed";
+  }
+
+  return "Needs resend";
 }
 
 function serviceLabel(key: string) {
@@ -84,6 +101,7 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
   const [creativeRetainerState, setCreativeRetainerState] = useState("ready");
   const [notes, setNotes] = useState("");
   const [busy, setBusy] = useState(false);
+  const [resendId, setResendId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ProvisioningResult | null>(null);
   const [invitationRows, setInvitationRows] = useState<WorkspaceAdminInvitation[]>(invitations);
@@ -144,7 +162,7 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
     setResult(nextResult);
     const invitationId = nextResult.invitation.id;
     const invitationCreatedAt = nextResult.invitation.createdAt;
-    if (nextResult.invitation.status === "invitation_recorded" && invitationId && invitationCreatedAt) {
+    if ((nextResult.invitation.status === "invitation_recorded" || nextResult.invitation.status === "invitation_sent") && invitationId && invitationCreatedAt) {
       setInvitationRows((current) => {
         const next = current.filter((row) => row.id !== invitationId);
         next.unshift({
@@ -153,7 +171,9 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
           email: nextResult.invitation.email,
           role: nextResult.invitation.role ?? initialRole,
           status: nextResult.invitation.invitationStatus ?? "pending",
+          deliveryStatus: nextResult.invitation.status === "invitation_sent" ? "sent" : "pending_unsent",
           createdAt: invitationCreatedAt,
+          sentAt: nextResult.invitation.status === "invitation_sent" ? invitationCreatedAt : null,
           acceptedAt: null,
         });
         return next;
@@ -182,6 +202,31 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
     setPrimaryAdminEmail(latestPendingInvitation.email);
     setInitialRole(latestPendingInvitation.role);
   }, [latestPendingInvitation, workspaceMode]);
+
+  async function resendInvitation(invitationId: string) {
+    setError(null);
+    setResendId(invitationId);
+
+    const response = await fetch("/api/resend-workspace-invitation", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ invitationId }),
+    });
+
+    const body = (await response.json()) as { invitation?: WorkspaceAdminInvitation; error?: string };
+    setResendId(null);
+
+    if (!response.ok || !body.invitation) {
+      setError(body.error ?? "Resend failed.");
+      return;
+    }
+
+    setInvitationRows((current) =>
+      current.map((row) => (row.id === body.invitation?.id ? body.invitation : row))
+    );
+  }
 
   return (
     <div className="space-y-6 pb-10">
@@ -505,9 +550,22 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
                   <p className="m-0 text-sm font-semibold text-ink">{invitation.email}</p>
                   <p className="m-0 mt-1 text-sm text-muted">
                     {invitation.role} • {new Date(invitation.createdAt).toLocaleDateString()}
+                    {invitation.sentAt ? ` • Sent ${new Date(invitation.sentAt).toLocaleDateString()}` : ""}
                   </p>
                 </div>
-                <p className="m-0 text-sm font-medium text-ink">{storedInvitationStatusLabel(invitation.status)}</p>
+                <div className="flex items-center gap-3">
+                  <p className="m-0 text-sm font-medium text-ink">{deliveryStatusLabel(invitation)}</p>
+                  {invitation.status === "pending" && invitation.deliveryStatus !== "sent" ? (
+                    <button
+                      type="button"
+                      onClick={() => void resendInvitation(invitation.id)}
+                      disabled={resendId === invitation.id}
+                      className="inline-flex items-center rounded-full border border-[rgba(15,31,61,0.14)] bg-white px-3 py-1.5 text-xs font-semibold text-ink transition hover:bg-[rgba(15,31,61,0.04)] disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {resendId === invitation.id ? "Sending..." : "Resend"}
+                    </button>
+                  ) : null}
+                </div>
               </div>
             ))}
           </div>

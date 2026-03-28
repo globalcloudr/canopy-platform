@@ -60,6 +60,9 @@ export function PortalHeader() {
     ? memberships.find((membership) => membership.workspaceId === activeWorkspace.id)
     : null;
   const enabledProducts = getEnabledLauncherProducts(entitlements).filter((p) => p.kind === "product");
+  const workspaceLinks = memberships
+    .map((membership) => membership.workspace)
+    .filter((workspace, index, array) => array.findIndex((candidate) => candidate.id === workspace.id) === index);
   const initials = user?.email
     ? user.email
         .split("@")[0]
@@ -91,7 +94,7 @@ export function PortalHeader() {
               aria-expanded={switcherOpen}
             >
               <span className="text-[0.7rem] font-bold uppercase tracking-[0.06em] text-muted-light mr-0.5">Org</span>
-              {activeWorkspace?.displayName ?? "Workspace"}
+              {activeWorkspace?.displayName ?? (session?.isPlatformOperator ? "Platform" : "Workspace")}
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="ml-0.5 text-muted-light">
                 <polyline points="6 9 12 15 18 9"/>
               </svg>
@@ -100,45 +103,39 @@ export function PortalHeader() {
             {switcherOpen && (
               <div className="absolute top-[calc(100%+8px)] right-0 w-64 bg-white border border-[rgba(15,31,61,0.1)] rounded-xl shadow-[0_8px_24px_rgba(15,31,61,0.12)] z-[200] overflow-hidden">
                 <div className="px-3 pt-3 pb-1.5">
-                  <p className="text-[0.68rem] font-bold uppercase tracking-[0.12em] text-muted-light">Your apps</p>
+                  <p className="text-[0.68rem] font-bold uppercase tracking-[0.12em] text-muted-light">Workspace context</p>
                 </div>
                 <div className="p-1.5">
-                  {enabledProducts.map((product) => {
-                    const isExternal = !!product.externalUrl;
-                    const href = product.externalUrl ?? `/app/products/${product.productKey.replace(/_/g, "-")}`;
+                  {session?.isPlatformOperator ? (
+                    <Link
+                      href={`/app${suffix}`}
+                      onClick={() => setSwitcherOpen(false)}
+                      className="flex items-center gap-2.5 px-2.5 py-2 rounded-md no-underline transition-colors hover:bg-[rgba(15,31,61,0.04)]"
+                    >
+                      <div className="grid place-items-center w-6 h-6 rounded-[5px] bg-[#16233f] text-white text-[0.65rem] font-extrabold shrink-0">
+                        P
+                      </div>
+                      <span className="text-[0.875rem] font-medium text-ink flex-1">Platform overview</span>
+                    </Link>
+                  ) : null}
+                  {workspaceLinks.map((workspace) => {
+                    const params = new URLSearchParams(qs);
+                    params.set("workspace", workspace.slug);
+                    const href = `/app?${params.toString()}`;
                     return (
-                      <a
-                        key={product.productKey}
+                      <Link
+                        key={workspace.id}
                         href={href}
-                        target={isExternal ? "_blank" : undefined}
-                        rel={isExternal ? "noopener noreferrer" : undefined}
                         onClick={() => setSwitcherOpen(false)}
                         className="flex items-center gap-2.5 px-2.5 py-2 rounded-md no-underline transition-colors hover:bg-[rgba(15,31,61,0.04)]"
                       >
-                        <div
-                          className="grid place-items-center w-6 h-6 rounded-[5px] text-white text-[0.65rem] font-extrabold shrink-0"
-                          style={{ background: product.iconColor }}
-                        >
-                          {product.displayName[0]}
+                        <div className="grid place-items-center w-6 h-6 rounded-[5px] bg-[rgba(15,31,61,0.08)] text-[#16233f] text-[0.65rem] font-extrabold shrink-0">
+                          {workspace.displayName[0]}
                         </div>
-                        <span className="text-[0.875rem] font-medium text-ink flex-1">{product.displayName}</span>
-                        {isExternal && (
-                          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-muted-light shrink-0">
-                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
-                          </svg>
-                        )}
-                      </a>
+                        <span className="text-[0.875rem] font-medium text-ink flex-1">{workspace.displayName}</span>
+                      </Link>
                     );
                   })}
-                </div>
-                <div className="border-t border-[rgba(15,31,61,0.08)] p-1.5">
-                  <Link
-                    href={`/app${suffix}`}
-                    className="flex items-center gap-2.5 px-2.5 py-2 rounded-md text-[0.875rem] font-medium text-muted no-underline hover:bg-[rgba(15,31,61,0.04)] hover:text-ink transition-colors"
-                    onClick={() => setSwitcherOpen(false)}
-                  >
-                    Back to portal home
-                  </Link>
                 </div>
               </div>
             )}
@@ -160,7 +157,7 @@ export function PortalHeader() {
                   <p className="text-[0.9rem] font-semibold text-ink m-0">{user?.displayName ?? "Canopy User"}</p>
                   <p className="text-[0.8rem] text-muted m-0">{user?.email ?? "Sign in to load account data"}</p>
                   <span className="inline-block mt-1.5 px-2 py-0.5 rounded-full border border-[rgba(15,31,61,0.15)] text-[0.7rem] font-semibold uppercase tracking-[0.06em] text-muted">
-                    {activeMembership?.role ?? "staff"}
+                    {activeMembership?.role ?? session?.platformRole?.replace(/_/g, " ") ?? "staff"}
                   </span>
                 </div>
                 <div className="p-1.5">

@@ -51,7 +51,7 @@ export type PortalEntitlement = {
 
 export type PortalSession = {
   user: PortalUser;
-  activeWorkspace: PortalWorkspace;
+  activeWorkspace: PortalWorkspace | null;
   memberships: PortalMembership[];
   entitlements: PortalEntitlement[];
   platformRole: string | null;
@@ -112,7 +112,7 @@ type EntitlementRow = {
   plan_key?: string | null;
 };
 
-function getServiceEnv(): ServiceEnv | null {
+export function getServiceEnv(): ServiceEnv | null {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -171,7 +171,7 @@ async function requestJson<T>(path: string, searchParams?: URLSearchParams): Pro
   return (await response.json()) as T;
 }
 
-async function getUserFromAccessToken(accessToken: string) {
+export async function getUserFromAccessToken(accessToken: string) {
   const env = getServiceEnv();
   if (!env) {
     return null;
@@ -440,8 +440,10 @@ export async function resolvePortalSession(options?: {
     };
   });
 
-  const activeWorkspace = workspaces.find((workspace) => workspace.slug === options?.workspace) ?? workspaces[0];
-  const entitlements = await getEntitlementsForWorkspace(activeWorkspace.id);
+  const activeWorkspace = isPlatformOperator(profile)
+    ? workspaces.find((workspace) => workspace.slug === options?.workspace) ?? null
+    : workspaces.find((workspace) => workspace.slug === options?.workspace) ?? workspaces[0];
+  const entitlements = activeWorkspace ? await getEntitlementsForWorkspace(activeWorkspace.id) : [];
 
   return {
     user: {

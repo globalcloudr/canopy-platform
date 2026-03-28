@@ -20,8 +20,37 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
   }
 
   const { activeWorkspace, user, memberships, entitlements } = session;
-  const activeMembership = memberships.find((m) => m.workspaceId === activeWorkspace.id);
+  const activeMembership = activeWorkspace ? memberships.find((m) => m.workspaceId === activeWorkspace.id) : null;
   const activeEntitlements = entitlements.filter((e) => e.status !== "paused");
+
+  if (session.isPlatformOperator && !activeWorkspace) {
+    return (
+      <div className="space-y-8 pb-10">
+        <header className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-5 shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
+          <p className="eyebrow">Account</p>
+          <h2 className="mb-1">{user.displayName}</h2>
+          <div className="flex items-center gap-2 text-sm text-muted flex-wrap">
+            <span>{user.email}</span>
+            <span className="text-[rgba(15,31,61,0.25)]">·</span>
+            <span>{session.platformRole?.replace(/_/g, " ") ?? "platform operator"}</span>
+            <span className="text-[rgba(15,31,61,0.25)]">·</span>
+            <span>{memberships.length} workspaces visible</span>
+          </div>
+        </header>
+
+        <section className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-6 shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
+          <p className="eyebrow">Platform Context</p>
+          <h2>No active workspace selected</h2>
+          <p className="m-0 max-w-[56ch] text-sm text-muted">
+            Platform staff can browse platform-level areas without defaulting into a client org. Choose a workspace
+            from the header when you want to view workspace-specific products, services, or account details.
+          </p>
+        </section>
+      </div>
+    );
+  }
+
+  const workspace = activeWorkspace!;
 
   return (
     <div className="space-y-8 pb-10">
@@ -29,7 +58,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
       {/* ── Page header ──────────────────────────────── */}
       <header className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-5 shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
         <p className="eyebrow">Account</p>
-        <h2 className="mb-1">{activeWorkspace.displayName}</h2>
+        <h2 className="mb-1">{workspace.displayName}</h2>
         <div className="flex items-center gap-2 text-sm text-muted flex-wrap">
           <span>{user.email}</span>
           <span className="text-[rgba(15,31,61,0.25)]">·</span>
@@ -49,7 +78,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
         </div>
         <div className="grid grid-cols-3 gap-4 max-[840px]:grid-cols-2 max-[580px]:grid-cols-1">
           {[
-            { label: "Organization", value: activeWorkspace.displayName, sub: activeWorkspace.slug },
+            { label: "Organization", value: workspace.displayName, sub: workspace.slug },
             { label: "Your role", value: activeMembership?.role ?? "staff", sub: `Signed in as ${user.displayName}` },
             { label: "Active products", value: String(activeEntitlements.length), sub: "Products and services enabled" },
           ].map((stat) => (

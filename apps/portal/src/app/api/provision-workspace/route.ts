@@ -50,6 +50,18 @@ function parseBody(body: RequestBody): Omit<ProvisionWorkspaceInput, "provisione
   };
 }
 
+function normalizeOrigin(origin: string) {
+  try {
+    const url = new URL(origin);
+    if (url.hostname === "0.0.0.0") {
+      url.hostname = "localhost";
+    }
+    return url.toString().replace(/\/$/, "");
+  } catch {
+    return origin.replace(/\/$/, "");
+  }
+}
+
 export async function POST(request: NextRequest) {
   const session = await resolvePortalSession();
   if (!session) {
@@ -65,6 +77,7 @@ export async function POST(request: NextRequest) {
     const result = await provisionWorkspace({
       ...parseBody(body),
       provisionedByUserId: session.user.id,
+      inviteRedirectTo: `${normalizeOrigin(request.nextUrl.origin)}/sign-in`,
     });
 
     return NextResponse.json({ result }, { status: 200 });
