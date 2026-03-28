@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "dev": "npm run dev --workspace @canopy/portal",
-    "build": "npm run build --workspace @canopy/portal",
+    "build": "npm run build --workspace @canopy/ui && npm run build --workspace @canopy/portal",
     "start": "npm run start --workspace @canopy/portal",
     "lint": "npm run lint --workspace @canopy/portal"
   }
