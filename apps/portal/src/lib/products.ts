@@ -35,6 +35,16 @@ type LauncherOptions = {
   workspaceSlug?: string;
 };
 
+function getPhotoVaultLaunchPath(path = "/") {
+  const params = new URLSearchParams();
+  if (path && path !== "/") {
+    params.set("path", path);
+  }
+
+  const query = params.toString();
+  return query ? `/auth/launch/photovault?${query}` : "/auth/launch/photovault";
+}
+
 const catalogDefinitions: ProductDefinition[] = [
   {
     productKey: "photovault",
@@ -43,7 +53,7 @@ const catalogDefinitions: ProductDefinition[] = [
     category: "Media and Brand",
     kind: "product",
     iconColor: "#0f1f3d",
-    defaultLaunchPath: "/launch/photovault",
+    defaultLaunchPath: getPhotoVaultLaunchPath(),
     externalUrl: "https://photovault.school",
     showWhenNotEnabled: false,
     sortOrder: 1,
@@ -348,6 +358,10 @@ function getPrimaryActionTarget(productKey: ProductKey, state: ProductState): st
 
   // Live external products (e.g. PhotoVault at photovault.school)
   if (def?.externalUrl && (state === "enabled" || state === "pilot")) {
+    if (productKey === "photovault") {
+      return getPhotoVaultLaunchPath();
+    }
+
     return def.externalUrl;
   }
 
@@ -405,7 +419,7 @@ function getSecondaryActionLabel(productKey: ProductKey, state: ProductState) {
 function getSecondaryActionTarget(productKey: ProductKey, state: ProductState) {
   const targetMap: Partial<Record<ProductKey, Partial<Record<ProductState, string>>>> = {
     photovault: {
-      enabled: "https://photovault.school/collections/brand-guidelines",
+      enabled: getPhotoVaultLaunchPath("/collections/brand-guidelines"),
     },
     canopy_web: {
       in_setup: "/products/canopy-web",

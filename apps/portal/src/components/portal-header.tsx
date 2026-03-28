@@ -59,7 +59,9 @@ export function PortalHeader() {
   const activeMembership = activeWorkspace
     ? memberships.find((membership) => membership.workspaceId === activeWorkspace.id)
     : null;
-  const enabledProducts = getEnabledLauncherProducts(entitlements).filter((p) => p.kind === "product");
+  const enabledProducts = getEnabledLauncherProducts(entitlements, {
+    workspaceSlug: activeWorkspace?.slug,
+  }).filter((p) => p.kind === "product");
   const workspaceLinks = memberships
     .map((membership) => membership.workspace)
     .filter((workspace, index, array) => array.findIndex((candidate) => candidate.id === workspace.id) === index);
