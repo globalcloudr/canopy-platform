@@ -106,6 +106,8 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
   const [initialRole, setInitialRole] = useState<WorkspaceRole>("owner");
   const [enablePhotoVault, setEnablePhotoVault] = useState(true);
   const [photoVaultSetupState, setPhotoVaultSetupState] = useState("ready");
+  const [enableStories, setEnableStories] = useState(false);
+  const [storiesSetupState, setStoriesSetupState] = useState("ready");
   const [enableWebsiteSetup, setEnableWebsiteSetup] = useState(false);
   const [websiteSetupState, setWebsiteSetupState] = useState("setup");
   const [enableCreativeRetainer, setEnableCreativeRetainer] = useState(false);
@@ -140,15 +142,14 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
         workspaceSlug: workspaceMode === "new" ? slugify(workspaceSlug || workspaceName) : undefined,
         primaryAdminEmail,
         initialRole,
-        products: enablePhotoVault
-          ? [
-              {
-                productKey: "photovault",
-                status: "active",
-                setupState: photoVaultSetupState,
-              },
-            ]
-          : [],
+        products: [
+          ...(enablePhotoVault
+            ? [{ productKey: "photovault", status: "active", setupState: photoVaultSetupState }]
+            : []),
+          ...(enableStories
+            ? [{ productKey: "stories_canopy", status: "active", setupState: storiesSetupState }]
+            : []),
+        ],
         services: [
           ...(enableWebsiteSetup
             ? [{ serviceKey: "school-website-setup", status: "active", setupState: websiteSetupState }]
@@ -403,6 +404,40 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
               </label>
             ) : null}
           </div>
+
+          <div className="mt-4 rounded-xl border border-[rgba(15,31,61,0.1)] p-4">
+            <label className="flex items-start justify-between gap-4">
+              <div>
+                <p className="m-0 text-sm font-semibold text-ink">Canopy Stories</p>
+                <p className="m-0 mt-1 text-sm text-muted">Automated success story production — blog, social, and video.</p>
+              </div>
+              <input
+                type="checkbox"
+                checked={enableStories}
+                onChange={(event) => setEnableStories(event.target.checked)}
+                className="mt-1 h-4 w-4"
+              />
+            </label>
+            {enableStories ? (
+              <label className="mt-4 block space-y-2">
+                <Label>Setup state</Label>
+                <Select
+                  value={storiesSetupState}
+                  onValueChange={setStoriesSetupState}
+                >
+                  <SelectTrigger className="text-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="ready">Ready</SelectItem>
+                    <SelectItem value="in_setup">In setup</SelectItem>
+                    <SelectItem value="not_started">Not started</SelectItem>
+                    <SelectItem value="blocked">Blocked</SelectItem>
+                  </SelectContent>
+                </Select>
+              </label>
+            ) : null}
+          </div>
         </section>
 
         <section className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-5 shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
@@ -496,7 +531,7 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
             <p className="m-0"><span className="font-semibold">Workspace:</span> {workspaceMode === "existing" ? (selectedWorkspace?.displayName ?? "Select a workspace") : (workspaceName || "New workspace")}</p>
             <p className="m-0"><span className="font-semibold">Admin:</span> {primaryAdminEmail || "Enter an email"}</p>
             <p className="m-0"><span className="font-semibold">Role:</span> {initialRole}</p>
-            <p className="m-0"><span className="font-semibold">Products:</span> {enablePhotoVault ? "PhotoVault" : "None selected"}</p>
+            <p className="m-0"><span className="font-semibold">Products:</span> {[enablePhotoVault ? "PhotoVault" : null, enableStories ? "Canopy Stories" : null].filter(Boolean).join(", ") || "None selected"}</p>
             <p className="m-0"><span className="font-semibold">Services:</span> {[enableWebsiteSetup ? "School Website Setup" : null, enableCreativeRetainer ? "Creative Retainer" : null].filter(Boolean).join(", ") || "None selected"}</p>
           </div>
 

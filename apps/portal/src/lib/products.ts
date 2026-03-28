@@ -45,6 +45,16 @@ function getPhotoVaultLaunchPath(path = "/") {
   return query ? `/auth/launch/photovault?${query}` : "/auth/launch/photovault";
 }
 
+function getStoriesLaunchPath(path = "/") {
+  const params = new URLSearchParams();
+  if (path && path !== "/") {
+    params.set("path", path);
+  }
+
+  const query = params.toString();
+  return query ? `/auth/launch/stories?${query}` : "/auth/launch/stories";
+}
+
 const catalogDefinitions: ProductDefinition[] = [
   {
     productKey: "photovault",
@@ -98,7 +108,8 @@ const catalogDefinitions: ProductDefinition[] = [
     category: "Content Production",
     kind: "product",
     iconColor: "#d97706",
-    defaultLaunchPath: "/products/stories-canopy",
+    defaultLaunchPath: getStoriesLaunchPath(),
+    externalUrl: "https://stories.canopy.school",
     showWhenNotEnabled: true,
     sortOrder: 5,
   },
@@ -361,6 +372,9 @@ function getPrimaryActionTarget(productKey: ProductKey, state: ProductState): st
     if (productKey === "photovault") {
       return getPhotoVaultLaunchPath();
     }
+    if (productKey === "stories_canopy") {
+      return getStoriesLaunchPath();
+    }
 
     return def.externalUrl;
   }
@@ -431,8 +445,8 @@ function getSecondaryActionTarget(productKey: ProductKey, state: ProductState) {
       enabled: "/products/publish-canopy/embed",
     },
     stories_canopy: {
-      enabled: "/products/stories-canopy/stories",
-      pilot: "/products/stories-canopy/stories",
+      enabled: getStoriesLaunchPath("/stories"),
+      pilot: getStoriesLaunchPath("/stories"),
     },
     community_canopy: {
       enabled: "/products/community-canopy/campaigns",
