@@ -81,9 +81,9 @@ export default function MarketingHomePage() {
               </Link>
               <Link
                 className="inline-flex items-center gap-1.5 px-6 py-[11px] bg-transparent text-white/85 border-[1.5px] border-white/20 rounded-lg text-[0.9rem] font-semibold no-underline transition-[border-color,color,background] hover:border-white/45 hover:text-white hover:bg-white/5"
-                href="/app"
+                href="#products"
               >
-                Explore the platform →
+                Explore the products →
               </Link>
             </div>
           </section>

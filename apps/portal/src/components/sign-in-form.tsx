@@ -12,7 +12,7 @@ export function SignInForm({ defaultEmail }: SignInFormProps) {
           Email address
         </label>
         <Input
-          defaultValue={defaultEmail ?? "sarah.zylstra@school.edu"}
+          defaultValue={defaultEmail}
           id="email"
           name="email"
           type="email"
@@ -34,7 +34,12 @@ export function SignInForm({ defaultEmail }: SignInFormProps) {
         />
       </div>
 
-      <Button type="submit" variant="primary" size="lg" className="w-full justify-center mt-1">
+      <Button
+        type="submit"
+        variant="primary"
+        size="lg"
+        className="mt-1 w-full justify-center bg-navy text-white hover:bg-navy-mid"
+      >
         Sign in
       </Button>
 
