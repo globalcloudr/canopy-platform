@@ -7,16 +7,16 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        neutral: "border-slate-200 bg-slate-50 text-slate-700",
+        neutral: "border-[var(--border)] bg-[var(--surface-muted)] text-[var(--muted)]",
         sky: "border-sky-200 bg-sky-50 text-sky-700",
         emerald: "border-emerald-200 bg-emerald-50 text-emerald-700",
-        outline: "border-slate-300 bg-white text-slate-700",
+        outline: "border-[var(--border)] bg-[var(--secondary)] text-[var(--secondary-foreground)]",
         enabled: "border-emerald-200 bg-emerald-50 text-emerald-700",
         in_setup: "border-amber-200 bg-amber-50 text-amber-700",
         pilot: "border-violet-200 bg-violet-50 text-violet-700",
-        paused: "border-slate-200 bg-slate-50 text-slate-700",
-        not_enabled: "border-slate-200 bg-slate-50 text-slate-700",
-        service: "border-slate-200 bg-slate-50 text-slate-700",
+        paused: "border-[var(--border)] bg-[var(--surface-muted)] text-[var(--muted)]",
+        not_enabled: "border-[var(--border)] bg-[var(--surface-muted)] text-[var(--muted)]",
+        service: "border-[var(--border)] bg-[var(--surface-muted)] text-[var(--muted)]",
       },
     },
     defaultVariants: {

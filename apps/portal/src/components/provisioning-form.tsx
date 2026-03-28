@@ -1,7 +1,17 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Button, Input, Select, Textarea } from "@canopy/ui";
+import {
+  Button,
+  Input,
+  Label,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Textarea,
+} from "@canopy/ui";
 import type { PortalWorkspace, WorkspaceRole } from "@/lib/platform";
 import type { WorkspaceAdminInvitation } from "@/lib/provisioning";
 
@@ -246,36 +256,44 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
           <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Choose a workspace</h3>
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="space-y-2">
-              <span className="text-sm font-semibold text-ink">Mode</span>
+              <Label>Mode</Label>
               <Select
                 value={workspaceMode}
-                onChange={(event) => setWorkspaceMode(event.target.value === "new" ? "new" : "existing")}
-                className="text-sm"
+                onValueChange={(value) => setWorkspaceMode(value === "new" ? "new" : "existing")}
               >
-                <option value="existing">Select existing</option>
-                <option value="new">Create new</option>
+                <SelectTrigger className="text-sm">
+                  <SelectValue placeholder="Select existing" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="existing">Select existing</SelectItem>
+                  <SelectItem value="new">Create new</SelectItem>
+                </SelectContent>
               </Select>
             </label>
 
             {workspaceMode === "existing" ? (
               <label className="space-y-2">
-                <span className="text-sm font-semibold text-ink">Workspace</span>
+                <Label>Workspace</Label>
                 <Select
                   value={workspaceId}
-                  onChange={(event) => setWorkspaceId(event.target.value)}
-                  className="text-sm"
+                  onValueChange={setWorkspaceId}
                 >
+                  <SelectTrigger className="text-sm">
+                    <SelectValue placeholder="Select a workspace" />
+                  </SelectTrigger>
+                  <SelectContent>
                   {workspaces.map((workspace) => (
-                    <option key={workspace.id} value={workspace.id}>
+                    <SelectItem key={workspace.id} value={workspace.id}>
                       {workspace.displayName}
-                    </option>
+                    </SelectItem>
                   ))}
+                  </SelectContent>
                 </Select>
               </label>
             ) : (
               <>
                 <label className="space-y-2">
-                  <span className="text-sm font-semibold text-ink">Workspace name</span>
+                  <Label>Workspace name</Label>
                   <Input
                     value={workspaceName}
                     onChange={(event) => {
@@ -291,7 +309,7 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
                   />
                 </label>
                 <label className="space-y-2">
-                  <span className="text-sm font-semibold text-ink">Workspace slug</span>
+                  <Label>Workspace slug</Label>
                   <Input
                     value={workspaceSlug}
                     onChange={(event) => setWorkspaceSlug(slugify(event.target.value))}
@@ -313,7 +331,7 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
           <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Assign the initial admin</h3>
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="space-y-2">
-              <span className="text-sm font-semibold text-ink">School-admin email</span>
+              <Label>School-admin email</Label>
               <Input
                 type="email"
                 value={primaryAdminEmail}
@@ -324,17 +342,21 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
               />
             </label>
             <label className="space-y-2">
-              <span className="text-sm font-semibold text-ink">Initial role</span>
+              <Label>Initial role</Label>
               <Select
                 value={initialRole}
-                onChange={(event) => setInitialRole(event.target.value as WorkspaceRole)}
-                className="text-sm"
+                onValueChange={(value) => setInitialRole(value as WorkspaceRole)}
               >
+                <SelectTrigger className="text-sm">
+                  <SelectValue placeholder="Select a role" />
+                </SelectTrigger>
+                <SelectContent>
                 {ROLE_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
-                  </option>
+                  </SelectItem>
                 ))}
+                </SelectContent>
               </Select>
             </label>
           </div>
@@ -363,16 +385,20 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
             </label>
             {enablePhotoVault ? (
               <label className="mt-4 block space-y-2">
-                <span className="text-sm font-semibold text-ink">Setup state</span>
+                <Label>Setup state</Label>
                 <Select
                   value={photoVaultSetupState}
-                  onChange={(event) => setPhotoVaultSetupState(event.target.value)}
-                  className="text-sm"
+                  onValueChange={setPhotoVaultSetupState}
                 >
-                  <option value="ready">Ready</option>
-                  <option value="in_setup">In setup</option>
-                  <option value="not_started">Not started</option>
-                  <option value="blocked">Blocked</option>
+                  <SelectTrigger className="text-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="ready">Ready</SelectItem>
+                    <SelectItem value="in_setup">In setup</SelectItem>
+                    <SelectItem value="not_started">Not started</SelectItem>
+                    <SelectItem value="blocked">Blocked</SelectItem>
+                  </SelectContent>
                 </Select>
               </label>
             ) : null}
@@ -398,15 +424,19 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
               </label>
               {enableWebsiteSetup ? (
                 <label className="mt-4 block space-y-2">
-                  <span className="text-sm font-semibold text-ink">Setup state</span>
+                  <Label>Setup state</Label>
                   <Select
                     value={websiteSetupState}
-                    onChange={(event) => setWebsiteSetupState(event.target.value)}
-                    className="text-sm"
+                    onValueChange={setWebsiteSetupState}
                   >
-                    <option value="setup">Setup</option>
-                    <option value="ready">Ready</option>
-                    <option value="pilot">Pilot</option>
+                    <SelectTrigger className="text-sm">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="setup">Setup</SelectItem>
+                      <SelectItem value="ready">Ready</SelectItem>
+                      <SelectItem value="pilot">Pilot</SelectItem>
+                    </SelectContent>
                   </Select>
                 </label>
               ) : null}
@@ -427,15 +457,19 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
               </label>
               {enableCreativeRetainer ? (
                 <label className="mt-4 block space-y-2">
-                  <span className="text-sm font-semibold text-ink">Setup state</span>
+                  <Label>Setup state</Label>
                   <Select
                     value={creativeRetainerState}
-                    onChange={(event) => setCreativeRetainerState(event.target.value)}
-                    className="text-sm"
+                    onValueChange={setCreativeRetainerState}
                   >
-                    <option value="ready">Ready</option>
-                    <option value="setup">Setup</option>
-                    <option value="pilot">Pilot</option>
+                    <SelectTrigger className="text-sm">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="ready">Ready</SelectItem>
+                      <SelectItem value="setup">Setup</SelectItem>
+                      <SelectItem value="pilot">Pilot</SelectItem>
+                    </SelectContent>
                   </Select>
                 </label>
               ) : null}
@@ -446,6 +480,7 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
         <section className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-5 shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
           <p className="eyebrow">Notes</p>
           <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Internal context</h3>
+          <Label className="sr-only">Internal context notes</Label>
           <Textarea
             value={notes}
             onChange={(event) => setNotes(event.target.value)}
