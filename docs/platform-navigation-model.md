@@ -16,7 +16,7 @@ Navigation should make three things obvious:
 
 The portal is the **persistent shell** for the entire Canopy platform.
 
-Users never leave the portal chrome. Products load inside it. The top bar and sidebar remain visible at all times, giving users a continuous sense of place across every product.
+Users should feel like they are moving through one workspace surface, not jumping between unrelated tools. The shell should be strong enough that product changes feel contextual rather than disorienting.
 
 ## Shell Layout
 
@@ -24,14 +24,16 @@ The authenticated shell uses a two-panel layout:
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│  [C] Canopy          [Org: School Name ▾]           [Avatar]  │  h-14 top bar
+│  [C] Canopy     [Workspace ▾]                     [Avatar]     │  top bar
+├────────────────────────────────────────────────────────────────┤
+│  Portal | PhotoVault | Stories | ...                           │  app strip
 ├───────────────┬────────────────────────────────────────────────┤
 │               │                                                │
-│  Sidebar nav  │  Main content area                             │
-│  (contextual) │  (product or portal page loads here)          │
+│  Context rail │  Main content area                             │
+│  (local nav)  │  (portal or product surface)                   │
 │               │                                                │
 └───────────────┴────────────────────────────────────────────────┘
-     260px                    flex-1
+     280px                    flex-1
 ```
 
 ### Top Bar (persistent)
@@ -39,29 +41,44 @@ The authenticated shell uses a two-panel layout:
 Always visible. Contains:
 
 - Canopy brand mark (navy `C` square) + "Canopy" wordmark — links to portal home
-- **Product/workspace chip** — shows active org name, opens product switcher on click
+- **Workspace chip** — shows active org name, opens workspace switcher on click
 - **Avatar** — opens account dropdown (user info, account settings, help, feedback, sign out)
 
-The product switcher chip is where users move between products. It shows:
+The top bar should feel calm and infrastructural, not like a page header repeated on every screen.
+
+### App Strip (persistent)
+
+The app strip sits directly below the top bar and is the primary cross-product navigation layer.
+
+It should show:
+
+- `Portal`
+- enabled products for the active workspace
+- clear active-state treatment for the current area
+- subtle product identity without turning into a marketing carousel
+
+This is where users move between products.
+
+It should show:
 - The user's enabled products with links
 - Live products (currently PhotoVault) link to their deployed URL
 - Not-yet-live products link to their placeholder page within the portal
-- A "Back to portal home" link at the bottom
+- Portal remains the first anchor point in the strip
 
-### Sidebar (contextual)
+### Context Rail (local)
 
-The sidebar changes based on which product context is active.
+The left rail changes based on which product context is active.
 
 **Portal context** (Home, Account pages):
-- Portal section label
+- local section label
 - Home
 - Account
 
 **Product context** (when a product loads inside the shell):
-- Product section label
+- product section label
 - Product-specific nav items (e.g., Albums, Photo Library, Brand Portal for PhotoVault)
 
-This gives each product its own navigation without polluting the portal's nav with every product's structure.
+This keeps product switching out of the local rail and avoids overloading one navigation surface with every decision at once.
 
 ### Main Content Area
 
@@ -128,18 +145,16 @@ Visible naming stays consistent everywhere:
 
 Pattern: **"Canopy [Function]"** — brand first, function second. Immediately readable without needing a description. PhotoVault keeps its established name with "by Canopy" appended to connect it to the platform.
 
-## Product Switcher Model
+## Product Switching Model
 
-The org chip in the top bar acts as the global product switcher.
+The shell separates workspace switching from product switching.
 
 Behavior:
-- Shows the active workspace name with a down chevron
-- Click opens a dropdown listing the user's enabled products
-- Products with a live deployed URL (e.g., PhotoVault → `photovault.school`) open externally with an external link indicator
-- Products without a live URL open their placeholder page inside the portal
-- "Back to portal home" link at the bottom for when users are deep inside a product
+- the workspace chip in the top bar changes workspace context
+- the app strip changes products
+- the left rail changes local views within the current area
 
-This pattern is mirrored in each product app: PhotoVault shows "App · PhotoVault ▾" which links back to the Canopy portal.
+This separation is the key to making the platform feel seamless instead of crowded.
 
 ## Portal-to-Product Relationship
 
@@ -172,9 +187,10 @@ Add these only when real workflows justify them.
 
 The Canopy navigation model is:
 
-- **Persistent shell** — top bar and sidebar always visible
-- **Contextual sidebar** — changes per product, always relevant
-- **Product switcher chip** — the universal cross-product navigation control
+- **Persistent shell** — top bar, app strip, and context rail
+- **Workspace switcher chip** — changes active workspace context
+- **App strip** — universal cross-product navigation
+- **Context rail** — local navigation only
 - **Avatar dropdown** — account, help, support, sign out
 - **Portal as home** — always the default destination, always accessible
 

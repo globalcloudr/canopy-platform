@@ -43,6 +43,14 @@
   --planned:      #7c3aed;
   --planned-bg:   rgba(124, 58, 237, 0.08);
   --neutral-bg:   rgba(107, 114, 128, 0.1);
+  --shell-topbar: #dff3f1;
+  --shell-appbar: #f5f3ee;
+  --shell-rail:   #f5f7fb;
+  --shell-content: #edf1f7;
+  --shell-divider: rgba(15, 31, 61, 0.12);
+  --shell-rail-border: rgba(15, 31, 61, 0.08);
+  --shell-chip-border: rgba(15, 31, 61, 0.14);
+  --shell-chip-icon-bg: rgba(15, 31, 61, 0.08);
 }
 
 /* ─── Base ───────────────────────────────────────────── */
