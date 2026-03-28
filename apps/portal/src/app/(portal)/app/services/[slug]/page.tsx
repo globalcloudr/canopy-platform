@@ -1,3 +1,4 @@
+import { Button } from "@canopy/ui";
 import { notFound } from "next/navigation";
 import { getProductDefinition } from "@/lib/products";
 import type { ProductKey } from "@/lib/platform";
@@ -43,18 +44,12 @@ export default async function ServicePage({ params }: ServicePageProps) {
             {def.shortDescription} Reach out to your Canopy contact or email us to get started or check on status.
           </p>
           <div className="flex items-center justify-center gap-3 flex-wrap">
-            <a
-              href="mailto:info@akkedisdigital.com"
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-navy text-white text-[0.875rem] font-semibold rounded-lg no-underline transition-colors hover:bg-navy-mid"
-            >
-              Contact Canopy
-            </a>
-            <a
-              href="/app"
-              className="inline-flex items-center gap-2 px-5 py-2.5 border border-[rgba(15,31,61,0.18)] text-ink-2 text-[0.875rem] font-semibold rounded-lg no-underline transition-colors hover:bg-[rgba(15,31,61,0.03)]"
-            >
-              Back to dashboard
-            </a>
+            <Button asChild variant="primary">
+              <a href="mailto:info@akkedisdigital.com">Contact Canopy</a>
+            </Button>
+            <Button asChild variant="secondary">
+              <a href="/app">Back to dashboard</a>
+            </Button>
           </div>
         </div>
       </div>

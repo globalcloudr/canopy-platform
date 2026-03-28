@@ -2,6 +2,12 @@
 
 Date: 2026-03-24 (updated)
 
+Implementation note:
+
+- the current portal implementation should follow the established PhotoVault shell baseline first
+- the shared shell for products should feel like the same product family as PhotoVault
+- more complex product-strip experiments should wait until the base shell feels right
+
 ## Purpose
 
 Define the navigation model for Canopy so the platform feels unified as products are added.
@@ -16,7 +22,13 @@ Navigation should make three things obvious:
 
 The portal is the **persistent shell** for the entire Canopy platform.
 
-Users should feel like they are moving through one workspace surface, not jumping between unrelated tools. The shell should be strong enough that product changes feel contextual rather than disorienting.
+For the current phase, that shell should stay close to the PhotoVault baseline:
+
+- top utility header
+- left contextual sidebar
+- right content canvas
+
+Cross-product navigation can evolve later, but the base surface should first feel calm, familiar, and consistent with existing Canopy product UI.
 
 ## Shell Layout
 
@@ -25,15 +37,13 @@ The authenticated shell uses a two-panel layout:
 ```
 ┌────────────────────────────────────────────────────────────────┐
 │  [C] Canopy     [Workspace ▾]                     [Avatar]     │  top bar
-├────────────────────────────────────────────────────────────────┤
-│  Portal | PhotoVault | Stories | ...                           │  app strip
 ├───────────────┬────────────────────────────────────────────────┤
 │               │                                                │
-│  Context rail │  Main content area                             │
+│  Sidebar nav  │  Main content area                             │
 │  (local nav)  │  (portal or product surface)                   │
 │               │                                                │
 └───────────────┴────────────────────────────────────────────────┘
-     280px                    flex-1
+     260px                    flex-1
 ```
 
 ### Top Bar (persistent)
@@ -46,31 +56,12 @@ Always visible. Contains:
 
 The top bar should feel calm and infrastructural, not like a page header repeated on every screen.
 
-### App Strip (persistent)
-
-The app strip sits directly below the top bar and is the primary cross-product navigation layer.
-
-It should show:
-
-- `Portal`
-- enabled products for the active workspace
-- clear active-state treatment for the current area
-- subtle product identity without turning into a marketing carousel
-
-This is where users move between products.
-
-It should show:
-- The user's enabled products with links
-- Live products (currently PhotoVault) link to their deployed URL
-- Not-yet-live products link to their placeholder page within the portal
-- Portal remains the first anchor point in the strip
-
-### Context Rail (local)
+### Sidebar (contextual)
 
 The left rail changes based on which product context is active.
 
 **Portal context** (Home, Account pages):
-- local section label
+- Portal section label
 - Home
 - Account
 
@@ -78,7 +69,7 @@ The left rail changes based on which product context is active.
 - product section label
 - Product-specific nav items (e.g., Albums, Photo Library, Brand Portal for PhotoVault)
 
-This keeps product switching out of the local rail and avoids overloading one navigation surface with every decision at once.
+This keeps the shell familiar to existing PhotoVault users and avoids introducing extra navigation layers before they are truly needed.
 
 ### Main Content Area
 
@@ -147,14 +138,13 @@ Pattern: **"Canopy [Function]"** — brand first, function second. Immediately r
 
 ## Product Switching Model
 
-The shell separates workspace switching from product switching.
+For the current phase:
 
-Behavior:
 - the workspace chip in the top bar changes workspace context
-- the app strip changes products
-- the left rail changes local views within the current area
+- the dashboard and launcher surfaces handle product entry
+- the left rail stays local to the current portal area
 
-This separation is the key to making the platform feel seamless instead of crowded.
+A stronger cross-product strip may come later, but it should not replace the current PhotoVault-aligned baseline until it clearly improves the product.
 
 ## Portal-to-Product Relationship
 
@@ -187,10 +177,9 @@ Add these only when real workflows justify them.
 
 The Canopy navigation model is:
 
-- **Persistent shell** — top bar, app strip, and context rail
+- **Persistent shell** — top utility header plus contextual sidebar
 - **Workspace switcher chip** — changes active workspace context
-- **App strip** — universal cross-product navigation
-- **Context rail** — local navigation only
+- **Contextual sidebar** — local navigation only
 - **Avatar dropdown** — account, help, support, sign out
 - **Portal as home** — always the default destination, always accessible
 

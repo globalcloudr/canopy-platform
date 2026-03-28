@@ -4,15 +4,15 @@ import { cn } from "../../lib/cn";
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, ...props }, ref) => {
+  ({ className, type = "text", ...props }, ref) => {
     return (
       <input
         type={type}
         className={cn(
-          "w-full px-3.5 py-2.5 border-[1.5px] border-[rgba(15,31,61,0.18)] rounded-lg bg-white text-[#0f1f3d] font-[inherit] text-[0.9375rem] outline-none transition-[border-color,box-shadow]",
-          "placeholder:text-[#9ca3af]",
-          "focus:border-[#2563eb] focus:shadow-[0_0_0_3px_rgba(37,99,235,0.08)]",
-          "disabled:cursor-not-allowed disabled:opacity-60",
+          "flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-base text-slate-900 shadow-[0_1px_2px_rgba(148,163,184,0.14)] outline-none transition",
+          "placeholder:text-slate-400",
+          "focus:border-slate-300 focus:ring-4 focus:ring-slate-200/60",
+          "disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500",
           className
         )}
         ref={ref}

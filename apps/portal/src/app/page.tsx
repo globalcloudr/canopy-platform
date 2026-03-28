@@ -1,3 +1,4 @@
+import { Button } from "@canopy/ui";
 import Link from "next/link";
 
 const allProducts = [
@@ -53,12 +54,9 @@ export default function MarketingHomePage() {
               >
                 Products
               </a>
-              <Link
-                className="inline-flex items-center gap-1.5 px-5 py-[11px] bg-blue text-white rounded-lg text-[0.9rem] font-semibold no-underline transition-[background,transform] hover:bg-blue-hover hover:-translate-y-px"
-                href="/sign-in"
-              >
-                Sign in
-              </Link>
+              <Button asChild variant="blue">
+                <Link href="/sign-in">Sign in</Link>
+              </Button>
             </div>
           </nav>
 
@@ -73,18 +71,17 @@ export default function MarketingHomePage() {
               and design into one connected platform — built for adult education schools.
             </p>
             <div className="flex items-center gap-3 flex-wrap">
-              <Link
-                className="inline-flex items-center gap-1.5 px-6 py-[11px] bg-blue text-white rounded-lg text-[0.9rem] font-semibold no-underline transition-[background,transform] hover:bg-blue-hover hover:-translate-y-px"
-                href="/sign-in"
+              <Button asChild variant="blue" size="lg">
+                <Link href="/sign-in">Sign in to your workspace</Link>
+              </Button>
+              <Button
+                asChild
+                variant="secondary"
+                size="lg"
+                className="border-white/20 bg-transparent text-white/85 shadow-none hover:border-white/45 hover:bg-white/5 hover:text-white"
               >
-                Sign in to your workspace
-              </Link>
-              <Link
-                className="inline-flex items-center gap-1.5 px-6 py-[11px] bg-transparent text-white/85 border-[1.5px] border-white/20 rounded-lg text-[0.9rem] font-semibold no-underline transition-[border-color,color,background] hover:border-white/45 hover:text-white hover:bg-white/5"
-                href="#products"
-              >
-                Explore the products →
-              </Link>
+                <Link href="#products">Explore the products →</Link>
+              </Button>
             </div>
           </section>
 
@@ -151,12 +148,9 @@ export default function MarketingHomePage() {
             Sign in to your workspace or contact Canopy to set up your account.
           </p>
           <div className="flex items-center justify-center gap-3 flex-wrap">
-            <Link
-              className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-navy text-white rounded-lg text-sm font-semibold no-underline transition-[background,transform] hover:bg-navy-mid hover:-translate-y-px"
-              href="/sign-in"
-            >
-              Sign in
-            </Link>
+            <Button asChild variant="primary">
+              <Link href="/sign-in">Sign in</Link>
+            </Button>
             <a
               className="text-sm font-medium text-muted no-underline transition-colors hover:text-ink"
               href="mailto:info@akkedisdigital.com"

@@ -38,7 +38,7 @@ export function SignInForm({ defaultEmail }: SignInFormProps) {
         type="submit"
         variant="primary"
         size="lg"
-        className="mt-1 w-full justify-center bg-navy text-white hover:bg-navy-mid"
+        className="mt-1 w-full justify-center"
       >
         Sign in
       </Button>

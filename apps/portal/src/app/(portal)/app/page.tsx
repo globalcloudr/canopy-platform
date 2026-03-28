@@ -1,4 +1,4 @@
-import { Badge } from "@canopy/ui";
+import { Badge, BodyText, Card, Eyebrow, PageTitle, SectionTitle } from "@canopy/ui";
 import { redirect } from "next/navigation";
 import { ProductLauncherCard } from "@/components/product-launcher-card";
 import { resolvePortalSession } from "@/lib/platform";
@@ -35,94 +35,118 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
   const activeMembership = activeWorkspace
     ? session.memberships.find((m) => m.workspaceId === activeWorkspace.id)
     : null;
+  const totalServices = launcherServices.length;
 
   if (session.isPlatformOperator && !activeWorkspace) {
     return (
-      <div className="space-y-8 pb-10">
-        <header className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-5 shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
-          <p className="eyebrow">Platform</p>
-          <h2 className="mb-1">Welcome back, {firstName}.</h2>
-          <div className="flex items-center gap-2 text-sm text-muted flex-wrap">
-            <span>Platform overview</span>
-            <span className="text-[rgba(15,31,61,0.25)]">·</span>
-            <span>{session.memberships.length} workspaces visible</span>
-            <span className="text-[rgba(15,31,61,0.25)]">·</span>
-            <span>{session.platformRole?.replace(/_/g, " ") ?? "platform operator"}</span>
-          </div>
+      <div className="space-y-5 pb-10">
+        <header>
+          <PageTitle className="mb-2 text-slate-900">Platform Overview</PageTitle>
+          <BodyText muted className="m-0 max-w-3xl text-[0.95rem]">
+            Platform operations, workspace visibility, and launcher access across Canopy.
+          </BodyText>
         </header>
 
-        <section className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-6 shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
-          <p className="eyebrow">Workspace Context</p>
-          <h2>Select a workspace when you want product context</h2>
-          <p className="m-0 max-w-[56ch] text-sm text-muted">
-            Platform staff should land in a neutral overview by default. Use the org menu in the header to pick a
-            workspace when you want to inspect launcher state or enter a product in client context.
-          </p>
-        </section>
+        <Card className="overflow-hidden">
+          <div className="relative h-36 border-b border-slate-200 bg-gradient-to-r from-slate-900 to-slate-700 sm:h-44">
+            <div className="absolute inset-0 bg-slate-900/20" />
+            <div className="absolute inset-x-0 bottom-0 p-4 text-white sm:p-5">
+              <Eyebrow className="text-slate-100">Platform Control</Eyebrow>
+              <SectionTitle as="h2" className="mb-1 text-white">Welcome back, {firstName}.</SectionTitle>
+              <BodyText muted className="m-0 text-slate-200">
+                Neutral overview for support and operator work before entering a client workspace.
+              </BodyText>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-2 px-4 py-3">
+            <Badge>{session.memberships.length} workspaces visible</Badge>
+            <Badge>{session.platformRole?.replace(/_/g, " ") ?? "platform operator"}</Badge>
+            <Badge>Workspace context not selected</Badge>
+          </div>
+        </Card>
+
+        <Card padding="md" className="sm:p-6">
+          <SectionTitle as="h2" className="mb-1 text-slate-900">Workspace Context</SectionTitle>
+          <BodyText muted className="m-0 max-w-[58ch]">
+            Use the workspace menu in the header when you want to inspect launcher state, account details, or enter a
+            product in client context. Until then, this view stays intentionally neutral.
+          </BodyText>
+        </Card>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8 pb-10">
-
-      {/* ── Page header ──────────────────────────────── */}
-      <header className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-5 shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
-        <p className="eyebrow">Dashboard</p>
-        <h2 className="mb-1">Welcome back, {firstName}.</h2>
-        <div className="flex items-center gap-2 text-sm text-muted flex-wrap">
-          <span>{activeWorkspace?.displayName ?? "Platform"}</span>
-          <span className="text-[rgba(15,31,61,0.25)]">·</span>
-          <span>{launchableCount} product{launchableCount === 1 ? "" : "s"} active</span>
-          <span className="text-[rgba(15,31,61,0.25)]">·</span>
-          <span>{activeMembership?.role ?? "staff"}</span>
-        </div>
+    <div className="space-y-5 pb-10">
+      <header>
+        <PageTitle className="mb-2 text-slate-900">{activeWorkspace?.displayName ?? "Workspace Overview"}</PageTitle>
+        <BodyText muted className="m-0 max-w-3xl text-[0.95rem]">
+          Launch products, review active services, and move across your Canopy workspace.
+        </BodyText>
       </header>
 
-      {/* ── Your Apps ────────────────────────────────── */}
-      {launcherProducts.length > 0 && (
-        <section id="products">
-          <div className="flex justify-between items-end gap-6 mb-4">
-            <div>
-              <p className="eyebrow">Your Apps</p>
-              <h2>What would you like to do today?</h2>
-            </div>
-            <p className="text-muted text-[0.9rem] max-w-[44ch] m-0 hidden sm:block">Products your organization has access to.</p>
+      <Card className="overflow-hidden">
+        <div className="relative h-36 border-b border-slate-200 bg-gradient-to-r from-slate-900 to-slate-700 sm:h-44">
+          <div className="absolute inset-0 bg-slate-900/20" />
+          <div className="absolute inset-x-0 bottom-0 p-4 text-white sm:p-5">
+            <Eyebrow className="text-slate-100">Workspace Control</Eyebrow>
+            <SectionTitle as="h2" className="mb-1 text-white">Welcome back, {firstName}.</SectionTitle>
+            <BodyText muted className="m-0 text-slate-200">
+              {activeWorkspace?.displayName} is ready for product launch and workspace operations.
+            </BodyText>
           </div>
-          <div className="grid grid-cols-3 gap-4 max-[840px]:grid-cols-2 max-[580px]:grid-cols-1">
+        </div>
+        <div className="flex flex-wrap items-center gap-2 px-4 py-3">
+          <Badge>{launchableCount} active product{launchableCount === 1 ? "" : "s"}</Badge>
+          <Badge>{totalServices} service{totalServices === 1 ? "" : "s"}</Badge>
+          <Badge>{activeMembership?.role ?? "staff"} access</Badge>
+        </div>
+      </Card>
+
+      {launcherProducts.length > 0 && (
+        <Card id="products" padding="md" className="sm:p-6">
+          <div className="mb-4 flex justify-between gap-6 max-sm:flex-col sm:items-end">
+            <div>
+              <Eyebrow>Your Apps</Eyebrow>
+              <SectionTitle as="h2" className="text-slate-900">Launch into your products</SectionTitle>
+              <BodyText muted className="m-0 max-w-[54ch]">Products your workspace can access right now.</BodyText>
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-4 max-[960px]:grid-cols-2 max-[620px]:grid-cols-1">
             {launcherProducts.map((product) => (
               <ProductLauncherCard key={product.productKey} product={product} />
             ))}
           </div>
-        </section>
+        </Card>
       )}
 
-      {/* ── Active services ──────────────────────────── */}
       {launcherServices.length > 0 && (
-        <section>
-          <div className="flex justify-between items-end gap-6 mb-4">
+        <Card padding="md" className="sm:p-6">
+          <div className="mb-4 flex justify-between gap-6 max-sm:flex-col sm:items-end">
             <div>
-              <p className="eyebrow">Services</p>
-              <h2>Active services</h2>
+              <Eyebrow>Services</Eyebrow>
+              <SectionTitle as="h2" className="text-slate-900">Active services</SectionTitle>
+              <BodyText muted className="m-0 max-w-[54ch]">
+                Managed services currently running for your workspace.
+              </BodyText>
             </div>
-            <p className="text-muted text-[0.9rem] max-w-[44ch] m-0 hidden sm:block">Managed services running for your organization.</p>
           </div>
-          <div className="flex flex-col bg-white border border-[rgba(15,31,61,0.1)] rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
+          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
             {launcherServices.map((service, i) => (
               <div
                 key={service.productKey}
-                className={`flex items-center justify-between gap-4 px-5 py-3.5 ${i < launcherServices.length - 1 ? "border-b border-[rgba(15,31,61,0.1)]" : ""}`}
+                className={`flex items-center justify-between gap-4 px-5 py-3.5 ${i < launcherServices.length - 1 ? "border-b border-slate-200" : ""}`}
               >
                 <div className="flex items-center gap-3">
                   <div
-                    className="grid place-items-center w-8 h-8 rounded-[7px] text-white text-[0.8rem] font-extrabold shrink-0"
+                    className="grid h-8 w-8 place-items-center rounded-[7px] text-[0.8rem] font-extrabold text-white"
                     style={{ background: service.iconColor }}
                   >
                     {service.displayName[0]}
                   </div>
                   <div>
-                    <p className="text-[0.9rem] font-semibold text-ink m-0">{service.displayName}</p>
-                    <p className="text-[0.8rem] text-muted m-0">{service.shortDescription}</p>
+                    <SectionTitle as="h3" className="m-0 text-lg text-slate-900">{service.displayName}</SectionTitle>
+                    <BodyText muted className="m-0 text-[0.8rem]">{service.shortDescription}</BodyText>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 shrink-0">
@@ -131,33 +155,32 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
                     className="text-[0.845rem] font-semibold text-blue no-underline whitespace-nowrap transition-colors hover:text-blue-hover hover:underline"
                     href={service.primaryActionTarget}
                   >
-                    {service.primaryActionLabel} →
+                    {service.primaryActionLabel}
                   </a>
                 </div>
               </div>
             ))}
           </div>
-        </section>
+        </Card>
       )}
 
-      {/* ── More from Canopy ─────────────────────────── */}
       {additionalProducts.length > 0 && (
-        <div className="bg-[rgba(15,31,61,0.025)] border border-[rgba(15,31,61,0.1)] rounded-2xl p-7 pb-6">
-          <div className="flex justify-between items-end gap-6 mb-4">
+        <Card variant="soft" padding="md" className="sm:p-6">
+          <div className="mb-4 flex justify-between gap-6 max-sm:flex-col sm:items-end">
             <div>
-              <p className="eyebrow">More from Canopy</p>
-              <h2>Expand your platform</h2>
+              <Eyebrow>More from Canopy</Eyebrow>
+              <SectionTitle as="h2" className="text-slate-900">Expand your platform</SectionTitle>
+              <BodyText muted className="m-0 max-w-[54ch]">
+                Additional products that can be added to this workspace when you are ready.
+              </BodyText>
             </div>
-            <p className="text-muted text-[0.9rem] max-w-[44ch] m-0 hidden sm:block">
-              Contact Canopy to add these products to your workspace.
-            </p>
           </div>
-          <div className="grid grid-cols-3 gap-4 max-[840px]:grid-cols-2 max-[580px]:grid-cols-1">
+          <div className="grid grid-cols-3 gap-4 max-[960px]:grid-cols-2 max-[620px]:grid-cols-1">
             {additionalProducts.map((product) => (
               <ProductLauncherCard key={product.productKey} product={product} dim />
             ))}
           </div>
-        </div>
+        </Card>
       )}
     </div>
   );

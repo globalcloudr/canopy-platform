@@ -3,20 +3,24 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/cn";
 
 const badgeVariants = cva(
-  "inline-flex items-center gap-[5px] rounded-full py-[3px] px-2.5 text-[0.75rem] font-semibold tracking-[0.02em] whitespace-nowrap shrink-0 before:content-[''] before:w-1.5 before:h-1.5 before:rounded-full before:bg-current before:opacity-70",
+  "inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium whitespace-nowrap shrink-0",
   {
     variants: {
       variant: {
-        enabled:     "bg-[rgba(5,150,105,0.08)] text-[#059669]",
-        in_setup:    "bg-[rgba(217,119,6,0.08)] text-[#d97706]",
-        pilot:       "bg-[rgba(124,58,237,0.08)] text-[#7c3aed]",
-        paused:      "bg-[rgba(107,114,128,0.1)] text-[#6b7280]",
-        not_enabled: "bg-[rgba(107,114,128,0.1)] text-[#6b7280]",
-        service:     "bg-[rgba(37,99,235,0.08)] text-[#2563eb]",
+        neutral: "border-slate-200 bg-slate-50 text-slate-700",
+        sky: "border-sky-200 bg-sky-50 text-sky-700",
+        emerald: "border-emerald-200 bg-emerald-50 text-emerald-700",
+        outline: "border-slate-300 bg-white text-slate-700",
+        enabled: "border-emerald-200 bg-emerald-50 text-emerald-700",
+        in_setup: "border-amber-200 bg-amber-50 text-amber-700",
+        pilot: "border-violet-200 bg-violet-50 text-violet-700",
+        paused: "border-slate-200 bg-slate-50 text-slate-700",
+        not_enabled: "border-slate-200 bg-slate-50 text-slate-700",
+        service: "border-slate-200 bg-slate-50 text-slate-700",
       },
     },
     defaultVariants: {
-      variant: "enabled",
+      variant: "neutral",
     },
   }
 );

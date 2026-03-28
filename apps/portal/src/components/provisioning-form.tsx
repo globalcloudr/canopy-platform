@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { Button, Input, Select, Textarea } from "@canopy/ui";
 import type { PortalWorkspace, WorkspaceRole } from "@/lib/platform";
 import type { WorkspaceAdminInvitation } from "@/lib/provisioning";
 
@@ -246,36 +247,36 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="space-y-2">
               <span className="text-sm font-semibold text-ink">Mode</span>
-              <select
+              <Select
                 value={workspaceMode}
                 onChange={(event) => setWorkspaceMode(event.target.value === "new" ? "new" : "existing")}
-                className="w-full rounded-xl border border-[rgba(15,31,61,0.12)] bg-white px-3 py-2.5 text-sm text-ink outline-none focus:border-[rgba(37,99,235,0.45)]"
+                className="text-sm"
               >
                 <option value="existing">Select existing</option>
                 <option value="new">Create new</option>
-              </select>
+              </Select>
             </label>
 
             {workspaceMode === "existing" ? (
               <label className="space-y-2">
                 <span className="text-sm font-semibold text-ink">Workspace</span>
-                <select
+                <Select
                   value={workspaceId}
                   onChange={(event) => setWorkspaceId(event.target.value)}
-                  className="w-full rounded-xl border border-[rgba(15,31,61,0.12)] bg-white px-3 py-2.5 text-sm text-ink outline-none focus:border-[rgba(37,99,235,0.45)]"
+                  className="text-sm"
                 >
                   {workspaces.map((workspace) => (
                     <option key={workspace.id} value={workspace.id}>
                       {workspace.displayName}
                     </option>
                   ))}
-                </select>
+                </Select>
               </label>
             ) : (
               <>
                 <label className="space-y-2">
                   <span className="text-sm font-semibold text-ink">Workspace name</span>
-                  <input
+                  <Input
                     value={workspaceName}
                     onChange={(event) => {
                       const next = event.target.value;
@@ -284,17 +285,17 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
                         setWorkspaceSlug(slugify(next));
                       }
                     }}
-                    className="w-full rounded-xl border border-[rgba(15,31,61,0.12)] bg-white px-3 py-2.5 text-sm text-ink outline-none focus:border-[rgba(37,99,235,0.45)]"
+                    className="text-sm"
                     placeholder="Berkeley Adult School"
                     required
                   />
                 </label>
                 <label className="space-y-2">
                   <span className="text-sm font-semibold text-ink">Workspace slug</span>
-                  <input
+                  <Input
                     value={workspaceSlug}
                     onChange={(event) => setWorkspaceSlug(slugify(event.target.value))}
-                    className="w-full rounded-xl border border-[rgba(15,31,61,0.12)] bg-white px-3 py-2.5 text-sm text-ink outline-none focus:border-[rgba(37,99,235,0.45)]"
+                    className="text-sm"
                     placeholder="berkeley-adult-school"
                     required
                   />
@@ -313,28 +314,28 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="space-y-2">
               <span className="text-sm font-semibold text-ink">School-admin email</span>
-              <input
+              <Input
                 type="email"
                 value={primaryAdminEmail}
                 onChange={(event) => setPrimaryAdminEmail(event.target.value)}
-                className="w-full rounded-xl border border-[rgba(15,31,61,0.12)] bg-white px-3 py-2.5 text-sm text-ink outline-none focus:border-[rgba(37,99,235,0.45)]"
+                className="text-sm"
                 placeholder="admin@school.org"
                 required
               />
             </label>
             <label className="space-y-2">
               <span className="text-sm font-semibold text-ink">Initial role</span>
-              <select
+              <Select
                 value={initialRole}
                 onChange={(event) => setInitialRole(event.target.value as WorkspaceRole)}
-                className="w-full rounded-xl border border-[rgba(15,31,61,0.12)] bg-white px-3 py-2.5 text-sm text-ink outline-none focus:border-[rgba(37,99,235,0.45)]"
+                className="text-sm"
               >
                 {ROLE_OPTIONS.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
                 ))}
-              </select>
+              </Select>
             </label>
           </div>
           {workspaceMode === "existing" && latestPendingInvitation ? (
@@ -363,16 +364,16 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
             {enablePhotoVault ? (
               <label className="mt-4 block space-y-2">
                 <span className="text-sm font-semibold text-ink">Setup state</span>
-                <select
+                <Select
                   value={photoVaultSetupState}
                   onChange={(event) => setPhotoVaultSetupState(event.target.value)}
-                  className="w-full rounded-xl border border-[rgba(15,31,61,0.12)] bg-white px-3 py-2.5 text-sm text-ink outline-none focus:border-[rgba(37,99,235,0.45)]"
+                  className="text-sm"
                 >
                   <option value="ready">Ready</option>
                   <option value="in_setup">In setup</option>
                   <option value="not_started">Not started</option>
                   <option value="blocked">Blocked</option>
-                </select>
+                </Select>
               </label>
             ) : null}
           </div>
@@ -398,15 +399,15 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
               {enableWebsiteSetup ? (
                 <label className="mt-4 block space-y-2">
                   <span className="text-sm font-semibold text-ink">Setup state</span>
-                  <select
+                  <Select
                     value={websiteSetupState}
                     onChange={(event) => setWebsiteSetupState(event.target.value)}
-                    className="w-full rounded-xl border border-[rgba(15,31,61,0.12)] bg-white px-3 py-2.5 text-sm text-ink outline-none focus:border-[rgba(37,99,235,0.45)]"
+                    className="text-sm"
                   >
                     <option value="setup">Setup</option>
                     <option value="ready">Ready</option>
                     <option value="pilot">Pilot</option>
-                  </select>
+                  </Select>
                 </label>
               ) : null}
             </div>
@@ -427,15 +428,15 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
               {enableCreativeRetainer ? (
                 <label className="mt-4 block space-y-2">
                   <span className="text-sm font-semibold text-ink">Setup state</span>
-                  <select
+                  <Select
                     value={creativeRetainerState}
                     onChange={(event) => setCreativeRetainerState(event.target.value)}
-                    className="w-full rounded-xl border border-[rgba(15,31,61,0.12)] bg-white px-3 py-2.5 text-sm text-ink outline-none focus:border-[rgba(37,99,235,0.45)]"
+                    className="text-sm"
                   >
                     <option value="ready">Ready</option>
                     <option value="setup">Setup</option>
                     <option value="pilot">Pilot</option>
-                  </select>
+                  </Select>
                 </label>
               ) : null}
             </div>
@@ -445,10 +446,10 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
         <section className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-5 shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
           <p className="eyebrow">Notes</p>
           <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Internal context</h3>
-          <textarea
+          <Textarea
             value={notes}
             onChange={(event) => setNotes(event.target.value)}
-            className="min-h-28 w-full rounded-xl border border-[rgba(15,31,61,0.12)] bg-white px-3 py-2.5 text-sm text-ink outline-none focus:border-[rgba(37,99,235,0.45)]"
+            className="min-h-28"
             placeholder="Optional operator notes for this provisioning action."
           />
         </section>
@@ -471,13 +472,9 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
           ) : null}
 
           <div className="mt-5 flex items-center gap-3">
-            <button
-              type="submit"
-              disabled={busy}
-              className="inline-flex items-center rounded-full bg-[#16233f] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#0f1f3d] disabled:cursor-not-allowed disabled:opacity-60"
-            >
+            <Button type="submit" disabled={busy} variant="primary">
               {busy ? "Provisioning..." : "Provision workspace"}
-            </button>
+            </Button>
           </div>
         </section>
       </form>
@@ -556,14 +553,15 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
                 <div className="flex items-center gap-3">
                   <p className="m-0 text-sm font-medium text-ink">{deliveryStatusLabel(invitation)}</p>
                   {invitation.status === "pending" && invitation.deliveryStatus !== "sent" ? (
-                    <button
+                    <Button
                       type="button"
                       onClick={() => void resendInvitation(invitation.id)}
                       disabled={resendId === invitation.id}
-                      className="inline-flex items-center rounded-full border border-[rgba(15,31,61,0.14)] bg-white px-3 py-1.5 text-xs font-semibold text-ink transition hover:bg-[rgba(15,31,61,0.04)] disabled:cursor-not-allowed disabled:opacity-60"
+                      size="sm"
+                      variant="secondary"
                     >
                       {resendId === invitation.id ? "Sending..." : "Resend"}
-                    </button>
+                    </Button>
                   ) : null}
                 </div>
               </div>

@@ -6,10 +6,8 @@ import { cn } from "@canopy/ui";
 
 function navClass(active: boolean) {
   return cn(
-    "group relative flex items-center gap-2.5 rounded-[12px] px-3 py-2.5 text-[0.9rem] font-semibold tracking-[-0.01em] transition-colors",
-    active
-      ? "bg-white text-navy shadow-[0_8px_18px_rgba(15,31,61,0.06)]"
-      : "text-muted hover:bg-white/70 hover:text-ink"
+    "flex items-center gap-2.5 px-1 py-2.5 font-outfit text-base font-medium tracking-[-0.015em] transition-colors",
+    active ? "text-slate-900" : "text-slate-700 hover:text-slate-900"
   );
 }
 
@@ -44,48 +42,58 @@ export function PortalSidebar({ showProvisioning = false }: { showProvisioning?:
   const searchParams = useSearchParams();
   const qs = searchParams.toString();
   const suffix = qs ? `?${qs}` : "";
+  const workspace = searchParams.get("workspace");
+  const photoVaultHref = workspace ? `/auth/launch/photovault?workspace=${encodeURIComponent(workspace)}` : "/auth/launch/photovault";
 
   return (
-    <div className="flex h-full flex-col p-3">
-      <section className="rounded-[18px] border border-[rgba(15,31,61,0.08)] bg-white/76 px-4 py-4 shadow-[0_1px_2px_rgba(15,31,61,0.04)]">
-        <p className="text-[0.68rem] font-bold uppercase tracking-[0.12em] text-muted-light">Context rail</p>
-        <h2 className="mt-2 mb-1 text-[1.02rem] font-bold tracking-[-0.02em] text-ink">Portal workspace</h2>
-        <p className="m-0 text-[0.82rem] leading-6 text-muted">
-          Keep this rail local to the current area. Product switching lives in the app strip above.
-        </p>
-      </section>
+    <div className="flex h-full flex-col">
+      <div className="px-1">
+        <p className="font-outfit text-lg font-semibold tracking-[-0.03em] text-[var(--foreground, var(--ink))]">Canopy Platform</p>
+        <p className="mt-1 text-sm text-muted">Workspace launch, account context, and product access</p>
+        <p className="mt-2 text-sm text-muted">Portal control plane</p>
+      </div>
 
-      <nav className="mt-4 flex flex-col gap-1">
-        <p className="mb-1.5 px-3 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-muted-light">
-          In this area
-        </p>
-        <Link href={`/app${suffix}`} className={navClass(pathname === "/app")}>
-          {pathname === "/app" ? <span className="absolute left-0 top-2.5 bottom-2.5 w-[3px] rounded-full bg-navy" aria-hidden="true" /> : null}
-          <IconHome className="shrink-0" />
-          Home
-        </Link>
-        <Link href={`/app/account${suffix}`} className={navClass(pathname.startsWith("/app/account"))}>
-          {pathname.startsWith("/app/account") ? <span className="absolute left-0 top-2.5 bottom-2.5 w-[3px] rounded-full bg-navy" aria-hidden="true" /> : null}
-          <IconUser className="shrink-0" />
-          Account
-        </Link>
-        {showProvisioning ? (
-          <Link href={`/app/provisioning${suffix}`} className={navClass(pathname.startsWith("/app/provisioning"))}>
-            {pathname.startsWith("/app/provisioning") ? <span className="absolute left-0 top-2.5 bottom-2.5 w-[3px] rounded-full bg-navy" aria-hidden="true" /> : null}
-            <IconShield className="shrink-0" />
-            Provisioning
+      <nav className="mt-3 px-1">
+        <p className="mb-1.5 px-1 text-[11px] font-bold uppercase tracking-[0.24em] text-slate-400">Portal</p>
+        <div className="space-y-0.5">
+          <Link href={`/app${suffix}`} className={navClass(pathname === "/app")}>
+            <IconHome className="shrink-0" />
+            Home
           </Link>
-        ) : null}
+          <Link href={`/app/account${suffix}`} className={navClass(pathname.startsWith("/app/account"))}>
+            <IconUser className="shrink-0" />
+            Account
+          </Link>
+          {showProvisioning ? (
+            <Link href={`/app/provisioning${suffix}`} className={navClass(pathname.startsWith("/app/provisioning"))}>
+              <IconShield className="shrink-0" />
+              Provisioning
+            </Link>
+          ) : null}
+        </div>
       </nav>
 
-      <div className="mt-auto px-1 pb-1">
-        <div className="rounded-[18px] border border-[rgba(15,31,61,0.08)] bg-[rgba(255,255,255,0.7)] px-4 py-4">
-          <p className="mb-1 text-[0.72rem] font-bold uppercase tracking-[0.12em] text-muted-light">Shell direction</p>
-          <p className="m-0 text-[0.82rem] leading-6 text-muted">
-            This layout is the base contract for Canopy products: workspace up top, apps across, local navigation here.
-          </p>
+      <section className="mt-3 px-1">
+        <p className="mb-1.5 px-1 text-[11px] font-bold uppercase tracking-[0.24em] text-slate-400">Shortcuts</p>
+        <div className="space-y-0.5">
+          <Link href={`${workspace ? `/app?workspace=${encodeURIComponent(workspace)}#products` : "/app#products"}`} className={navClass(false)}>
+            <IconHome className="shrink-0" />
+            Product Launcher
+          </Link>
+          <Link href={photoVaultHref} className={navClass(false)}>
+            <IconShield className="shrink-0" />
+            Open PhotoVault
+          </Link>
         </div>
-      </div>
+      </section>
+
+      <section className="mt-auto px-1 pb-1 pt-4">
+        <p className="mb-1 px-1 text-[11px] font-bold uppercase tracking-[0.24em] text-slate-400">Context</p>
+        <div className="mt-2 space-y-1.5 pl-1">
+          <p className="m-0 text-sm text-muted">{workspace ? `Workspace: ${workspace}` : "Platform overview active"}</p>
+          <p className="m-0 text-sm text-muted">Use the header switcher to change workspace context.</p>
+        </div>
+      </section>
     </div>
   );
 }

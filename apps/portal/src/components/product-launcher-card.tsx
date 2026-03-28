@@ -1,5 +1,4 @@
-import { Badge } from "@canopy/ui";
-import { cn } from "@canopy/ui";
+import { Badge, Button, CardTitle, BodyText, typography, cn } from "@canopy/ui";
 import type { LauncherProduct, ProductState } from "@/lib/products";
 
 type ProductLauncherCardProps = {
@@ -11,44 +10,45 @@ export function ProductLauncherCard({ product, dim }: ProductLauncherCardProps) 
   return (
     <article
       className={cn(
-        "flex flex-col rounded-[14px] p-[22px_22px_18px] border cursor-default",
-        "transition-[box-shadow,border-color,transform] duration-200",
+        "overflow-hidden rounded-xl border border-slate-200 bg-white transition-[box-shadow,border-color,transform] duration-200",
         dim
-          ? "opacity-50 shadow-none border-dashed [border-top-style:solid] grayscale-[0.3] hover:opacity-80 hover:grayscale-0 hover:shadow-[0_1px_3px_rgba(15,31,61,0.08)] hover:-translate-y-px"
-          : "border-[rgba(15,31,61,0.1)] shadow-[0_1px_3px_rgba(15,31,61,0.08),0_1px_2px_rgba(15,31,61,0.04)] hover:shadow-[0_4px_12px_rgba(15,31,61,0.08),0_2px_4px_rgba(15,31,61,0.05)] hover:border-[rgba(15,31,61,0.18)] hover:-translate-y-0.5"
+          ? "opacity-70 hover:opacity-90"
+          : "shadow-[0_1px_3px_rgba(15,31,61,0.08)] hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-[0_6px_18px_rgba(15,31,61,0.08)]"
       )}
-      style={{
-        borderTop: `3px solid ${product.iconColor}`,
-        background: `linear-gradient(160deg, #fff 55%, ${product.iconColor}0d 100%)`,
-      }}
     >
-      <div
-        className="grid place-items-center w-11 h-11 rounded-[11px] text-white text-[1.05rem] font-extrabold tracking-[-0.02em] shrink-0 mb-3.5"
-        style={{ background: product.iconColor }}
-      >
-        {product.displayName[0]}
+      <div className="h-20 border-b border-slate-200" style={{ background: product.iconColor }} />
+
+      <div className="relative p-4">
+        <div className="-mt-10 mb-3 flex items-start justify-between gap-3">
+          <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border-2 border-white bg-white shadow-sm">
+            <div
+              className="grid h-12 w-12 place-items-center rounded-full text-[0.95rem] font-extrabold tracking-[-0.02em] text-white"
+              style={{ background: product.iconColor }}
+            >
+              {product.displayName[0]}
+            </div>
+          </div>
+          <Badge variant={product.state as ProductState}>{product.stateLabel}</Badge>
+        </div>
+
+        <CardTitle className="mb-1 text-slate-900">{product.displayName}</CardTitle>
+        <BodyText muted className="m-0 text-[0.84rem]">{product.category}</BodyText>
+        <BodyText muted className="mt-2 min-h-[3.3rem] text-[0.86rem]">{product.shortDescription}</BodyText>
       </div>
 
-      <h3 className="mb-[5px]">{product.displayName}</h3>
-      <p className="m-0 mb-auto text-[0.845rem] text-muted leading-relaxed">{product.shortDescription}</p>
-
-      <div className="flex items-center justify-between gap-2 pt-3.5 border-t border-[rgba(15,31,61,0.1)] mt-4 flex-nowrap min-w-0">
-        <Badge variant={product.state as ProductState}>{product.stateLabel}</Badge>
-        <div className="flex items-center gap-3.5">
-          {!dim && product.secondaryActionLabel && product.secondaryActionTarget && (
+      <div className="space-y-3 border-t border-slate-200 px-3 py-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <Button asChild size="sm" variant="secondary">
+            <a href={product.primaryActionTarget}>{product.primaryActionLabel}</a>
+          </Button>
+          {product.secondaryActionLabel && product.secondaryActionTarget ? (
             <a
-              className="text-[0.845rem] font-medium text-muted no-underline whitespace-nowrap transition-colors hover:text-ink-2"
+              className={cn(typography.meta, "inline-flex items-center no-underline transition-colors hover:text-slate-900")}
               href={product.secondaryActionTarget}
             >
               {product.secondaryActionLabel}
             </a>
-          )}
-          <a
-            className="text-[0.845rem] font-semibold text-blue no-underline whitespace-nowrap transition-colors hover:text-blue-hover hover:underline"
-            href={product.primaryActionTarget}
-          >
-            {product.primaryActionLabel} →
-          </a>
+          ) : null}
         </div>
       </div>
     </article>

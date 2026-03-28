@@ -1,3 +1,4 @@
+import { Button } from "@canopy/ui";
 import { notFound } from "next/navigation";
 import { getProductDefinition } from "@/lib/products";
 import type { ProductKey } from "@/lib/platform";
@@ -53,18 +54,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
             {def.shortDescription} Contact us to learn more or ask about early access for your organization.
           </p>
           <div className="flex items-center justify-center gap-3 flex-wrap">
-            <a
-              href={`mailto:info@akkedisdigital.com?subject=${encodeURIComponent(`Interest in ${def.displayName}`)}`}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-navy text-white text-[0.875rem] font-semibold rounded-lg no-underline transition-colors hover:bg-navy-mid"
-            >
-              Contact us about {def.displayName}
-            </a>
-            <a
-              href="/app"
-              className="inline-flex items-center gap-2 px-5 py-2.5 border border-[rgba(15,31,61,0.18)] text-ink-2 text-[0.875rem] font-semibold rounded-lg no-underline transition-colors hover:bg-[rgba(15,31,61,0.03)]"
-            >
-              Back to dashboard
-            </a>
+            <Button asChild variant="primary">
+              <a href={`mailto:info@akkedisdigital.com?subject=${encodeURIComponent(`Interest in ${def.displayName}`)}`}>
+                Contact us about {def.displayName}
+              </a>
+            </Button>
+            <Button asChild variant="secondary">
+              <a href="/app">Back to dashboard</a>
+            </Button>
           </div>
         </div>
       </div>
