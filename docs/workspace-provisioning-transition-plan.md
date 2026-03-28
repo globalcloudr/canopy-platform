@@ -111,6 +111,12 @@ Goal:
 
 - Canopy should own the provisioning model before it owns the whole workflow
 
+Service persistence rule:
+
+- products and services must not share one ambiguous persistence model
+- product access belongs in `product_entitlements`
+- service visibility/status belongs in a separate Canopy-owned service-state model
+
 ### Stage 3: Build Minimal Canopy Super-Admin Provisioning UI
 
 Add a small Canopy admin surface for:
@@ -187,6 +193,325 @@ The smallest safe Canopy version of this feature is:
 - accepted invitation results in valid workspace membership and visible product access
 
 That is enough to shift ownership without overbuilding.
+
+## MVP Provisioning Page Fields
+
+The first Canopy super-admin provisioning page should stay intentionally small.
+
+Recommended MVP fields:
+
+- workspace selector
+  - choose an existing workspace or create a new one
+- workspace name
+  - required when creating a new workspace
+- workspace slug
+  - required when creating a new workspace
+- primary school-admin email
+  - required
+- initial workspace role
+  - default: `owner`
+- enabled products
+  - first required product toggle: `PhotoVault`
+- enabled services
+  - optional simple toggles for service visibility
+- per-product setup state
+  - example: `ready`, `setup`, `pilot`
+- provisioning notes
+  - optional internal-only field for operator context
+
+Recommended hidden/system-managed fields:
+
+- invitation status
+- acceptance timestamp
+- membership status
+- entitlement status
+- created_by
+- updated_by
+- created_at
+- updated_at
+
+Recommended service persistence model:
+
+- `workspace_service_states`
+
+Recommended minimum fields:
+
+- `organization_id`
+- `service_key`
+- `status`
+- `setup_state`
+- `source`
+- `notes`
+
+## MVP Submission Outcome
+
+Submitting the first Canopy provisioning form should produce these results:
+
+1. workspace exists
+2. school-admin invitation is recorded when the admin is not yet a known user
+3. workspace membership is created or prepared when the admin already exists
+4. selected product entitlements are created
+5. selected services are marked visible or active according to the chosen status
+6. the invited admin can sign in through Canopy and see the provisioned workspace
+
+## MVP UI Rules
+
+Keep the first page simple:
+
+- one workspace at a time
+- one admin invite at a time
+- checkboxes or toggles for products/services
+- no billing logic in the first version
+- no bulk provisioning
+- no product-specific workflow configuration on this page
+
+The purpose of the first page is operational consistency, not full account automation.
+
+## MVP Page Spec
+
+Recommended page title:
+
+- `Workspace Provisioning`
+
+Recommended page purpose text:
+
+- `Create or update a client workspace, assign the initial school admin, and enable the products or services they should see in Canopy.`
+
+Recommended page sections:
+
+### Section 1: Workspace
+
+Fields:
+
+- workspace mode
+  - `Select existing`
+  - `Create new`
+- workspace selector
+  - shown when `Select existing`
+- workspace name
+  - shown when `Create new`
+- workspace slug
+  - shown when `Create new`
+
+### Section 2: Primary Admin
+
+Fields:
+
+- school-admin email
+- initial workspace role
+
+Recommended default:
+
+- `owner`
+
+### Section 3: Products
+
+Fields:
+
+- `PhotoVault` toggle
+- future product toggles as they become real
+
+Per-product controls:
+
+- setup state
+  - `ready`
+  - `setup`
+  - `pilot`
+
+Recommended first-version rule:
+
+- `PhotoVault` should be the only real enabled product option at first
+
+### Section 4: Services
+
+Fields:
+
+- service toggles
+- optional service status if needed
+
+Recommended first-version rule:
+
+- keep service controls simple and visibility-oriented
+- do not add deep service workflow settings here
+
+### Section 5: Internal Notes
+
+Fields:
+
+- provisioning notes textarea
+
+Purpose:
+
+- internal operator context only
+
+### Section 6: Review
+
+Summary block should show:
+
+- workspace
+- invited admin
+- selected role
+- enabled products
+- enabled services
+- setup states
+
+Primary action:
+
+- `Provision workspace`
+
+Secondary action:
+
+- `Save draft` only if draft support becomes necessary later
+
+Recommended first-version rule:
+
+- skip draft support unless operations truly need it
+
+## MVP Interaction Rules
+
+Recommended validation:
+
+- workspace name required when creating a workspace
+- workspace slug required when creating a workspace
+- email required and normalized
+- at least one product or service should be selected if this page is used for provisioning
+
+Recommended UX behavior:
+
+- if workspace already exists, prefill current entitlement/service state
+- if the admin already belongs to the workspace, do not create duplicate membership rows
+- show a clear success state with:
+  - workspace name
+  - invitation status
+  - enabled products/services
+
+## MVP Database Writes
+
+The first Canopy provisioning form should write only the minimum shared platform records.
+
+### 1. Workspace Record
+
+If creating a new workspace:
+
+- insert into the current workspace bridge table
+- near-term implementation bias: existing `organizations`
+
+Fields:
+
+- `name`
+- `slug`
+
+If selecting an existing workspace:
+
+- do not create a new workspace row
+
+### 2. Invitation Record
+
+Recommended near-term implementation:
+
+- create a Canopy-managed invitation record in `workspace_admin_invitations`
+
+Minimum data to persist:
+
+- invited email
+- workspace id
+- target role
+- invitation status
+- invited by
+- timestamps
+
+### 3. Membership Record
+
+When possible:
+
+- create or prepare the workspace membership row tied to the invited user
+
+Near-term compatibility case:
+
+- if membership cannot be finalized until acceptance, create it on acceptance
+- but the Canopy workflow should still remain the system that initiated it
+
+Minimum fields:
+
+- `user_id` when known
+- `org_id` or compatible workspace id
+- `role`
+- `status`
+
+### 4. Product Entitlement Rows
+
+For each enabled product:
+
+- upsert into `product_entitlements`
+
+Minimum fields:
+
+- `organization_id`
+- `product_key`
+- `status`
+- `setup_state`
+- `plan_key`
+- `source`
+
+Recommended initial values:
+
+- `status = 'active'`
+- `source = 'canopy_provisioning'`
+
+### 5. Service Visibility State
+
+Services should use their own Canopy-managed persistence layer:
+
+- `workspace_service_states`
+
+Minimum fields:
+
+- `organization_id`
+- `service_key`
+- `status`
+- `setup_state`
+- `source`
+- `notes`
+
+Important rule:
+
+- do not overload `product_entitlements` with service-specific meaning if products and services are distinct concepts in the portal
+
+Recommended first-version service keys:
+
+- `school-website-setup`
+- `creative-retainer`
+
+### 6. Audit Metadata
+
+Record:
+
+- who provisioned the workspace
+- what changed
+- when it happened
+
+This can begin as lightweight operator notes plus timestamps if a fuller audit layer is not ready yet.
+
+## Recommended Server Action / API Shape
+
+The first implementation can be one Canopy server action or route handler:
+
+- `provisionWorkspace`
+
+Suggested responsibilities:
+
+1. validate input
+2. create or resolve workspace
+3. create invitation state
+4. create or prepare membership state
+5. upsert product entitlements
+6. persist service visibility state if applicable
+7. return a provisioning summary
+
+Recommended rule:
+
+- keep this orchestration in Canopy
+- do not delegate the primary provisioning workflow back into PhotoVault
 
 ## What Not To Do
 

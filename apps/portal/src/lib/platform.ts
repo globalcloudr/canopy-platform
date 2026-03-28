@@ -4,6 +4,8 @@ export type WorkspaceRole = "owner" | "admin" | "staff" | "uploader" | "viewer";
 export type MembershipStatus = "invited" | "active" | "suspended";
 export type EntitlementStatus = "trial" | "active" | "pilot" | "paused";
 export type SetupState = "not_started" | "in_setup" | "ready" | "blocked";
+export type ServiceStatus = "active" | "available" | "paused" | "inactive";
+export type ServiceSetupState = "setup" | "ready" | "pilot";
 
 export type ProductKey =
   | "photovault"
@@ -52,6 +54,8 @@ export type PortalSession = {
   activeWorkspace: PortalWorkspace;
   memberships: PortalMembership[];
   entitlements: PortalEntitlement[];
+  platformRole: string | null;
+  isPlatformOperator: boolean;
 };
 
 export const ACCESS_TOKEN_COOKIE = "canopy_portal_access_token";
@@ -448,5 +452,7 @@ export async function resolvePortalSession(options?: {
     activeWorkspace,
     memberships,
     entitlements,
+    platformRole: profile?.platform_role ?? (profile?.is_super_admin ? "super_admin" : null),
+    isPlatformOperator: isPlatformOperator(profile),
   };
 }

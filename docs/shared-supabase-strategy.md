@@ -146,7 +146,49 @@ Initial required product key:
 
 - `photovault`
 
-### 2. `platform_roles` or canonical equivalent
+### 2. `workspace_service_states`
+
+Services should not be treated as products if they represent managed offerings rather than launched apps.
+
+Purpose:
+
+- determine which services are visible for a workspace
+- track basic service status in the portal
+- support provisioning without overloading `product_entitlements`
+
+Recommended minimum fields:
+
+- `id`
+- `organization_id`
+- `service_key`
+- `status`
+- `setup_state`
+- `source`
+- `notes`
+- `starts_at`
+- `ends_at`
+- `created_at`
+- `updated_at`
+
+Recommended status examples:
+
+- `active`
+- `available`
+- `paused`
+- `inactive`
+
+Recommended setup state examples:
+
+- `ready`
+- `setup`
+- `pilot`
+
+Initial service use:
+
+- simple visibility and operational state in the portal
+- not deep service workflow configuration
+
+### 3. `platform_roles` or canonical equivalent
 
 Only add this immediately if you decide the current profile-based compatibility model is not sufficient.
 
@@ -158,7 +200,7 @@ If delayed for MVP:
 
 - continue using PhotoVault's current compatibility model
 
-### 3. `subscriptions` (optional for early MVP)
+### 4. `subscriptions` (optional for early MVP)
 
 Purpose:
 
@@ -191,6 +233,7 @@ Canopy should prefer reading:
 - memberships
 - platform-role compatibility
 - product entitlements
+- workspace service states
 
 Canopy should avoid directly reading:
 
@@ -201,6 +244,28 @@ Canopy should avoid directly reading:
 Reason:
 
 - the first portal only needs identity, workspace, and launcher answers
+
+## Product Vs Service Persistence Rule
+
+Canopy should store products and services separately.
+
+Use `product_entitlements` for:
+
+- launched apps
+- product access control
+- launcher visibility
+- product setup state
+
+Use `workspace_service_states` for:
+
+- managed services
+- service visibility in the portal
+- basic service lifecycle/status
+
+Do not:
+
+- overload `product_entitlements` with service-specific meaning
+- mix launched-app access rules and managed-service operational state into one table unless there is a strong future reason and an explicit migration plan
 
 ## Auth And Session Strategy
 
