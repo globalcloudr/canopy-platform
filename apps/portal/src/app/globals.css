@@ -8,6 +8,20 @@
   background-color: white;
 }
 
+/* ─── Button text visibility fallbacks ──────────────── */
+/* Primary buttons: dark bg, white text */
+button[class*="bg-[var(--primary)]"],
+a[class*="bg-[var(--primary)]"] {
+  color: var(--primary-foreground) !important;
+}
+/* Secondary buttons: white bg, dark text */
+button[class*="bg-[var(--secondary)]"],
+a[class*="bg-[var(--secondary)]"],
+button[class*="border-[var(--border)]"],
+a[class*="border-[var(--border)]"] {
+  color: var(--secondary-foreground);
+}
+
 
 /* ─── Marketing hero band ────────────────────────────── */
 
