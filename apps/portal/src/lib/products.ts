@@ -65,7 +65,7 @@ const catalogDefinitions: ProductDefinition[] = [
     iconColor: "#0f1f3d",
     defaultLaunchPath: getPhotoVaultLaunchPath(),
     externalUrl: "https://photovault.school",
-    showWhenNotEnabled: false,
+    showWhenNotEnabled: true,
     sortOrder: 1,
   },
   {
