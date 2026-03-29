@@ -17,7 +17,7 @@ export default async function PortalAppLayout({
       </Suspense>
       <div className="md:h-[calc(100vh-3.5rem)]">
         <div className="grid min-h-[calc(100vh-3.5rem)] gap-0 md:h-full md:grid-cols-[280px_minmax(0,1fr)] md:overflow-hidden">
-          <aside className="hidden border-r border-[var(--border)] bg-[var(--surface-muted)] p-4 md:block md:h-full">
+          <aside className="hidden border-r border-[#e5e7eb] bg-white md:block md:h-full">
             <Suspense fallback={null}>
               <PortalSidebar showProvisioning={Boolean(session?.isPlatformOperator)} />
             </Suspense>
