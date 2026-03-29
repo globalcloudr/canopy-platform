@@ -1,6 +1,0 @@
-{
-  "buildCommand": "npm run build --workspace @canopy/ui && npm run build --workspace @canopy/portal",
-  "outputDirectory": "apps/portal/.next",
-  "installCommand": "npm install",
-  "framework": "nextjs"
-}
