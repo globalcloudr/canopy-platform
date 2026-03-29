@@ -2,6 +2,11 @@
 @source "../../../packages/ui/src";
 @import "../../../../packages/ui/src/styles.css";
 
+/* ─── Dropdown/select/popover backgrounds ───────────── */
+[data-radix-popper-content-wrapper] > * {
+  background-color: white;
+}
+
 /* ─── Marketing hero band ────────────────────────────── */
 
 .marketing-hero-band {
