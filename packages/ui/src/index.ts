@@ -66,6 +66,9 @@ export { Separator } from "./components/ui/separator";
 export { SegmentedToggle, SegmentedToggleItem } from "./components/ui/segmented-toggle";
 export type { SegmentedToggleProps, SegmentedToggleItemProps } from "./components/ui/segmented-toggle";
 
+export { CanopyHeader } from "./components/ui/canopy-header";
+export type { CanopyHeaderProps, CanopyHeaderWorkspaceLink, CanopyHeaderAccountMenuItem } from "./components/ui/canopy-header";
+
 export {
   typography,
   Eyebrow,
