@@ -109,7 +109,7 @@ const catalogDefinitions: ProductDefinition[] = [
     kind: "product",
     iconColor: "#d97706",
     defaultLaunchPath: getStoriesLaunchPath(),
-    externalUrl: "https://stories.canopy.school",
+    externalUrl: "https://canopy-stories.vercel.app",
     showWhenNotEnabled: true,
     sortOrder: 5,
   },

@@ -35,8 +35,6 @@ Components: Button, Badge, Input, Avatar, Card, Dialog, DropdownMenu, IconButton
 
 ## What Is Not Done Yet
 
-- **Production domain** — `usecanopy.school` not yet attached; portal runs on Vercel URL
-- **Canopy Stories production URL** — `STORIES_APP_URL` defaults to `localhost:3001`; needs production value set in Vercel env
 - **Dedicated Canopy invite email templates** — invite delivery still uses shared Supabase auth email infrastructure
 - **Billing** — no billing management in the portal yet
 - **`workspaces` table** — platform still uses `organizations` as the workspace bridge; a dedicated `workspaces` table is a planned future migration
