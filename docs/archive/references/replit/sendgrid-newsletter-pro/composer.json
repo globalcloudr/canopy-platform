@@ -1,0 +1,14 @@
+{
+  "name": "sendgrid-newsletter-pro/plugin",
+  "description": "SendGrid Newsletter Pro - WordPress Plugin",
+  "type": "wordpress-plugin",
+  "require": {
+    "php": ">=7.4",
+    "sendgrid/sendgrid": "^8.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "SGNP\\": "includes/"
+    }
+  }
+}
