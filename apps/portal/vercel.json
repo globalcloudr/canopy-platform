@@ -1,0 +1,5 @@
+{
+  "buildCommand": "cd ../.. && npm run build --workspace @canopy/ui && cd apps/portal && npm run build",
+  "outputDirectory": ".next",
+  "framework": "nextjs"
+}
