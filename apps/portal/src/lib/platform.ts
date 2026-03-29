@@ -327,16 +327,16 @@ function normalizeEntitlement(row: EntitlementRow, fallbackWorkspaceId: string):
 async function getEntitlementsForWorkspace(workspaceId: string) {
   const attempts = [
     new URLSearchParams({
-      select: "workspace_id,product_key,status,setup_state,plan_key",
-      workspace_id: `eq.${workspaceId}`,
-    }),
-    new URLSearchParams({
       select: "organization_id,product_key,status,setup_state,plan_key",
       organization_id: `eq.${workspaceId}`,
     }),
     new URLSearchParams({
       select: "org_id,product_key,status,setup_state,plan_key",
       org_id: `eq.${workspaceId}`,
+    }),
+    new URLSearchParams({
+      select: "workspace_id,product_key,status,setup_state,plan_key",
+      workspace_id: `eq.${workspaceId}`,
     }),
   ];
 

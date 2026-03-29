@@ -104,7 +104,7 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
   const [workspaceSlug, setWorkspaceSlug] = useState("");
   const [primaryAdminEmail, setPrimaryAdminEmail] = useState("");
   const [initialRole, setInitialRole] = useState<WorkspaceRole>("owner");
-  const [enablePhotoVault, setEnablePhotoVault] = useState(true);
+  const [enablePhotoVault, setEnablePhotoVault] = useState(false);
   const [photoVaultSetupState, setPhotoVaultSetupState] = useState("ready");
   const [enableStories, setEnableStories] = useState(false);
   const [storiesSetupState, setStoriesSetupState] = useState("ready");
