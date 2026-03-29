@@ -1,11 +1,13 @@
 @import "tailwindcss";
-@source "../../../packages/ui/src";
+@source "../../../../packages/ui/src";
+@source "../../../../packages/ui/dist";
 @import "../../../../packages/ui/src/styles.css";
 
 /* ─── Dropdown/select/popover backgrounds ───────────── */
 [data-radix-popper-content-wrapper] > * {
   background-color: white;
 }
+
 
 /* ─── Marketing hero band ────────────────────────────── */
 
