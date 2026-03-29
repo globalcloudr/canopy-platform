@@ -105,13 +105,8 @@ export function PortalHeader() {
           </DropdownMenu>
         </div>
 
-        {/* Right: app pill + avatar */}
+        {/* Right: avatar */}
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-          <div className="hidden sm:flex items-center gap-1.5 rounded-md border border-[var(--border)] bg-[var(--surface)] px-3 py-[5px] text-[0.8rem] font-medium text-[var(--foreground)]">
-            <span className="mr-0.5 text-[0.7rem] font-bold uppercase tracking-[0.06em] text-[var(--text-muted)]">App</span>
-            Portal
-          </div>
-
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
