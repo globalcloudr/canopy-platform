@@ -221,6 +221,7 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
     }
   }
 
+  const enabledProductKeys = new Set(currentEntitlements.map((e) => e.productKey));
   const selectedWorkspaceId = workspaceMode === "existing" ? workspaceId : result?.workspace.id ?? null;
   const workspaceInvitations = invitationRows.filter((row) => row.workspaceId === selectedWorkspaceId);
   const latestPendingInvitation = useMemo(
@@ -277,7 +278,11 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
       return;
     }
     setCurrentEntitlements((prev) => {
-      if (action === "remove") return prev.filter((e) => e.productKey !== productKey);
+      if (action === "remove") {
+        if (productKey === "photovault") setEnablePhotoVault(false);
+        if (productKey === "stories_canopy") setEnableStories(false);
+        return prev.filter((e) => e.productKey !== productKey);
+      }
       return prev.map((e) => e.productKey === productKey ? { ...e, status: action === "pause" ? "paused" : "active" } : e);
     });
   }
@@ -502,73 +507,81 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
         <section className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-5 shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
           <p className="eyebrow">Products</p>
           <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Enable workspace apps</h3>
-          <div className="rounded-xl border border-[rgba(15,31,61,0.1)] p-4">
-            <label className="flex items-start justify-between gap-4">
-              <div>
-                <p className="m-0 text-sm font-semibold text-ink">PhotoVault</p>
-                <p className="m-0 mt-1 text-sm text-muted">Media library, albums, and approved brand assets.</p>
-              </div>
-              <input
-                type="checkbox"
-                checked={enablePhotoVault}
-                onChange={(event) => setEnablePhotoVault(event.target.checked)}
-                className="mt-1 h-4 w-4"
-              />
-            </label>
-            {enablePhotoVault ? (
-              <label className="mt-4 block space-y-2">
-                <Label>Setup state</Label>
-                <Select
-                  value={photoVaultSetupState}
-                  onValueChange={setPhotoVaultSetupState}
-                >
-                  <SelectTrigger className="text-sm">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="ready">Ready</SelectItem>
-                    <SelectItem value="in_setup">In setup</SelectItem>
-                    <SelectItem value="not_started">Not started</SelectItem>
-                    <SelectItem value="blocked">Blocked</SelectItem>
-                  </SelectContent>
-                </Select>
+          {!enabledProductKeys.has("photovault") && (
+            <div className="rounded-xl border border-[rgba(15,31,61,0.1)] p-4">
+              <label className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="m-0 text-sm font-semibold text-ink">PhotoVault</p>
+                  <p className="m-0 mt-1 text-sm text-muted">Media library, albums, and approved brand assets.</p>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={enablePhotoVault}
+                  onChange={(event) => setEnablePhotoVault(event.target.checked)}
+                  className="mt-1 h-4 w-4"
+                />
               </label>
-            ) : null}
-          </div>
+              {enablePhotoVault ? (
+                <label className="mt-4 block space-y-2">
+                  <Label>Setup state</Label>
+                  <Select
+                    value={photoVaultSetupState}
+                    onValueChange={setPhotoVaultSetupState}
+                  >
+                    <SelectTrigger className="text-sm">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="ready">Ready</SelectItem>
+                      <SelectItem value="in_setup">In setup</SelectItem>
+                      <SelectItem value="not_started">Not started</SelectItem>
+                      <SelectItem value="blocked">Blocked</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </label>
+              ) : null}
+            </div>
+          )}
 
-          <div className="mt-4 rounded-xl border border-[rgba(15,31,61,0.1)] p-4">
-            <label className="flex items-start justify-between gap-4">
-              <div>
-                <p className="m-0 text-sm font-semibold text-ink">Canopy Stories</p>
-                <p className="m-0 mt-1 text-sm text-muted">Automated success story production — blog, social, and video.</p>
-              </div>
-              <input
-                type="checkbox"
-                checked={enableStories}
-                onChange={(event) => setEnableStories(event.target.checked)}
-                className="mt-1 h-4 w-4"
-              />
-            </label>
-            {enableStories ? (
-              <label className="mt-4 block space-y-2">
-                <Label>Setup state</Label>
-                <Select
-                  value={storiesSetupState}
-                  onValueChange={setStoriesSetupState}
-                >
-                  <SelectTrigger className="text-sm">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="ready">Ready</SelectItem>
-                    <SelectItem value="in_setup">In setup</SelectItem>
-                    <SelectItem value="not_started">Not started</SelectItem>
-                    <SelectItem value="blocked">Blocked</SelectItem>
-                  </SelectContent>
-                </Select>
+          {!enabledProductKeys.has("stories_canopy") && (
+            <div className="mt-4 rounded-xl border border-[rgba(15,31,61,0.1)] p-4">
+              <label className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="m-0 text-sm font-semibold text-ink">Canopy Stories</p>
+                  <p className="m-0 mt-1 text-sm text-muted">Automated success story production — blog, social, and video.</p>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={enableStories}
+                  onChange={(event) => setEnableStories(event.target.checked)}
+                  className="mt-1 h-4 w-4"
+                />
               </label>
-            ) : null}
-          </div>
+              {enableStories ? (
+                <label className="mt-4 block space-y-2">
+                  <Label>Setup state</Label>
+                  <Select
+                    value={storiesSetupState}
+                    onValueChange={setStoriesSetupState}
+                  >
+                    <SelectTrigger className="text-sm">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="ready">Ready</SelectItem>
+                      <SelectItem value="in_setup">In setup</SelectItem>
+                      <SelectItem value="not_started">Not started</SelectItem>
+                      <SelectItem value="blocked">Blocked</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </label>
+              ) : null}
+            </div>
+          )}
+
+          {enabledProductKeys.has("photovault") && enabledProductKeys.has("stories_canopy") && (
+            <p className="text-sm text-muted">All available products are already enabled for this workspace.</p>
+          )}
         </section>
 
         <section className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-5 shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
