@@ -126,7 +126,7 @@ function getProvisioningEnv(): ProvisioningEnv {
 async function requestJson<T>(
   path: string,
   options?: {
-    method?: "GET" | "POST" | "PATCH";
+    method?: "GET" | "POST" | "PATCH" | "DELETE";
     searchParams?: URLSearchParams;
     body?: unknown;
     prefer?: string;
@@ -153,6 +153,10 @@ async function requestJson<T>(
   if (!response.ok) {
     const text = await response.text();
     throw new Error(`Supabase request failed (${response.status}): ${text}`);
+  }
+
+  if (response.status === 204 || response.headers.get("content-length") === "0") {
+    return undefined as T;
   }
 
   return (await response.json()) as T;
@@ -672,6 +676,85 @@ export async function finalizeWorkspaceAdminInvitationsForUser(user: { id: strin
     acceptedInvitations,
     preferredWorkspaceSlug: firstWorkspace?.slug ?? null,
   };
+}
+
+type EntitlementRow = {
+  organization_id?: string | null;
+  org_id?: string | null;
+  product_key?: string | null;
+  status?: string | null;
+  setup_state?: string | null;
+  plan_key?: string | null;
+};
+
+export type WorkspaceEntitlement = {
+  productKey: ProductKey;
+  status: "trial" | "active" | "pilot" | "paused";
+  setupState: SetupState;
+  planKey?: string;
+};
+
+function normalizeEntitlement(row: EntitlementRow, workspaceId: string): WorkspaceEntitlement | null {
+  const productKey = row.product_key;
+  const validKeys: ProductKey[] = [
+    "photovault", "canopy_web", "create_canopy", "publish_canopy", "stories_canopy",
+    "community_canopy", "reach_canopy", "assist_canopy", "insights_canopy",
+    "website_setup", "design_support", "communications_support",
+  ];
+  if (!productKey || !validKeys.includes(productKey as ProductKey)) return null;
+  return {
+    productKey: productKey as ProductKey,
+    status: (["trial", "active", "pilot", "paused"].includes(row.status ?? "")) ? row.status as WorkspaceEntitlement["status"] : "active",
+    setupState: (["not_started", "in_setup", "ready", "blocked"].includes(row.setup_state ?? "")) ? row.setup_state as SetupState : "ready",
+    planKey: row.plan_key ?? undefined,
+  };
+}
+
+export async function getWorkspaceEntitlements(workspaceId: string): Promise<WorkspaceEntitlement[]> {
+  const attempts: Array<{ col: string; params: URLSearchParams }> = [
+    {
+      col: "organization_id",
+      params: new URLSearchParams({ select: "organization_id,product_key,status,setup_state,plan_key", organization_id: `eq.${workspaceId}` }),
+    },
+    {
+      col: "org_id",
+      params: new URLSearchParams({ select: "org_id,product_key,status,setup_state,plan_key", org_id: `eq.${workspaceId}` }),
+    },
+  ];
+
+  for (const attempt of attempts) {
+    try {
+      const rows = await requestJson<EntitlementRow[]>("/rest/v1/product_entitlements", { searchParams: attempt.params });
+      return rows.map((r) => normalizeEntitlement(r, workspaceId)).filter((r): r is WorkspaceEntitlement => r !== null);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      if (!message.includes("product_entitlements") && !message.includes(attempt.col)) throw error;
+    }
+  }
+  return [];
+}
+
+export async function pauseEntitlement(workspaceId: string, productKey: ProductKey): Promise<void> {
+  await requestJson<unknown>("/rest/v1/product_entitlements", {
+    method: "PATCH",
+    searchParams: new URLSearchParams({ organization_id: `eq.${workspaceId}`, product_key: `eq.${productKey}` }),
+    body: { status: "paused" },
+  });
+}
+
+export async function resumeEntitlement(workspaceId: string, productKey: ProductKey): Promise<void> {
+  await requestJson<unknown>("/rest/v1/product_entitlements", {
+    method: "PATCH",
+    searchParams: new URLSearchParams({ organization_id: `eq.${workspaceId}`, product_key: `eq.${productKey}` }),
+    body: { status: "active" },
+  });
+}
+
+export async function removeEntitlement(workspaceId: string, productKey: ProductKey): Promise<void> {
+  await requestJson<unknown>("/rest/v1/product_entitlements", {
+    method: "DELETE",
+    searchParams: new URLSearchParams({ organization_id: `eq.${workspaceId}`, product_key: `eq.${productKey}` }),
+  });
 }
 
 export async function provisionWorkspace(input: ProvisionWorkspaceInput): Promise<ProvisionWorkspaceResult> {
