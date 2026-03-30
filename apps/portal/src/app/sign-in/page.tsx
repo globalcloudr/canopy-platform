@@ -93,7 +93,7 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
         <div className="w-full max-w-[380px]">
           <p className="eyebrow">Canopy Portal</p>
           <h1 className="text-[1.75rem] mb-[6px]">Sign in to your workspace.</h1>
-          <p className="m-0 text-muted text-[0.9rem]">
+          <p className="m-0 text-ink-2 text-[0.9rem]">
             Enter your credentials to access your school&apos;s tools.
           </p>
           {errorMessage && (

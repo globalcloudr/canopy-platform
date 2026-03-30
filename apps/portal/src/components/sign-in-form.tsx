@@ -29,7 +29,7 @@ export function SignInForm({ defaultEmail }: SignInFormProps) {
           </label>
           <Link
             href="/password-reset"
-            className="text-[0.8rem] font-medium text-muted no-underline transition-colors hover:text-ink"
+            className="text-[0.8rem] font-medium text-ink-2 no-underline transition-colors hover:text-ink"
           >
             Forgot password?
           </Link>
@@ -52,7 +52,7 @@ export function SignInForm({ defaultEmail }: SignInFormProps) {
         Sign in
       </Button>
 
-      <p className="text-[0.825rem] text-muted leading-relaxed m-0 text-center">
+      <p className="text-[0.825rem] text-ink-2 leading-relaxed m-0 text-center">
         Your Canopy account works across all products.
       </p>
     </form>
