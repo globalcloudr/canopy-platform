@@ -34,7 +34,7 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
 
       {/* ── Brand panel ──────────────────────────────── */}
       <aside className="bg-navy px-12 py-12 flex flex-col justify-between max-[840px]:px-6 max-[840px]:py-8 max-[840px]:min-h-[260px]">
-        <div className="flex flex-col gap-12">
+        <div className="flex flex-col justify-center flex-1 gap-14">
 
           {/* Logo */}
           <div className="flex items-center gap-2.5">
@@ -46,33 +46,33 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
 
           {/* Headline */}
           <div>
-            <p className="m-0 mb-3 text-[0.75rem] font-bold tracking-[0.1em] uppercase text-white/40">
+            <p className="m-0 mb-4 text-[0.75rem] font-bold tracking-[0.1em] uppercase text-white/40">
               School growth platform
             </p>
-            <h2 className="text-white font-extrabold tracking-[-0.025em] leading-[1.15] mb-0 text-[1.9rem]">
+            <h2 className="text-white font-extrabold tracking-[-0.03em] leading-[1.1] mb-0 text-[2.75rem]">
               Everything your school needs to communicate, grow, and get noticed.
             </h2>
           </div>
 
           {/* Product chips */}
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-5">
             {[
               { letter: "S", color: "#d97706", name: "Canopy Stories", desc: "Turn student successes into blog posts, social content, and video." },
               { letter: "P", color: "#0f1f3d", name: "PhotoVault", desc: "Organize approved photos, logos, and brand assets." },
               { letter: "C", color: "#7c3aed", name: "Canopy Community", desc: "Send newsletters and school-to-community communications." },
               { letter: "R", color: "#db2777", name: "Canopy Reach", desc: "Publish social posts to Facebook, Instagram, LinkedIn, and more." },
             ].map((p) => (
-              <div key={p.name} className="flex items-center gap-3">
+              <div key={p.name} className="flex items-center gap-4">
                 <div
-                  className="grid shrink-0 place-items-center w-8 h-8 rounded-[8px] text-white text-[0.8rem] font-extrabold tracking-[-0.01em]"
+                  className="grid shrink-0 place-items-center w-12 h-12 rounded-[11px] text-white text-[1.05rem] font-extrabold tracking-[-0.01em]"
                   style={{ background: p.color }}
                   aria-hidden="true"
                 >
                   {p.letter}
                 </div>
                 <div>
-                  <p className="m-0 text-[0.8rem] font-semibold text-white/80 leading-none mb-0.5">{p.name}</p>
-                  <p className="m-0 text-[0.75rem] text-white/45 leading-snug">{p.desc}</p>
+                  <p className="m-0 text-[1rem] font-semibold text-white/90 leading-none mb-1.5">{p.name}</p>
+                  <p className="m-0 text-[0.9rem] text-white/55 leading-snug">{p.desc}</p>
                 </div>
               </div>
             ))}
