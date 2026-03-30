@@ -1,4 +1,5 @@
 import { Button, Input } from "@canopy/ui";
+import Link from "next/link";
 
 type SignInFormProps = {
   defaultEmail?: string;
@@ -22,9 +23,17 @@ export function SignInForm({ defaultEmail }: SignInFormProps) {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="password" className="text-sm font-medium text-ink-2">
-          Password
-        </label>
+        <div className="flex items-center justify-between">
+          <label htmlFor="password" className="text-sm font-medium text-ink-2">
+            Password
+          </label>
+          <Link
+            href="/password-reset"
+            className="text-[0.8rem] font-medium text-muted no-underline transition-colors hover:text-ink"
+          >
+            Forgot password?
+          </Link>
+        </div>
         <Input
           id="password"
           name="password"
@@ -43,12 +52,9 @@ export function SignInForm({ defaultEmail }: SignInFormProps) {
         Sign in
       </Button>
 
-      <div className="flex items-center justify-between mt-1">
-        <p className="text-[0.825rem] text-muted leading-relaxed m-0">Sign in with your shared Canopy and PhotoVault account.</p>
-        <a className="text-sm font-medium text-muted no-underline transition-colors hover:text-ink" href="/password-reset">
-          Forgot password?
-        </a>
-      </div>
+      <p className="text-[0.825rem] text-muted leading-relaxed m-0 text-center">
+        Your Canopy account works across all products.
+      </p>
     </form>
   );
 }
