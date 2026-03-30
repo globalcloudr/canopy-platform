@@ -55,6 +55,16 @@ function getStoriesLaunchPath(path = "/") {
   return query ? `/auth/launch/stories?${query}` : "/auth/launch/stories";
 }
 
+function getReachLaunchPath(path = "/") {
+  const params = new URLSearchParams();
+  if (path && path !== "/") {
+    params.set("path", path);
+  }
+
+  const query = params.toString();
+  return query ? `/auth/launch/reach?${query}` : "/auth/launch/reach";
+}
+
 const catalogDefinitions: ProductDefinition[] = [
   {
     productKey: "photovault",
@@ -131,7 +141,8 @@ const catalogDefinitions: ProductDefinition[] = [
     category: "Outreach and Storytelling",
     kind: "product",
     iconColor: "#db2777",
-    defaultLaunchPath: "/products/reach-canopy",
+    defaultLaunchPath: getReachLaunchPath(),
+    externalUrl: process.env.REACH_APP_URL || "http://localhost:3002",
     showWhenNotEnabled: true,
     sortOrder: 7,
   },
@@ -375,6 +386,9 @@ function getPrimaryActionTarget(productKey: ProductKey, state: ProductState): st
     if (productKey === "stories_canopy") {
       return getStoriesLaunchPath();
     }
+    if (productKey === "reach_canopy") {
+      return getReachLaunchPath("/posts/new");
+    }
 
     return def.externalUrl;
   }
@@ -453,7 +467,8 @@ function getSecondaryActionTarget(productKey: ProductKey, state: ProductState) {
       pilot: "/products/community-canopy/campaigns",
     },
     reach_canopy: {
-      enabled: "/products/reach-canopy/calendar",
+      enabled: getReachLaunchPath("/calendar"),
+      pilot:   getReachLaunchPath("/calendar"),
     },
     assist_canopy: {
       in_setup: "/products/assist-canopy",

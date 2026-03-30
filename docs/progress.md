@@ -4,6 +4,24 @@ Append new sessions at the top. Do not overwrite history.
 
 ---
 
+## 2026-03-30 — Canopy Reach portal integration
+
+- Added `/auth/launch/reach` token handoff route (same pattern as photovault and stories)
+- Added `getReachLaunchPath()` to `products.ts`; `reach_canopy` catalog entry now has `externalUrl` and live launch paths
+- Primary action (enabled/pilot): launches to `/posts/new` via handoff
+- Secondary action: launches to `/calendar` via handoff
+- `REACH_APP_URL` added to `.env.local` (localhost:3002 for dev; update to Vercel URL on deploy)
+
+---
+
+## 2026-03-30 — Infrastructure and email resolved
+
+- `usecanopy.school` domain attached to Vercel deployment
+- `STORIES_APP_URL` env var set in Vercel; Stories now launches to the live URL in production
+- Invite email branding implemented; no longer riding Supabase default templates
+
+---
+
 ## 2026-03-28 — Documentation overhaul
 
 Replaced ~35 docs across `docs/` with a consistent 4-file framework (CLAUDE.md, README.md, docs/PRD.md, docs/progress.md). All old docs moved to `docs/archive/`. Replit reference implementations archived to `docs/archive/references/`. Unbuilt product specs kept as `docs/community-prd.md`, `docs/reach-prd.md`, `docs/create-prd.md`, `docs/publish-prd.md`.
@@ -29,12 +47,7 @@ The portal is live and functional. Two products are connected: PhotoVault (live)
 
 ## Open Items
 
-### High priority
-- **Production domain** — `usecanopy.school` not yet attached to Vercel deployment
-- **Stories production URL** — `STORIES_APP_URL` env var not set in Vercel; Stories launches to `localhost:3001` in production config; needs the live Vercel URL
-
 ### Medium priority
-- **Invite email branding** — invite delivery still rides Supabase auth email infrastructure; a Canopy-branded email system is the target
 - **`workspaces` table migration** — portal currently uses `organizations` as the workspace bridge; a dedicated `workspaces` table is a future migration (no urgency while shared Supabase works)
 
 ### Low priority / future
