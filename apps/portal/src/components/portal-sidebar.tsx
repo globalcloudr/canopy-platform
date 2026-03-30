@@ -70,6 +70,17 @@ function IconStories({ className }: { className?: string }) {
   );
 }
 
+function IconReach({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className} aria-hidden="true">
+      <circle cx="18" cy="5" r="3" />
+      <circle cx="6" cy="12" r="3" />
+      <circle cx="18" cy="19" r="3" />
+      <path d="M8.59 13.51l6.83 3.98M15.41 6.51L8.59 10.49" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function PortalSidebar({
   showProvisioning = false,
   workspaceName,
@@ -90,6 +101,9 @@ export function PortalSidebar({
   const storiesHref = workspace
     ? `/auth/launch/stories?workspace=${encodeURIComponent(workspace)}`
     : "/auth/launch/stories";
+  const reachHref = workspace
+    ? `/auth/launch/reach?workspace=${encodeURIComponent(workspace)}`
+    : "/auth/launch/reach";
 
   const displayName = workspaceName ?? workspace ?? null;
   const orgInitials = displayName
@@ -141,6 +155,10 @@ export function PortalSidebar({
           <Link href={storiesHref} className={navClass(false)}>
             <IconStories className="h-[18px] w-[18px]" />
             Open Stories
+          </Link>
+          <Link href={reachHref} className={navClass(false)}>
+            <IconReach className="h-[18px] w-[18px]" />
+            Open Reach
           </Link>
         </div>
       </nav>
