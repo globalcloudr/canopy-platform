@@ -1,8 +1,10 @@
 import { Badge, BodyText, Card, Eyebrow, LabelText, MetaText, PageTitle, SectionTitle } from "@canopy/ui";
 import { redirect } from "next/navigation";
-import { resolvePortalSession } from "@/lib/platform";
+import { WorkspaceInvitationsPanel } from "@/components/workspace-invitations-panel";
+import { canManageWorkspaceInvitations, resolvePortalSession } from "@/lib/platform";
 import { getProductDefinition } from "@/lib/products";
 import type { ProductState } from "@/lib/products";
+import { listWorkspaceAdminInvitations } from "@/lib/provisioning";
 
 type AccountPageProps = {
   searchParams?: Promise<{
@@ -22,6 +24,8 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
   const { activeWorkspace, user, memberships, entitlements } = session;
   const activeMembership = activeWorkspace ? memberships.find((m) => m.workspaceId === activeWorkspace.id) : null;
   const activeEntitlements = entitlements.filter((e) => e.status !== "paused");
+  const canManageInvitations =
+    session.isPlatformOperator || canManageWorkspaceInvitations(activeMembership?.role);
 
   if (session.isPlatformOperator && !activeWorkspace) {
     return (
@@ -61,6 +65,9 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
   }
 
   const workspace = activeWorkspace!;
+  const workspaceInvitations = canManageInvitations
+    ? await listWorkspaceAdminInvitations([workspace.id])
+    : [];
 
   return (
     <div className="space-y-5 pb-10">
@@ -111,6 +118,17 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
           ))}
         </div>
       </Card>
+
+      {canManageInvitations ? (
+        <WorkspaceInvitationsPanel workspace={workspace} initialInvitations={workspaceInvitations} />
+      ) : (
+        <Card padding="md" className="sm:p-6">
+          <SectionTitle as="h2" className="mb-1 text-slate-900">Workspace access</SectionTitle>
+          <BodyText muted className="m-0 max-w-[54ch]">
+            Owners and admins manage workspace invitations in Canopy Portal. Your current role does not allow changing staff access for this workspace.
+          </BodyText>
+        </Card>
+      )}
 
       <Card padding="md" className="sm:p-6">
         <div className="mb-4 flex justify-between gap-6 max-sm:flex-col sm:items-end">

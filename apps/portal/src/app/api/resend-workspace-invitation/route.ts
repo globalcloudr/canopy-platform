@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { resolvePortalSession } from "@/lib/platform";
-import { resendWorkspaceAdminInvitation } from "@/lib/provisioning";
+import { canManageWorkspaceInvitations, resolvePortalSession } from "@/lib/platform";
+import { listWorkspaceAdminInvitations, resendWorkspaceAdminInvitation } from "@/lib/provisioning";
 
 type RequestBody = {
   invitationId?: string;
@@ -24,10 +24,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  if (!session.isPlatformOperator) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
-
   try {
     const body = (await request.json()) as RequestBody;
     const invitationId = body.invitationId?.trim();
@@ -35,9 +31,22 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invitation id is required." }, { status: 400 });
     }
 
+    const accessibleWorkspaceIds = session.isPlatformOperator
+      ? session.memberships.map((membership) => membership.workspaceId)
+      : session.memberships
+          .filter((membership) => canManageWorkspaceInvitations(membership.role))
+          .map((membership) => membership.workspaceId);
+
+    const invitations = await listWorkspaceAdminInvitations(accessibleWorkspaceIds);
+    const invitationRecord = invitations.find((invitation) => invitation.id === invitationId);
+    if (!invitationRecord) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const invitation = await resendWorkspaceAdminInvitation({
       invitationId,
       provisionedByUserId: session.user.id,
+      actorEmail: session.user.email,
       inviteRedirectTo: `${normalizeOrigin(request.nextUrl.origin)}/sign-in`,
     });
 

@@ -52,6 +52,9 @@ const ROLE_OPTIONS: Array<{ value: WorkspaceRole; label: string }> = [
   { value: "owner", label: "Owner" },
   { value: "admin", label: "Admin" },
   { value: "staff", label: "Staff" },
+  { value: "social_media", label: "Social Media" },
+  { value: "uploader", label: "Uploader" },
+  { value: "viewer", label: "Viewer" },
 ];
 
 function slugify(value: string) {

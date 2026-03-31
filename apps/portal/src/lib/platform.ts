@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 
-export type WorkspaceRole = "owner" | "admin" | "staff" | "uploader" | "viewer";
+export type WorkspaceRole = "owner" | "admin" | "staff" | "social_media" | "uploader" | "viewer";
 export type MembershipStatus = "invited" | "active" | "suspended";
 export type EntitlementStatus = "trial" | "active" | "pilot" | "paused";
 export type SetupState = "not_started" | "in_setup" | "ready" | "blocked";
@@ -263,11 +263,15 @@ function isPlatformOperator(profile: ProfileRow | null) {
 }
 
 function normalizeWorkspaceRole(value: string | null | undefined): WorkspaceRole {
-  if (value === "owner" || value === "admin" || value === "staff" || value === "uploader" || value === "viewer") {
+  if (value === "owner" || value === "admin" || value === "staff" || value === "social_media" || value === "uploader" || value === "viewer") {
     return value;
   }
 
   return "viewer";
+}
+
+export function canManageWorkspaceInvitations(role: WorkspaceRole | null | undefined) {
+  return role === "owner" || role === "admin";
 }
 
 function normalizeWorkspace(row: OrganizationRow): PortalWorkspace | null {

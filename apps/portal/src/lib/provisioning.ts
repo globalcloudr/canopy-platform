@@ -6,6 +6,7 @@ import {
   type SetupState,
   type WorkspaceRole,
 } from "@/lib/platform";
+import { logAuditEvent } from "@/lib/audit";
 
 type ProvisioningEnv = {
   supabaseUrl: string;
@@ -163,7 +164,14 @@ async function requestJson<T>(
 }
 
 function normalizeWorkspaceRole(value: WorkspaceRole): WorkspaceRole {
-  if (value === "owner" || value === "admin" || value === "staff" || value === "uploader" || value === "viewer") {
+  if (
+    value === "owner" ||
+    value === "admin" ||
+    value === "staff" ||
+    value === "social_media" ||
+    value === "uploader" ||
+    value === "viewer"
+  ) {
     return value;
   }
 
@@ -480,7 +488,14 @@ async function upsertInvitation(
 }
 
 function normalizeInvitationRole(value: string | null | undefined): WorkspaceRole {
-  if (value === "owner" || value === "admin" || value === "staff" || value === "uploader" || value === "viewer") {
+  if (
+    value === "owner" ||
+    value === "admin" ||
+    value === "staff" ||
+    value === "social_media" ||
+    value === "uploader" ||
+    value === "viewer"
+  ) {
     return value;
   }
 
@@ -563,6 +578,7 @@ async function getWorkspaceById(workspaceId: string) {
 export async function resendWorkspaceAdminInvitation(options: {
   invitationId: string;
   provisionedByUserId: string;
+  actorEmail?: string | null;
   inviteRedirectTo?: string;
 }) {
   const rows = await requestJson<InvitationRow[]>(
@@ -629,6 +645,19 @@ export async function resendWorkspaceAdminInvitation(options: {
     throw new Error("Invitation resend was sent, but the invitation row could not be updated.");
   }
 
+  await logAuditEvent({
+    orgId: workspace.id,
+    actorUserId: options.provisionedByUserId,
+    actorEmail: options.actorEmail ?? null,
+    eventType: "workspace_invitation_resent",
+    entityType: "workspace_invitation",
+    entityId: updated.id,
+    metadata: {
+      invitedEmail: updated.email,
+      role: updated.role,
+    },
+  });
+
   return updated;
 }
 
@@ -665,6 +694,18 @@ export async function finalizeWorkspaceAdminInvitationsForUser(user: { id: strin
     const updated = updatedRows.map(normalizeWorkspaceInvitation).find((row): row is WorkspaceAdminInvitation => row !== null);
     if (updated) {
       acceptedInvitations.push(updated);
+      await logAuditEvent({
+        orgId: updated.workspaceId,
+        actorUserId: user.id,
+        actorEmail: user.email,
+        eventType: "workspace_invitation_accepted",
+        entityType: "workspace_invitation",
+        entityId: updated.id,
+        metadata: {
+          invitedEmail: updated.email,
+          role: updated.role,
+        },
+      });
     }
   }
 
@@ -793,6 +834,33 @@ export async function provisionWorkspace(input: ProvisionWorkspaceInput): Promis
   const entitlements = await upsertEntitlements(workspace.id, input.products, input.notes);
   const services = await upsertServiceStates(workspace.id, input.services, input.notes);
 
+  if (invitation?.id) {
+    await logAuditEvent({
+      orgId: workspace.id,
+      actorUserId: input.provisionedByUserId,
+      eventType: inviteSent ? "workspace_invitation_sent" : "workspace_invitation_recorded",
+      entityType: "workspace_invitation",
+      entityId: invitation.id,
+      metadata: {
+        invitedEmail: normalizedEmail,
+        role: normalizeWorkspaceRole(input.initialRole),
+      },
+    });
+  } else if (membership) {
+    await logAuditEvent({
+      orgId: workspace.id,
+      actorUserId: input.provisionedByUserId,
+      eventType: membership.created ? "workspace_membership_prepared" : "workspace_membership_confirmed",
+      entityType: "membership",
+      entityId: membership.userId,
+      metadata: {
+        memberUserId: membership.userId,
+        role: membership.role,
+        email: normalizedEmail,
+      },
+    });
+  }
+
   return {
     workspace,
     invitation: {
@@ -818,5 +886,100 @@ export async function provisionWorkspace(input: ProvisionWorkspaceInput): Promis
     membership,
     entitlements,
     services,
+  };
+}
+
+export async function createWorkspaceInvitation(input: {
+  workspaceId: string;
+  email: string;
+  role: WorkspaceRole;
+  invitedByUserId: string;
+  invitedByEmail?: string | null;
+  inviteRedirectTo?: string;
+}) {
+  const workspace = await getWorkspaceById(input.workspaceId);
+  if (!workspace) {
+    throw new Error("Workspace not found.");
+  }
+
+  const normalizedEmail = normalizeEmail(input.email);
+  const normalizedRole = normalizeWorkspaceRole(input.role);
+  let existingUser = await findUserByEmail(normalizedEmail);
+  let inviteSent = false;
+  let inviteSentAt: string | null = null;
+
+  if (!existingUser) {
+    const invite = await inviteUserByEmail(
+      normalizedEmail,
+      {
+        workspaceMode: "existing",
+        workspaceId: workspace.id,
+        primaryAdminEmail: normalizedEmail,
+        initialRole: normalizedRole,
+        products: [],
+        services: [],
+        provisionedByUserId: input.invitedByUserId,
+        inviteRedirectTo: input.inviteRedirectTo,
+      },
+      workspace
+    );
+    existingUser = invite.user?.id ? { id: invite.user.id, email: invite.user.email ?? normalizedEmail } : null;
+    inviteSent = true;
+    inviteSentAt = new Date().toISOString();
+  }
+
+  const membership = existingUser?.id
+    ? await ensureMembership(existingUser.id, workspace.id, normalizedRole)
+    : null;
+  const invitation = existingUser?.id
+    ? null
+    : await upsertInvitation(
+        workspace.id,
+        normalizedEmail,
+        normalizedRole,
+        input.invitedByUserId,
+        undefined,
+        {
+          sentAt: inviteSentAt,
+          deliveryStatus: inviteSent ? "sent" : "pending_unsent",
+        }
+      );
+
+  if (invitation?.id) {
+    await logAuditEvent({
+      orgId: workspace.id,
+      actorUserId: input.invitedByUserId,
+      actorEmail: input.invitedByEmail ?? null,
+      eventType: inviteSent ? "workspace_invitation_sent" : "workspace_invitation_recorded",
+      entityType: "workspace_invitation",
+      entityId: invitation.id,
+      metadata: {
+        invitedEmail: normalizedEmail,
+        role: normalizedRole,
+      },
+    });
+  } else if (membership) {
+    await logAuditEvent({
+      orgId: workspace.id,
+      actorUserId: input.invitedByUserId,
+      actorEmail: input.invitedByEmail ?? null,
+      eventType: membership.created ? "workspace_membership_prepared" : "workspace_membership_confirmed",
+      entityType: "membership",
+      entityId: membership.userId,
+      metadata: {
+        memberUserId: membership.userId,
+        role: membership.role,
+        email: normalizedEmail,
+      },
+    });
+  }
+
+  return {
+    workspace,
+    invitation: invitation ? normalizeWorkspaceInvitation(invitation) : null,
+    membership,
+    email: normalizedEmail,
+    role: normalizedRole,
+    inviteSent,
   };
 }
