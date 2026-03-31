@@ -34,8 +34,10 @@ function readCookie(name: string) {
 
 function navClass(active: boolean) {
   return cn(
-    "flex items-center gap-2.5 px-3 py-2.5 font-medium text-[15px] tracking-[-0.01em] rounded-xl transition",
-    active ? "bg-[#f1f3f5] text-[var(--foreground)]" : "text-[#2d2d2d] hover:bg-[#f7f7f8]"
+    "flex items-center gap-2.5 rounded-2xl px-3.5 py-3 font-medium text-[15px] tracking-[-0.01em] transition",
+    active
+      ? "bg-white/82 text-[#172033] shadow-[0_10px_24px_rgba(35,74,144,0.08)]"
+      : "text-[#506176] hover:bg-white/48 hover:text-[#172033]"
   );
 }
 
@@ -197,21 +199,21 @@ export function PortalSidebar({
     <div className="flex h-full flex-col">
 
       {/* Workspace lockup */}
-      <div className="border-b border-[#e5e7eb] px-4 py-4">
+      <div className="mx-4 mt-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
               type="button"
-              className="flex w-full items-center gap-4 rounded-2xl px-2 py-2 text-left transition hover:bg-[#f7f8fb]"
+              className="flex w-full items-center gap-4 rounded-[28px] bg-transparent px-6 py-6 text-left transition hover:bg-white/28"
             >
-              <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-[#2f76dd] text-[1.05rem] font-semibold tracking-[-0.02em] text-white">
+              <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[linear-gradient(135deg,#2f76dd_0%,#5c96ea_100%)] text-[1.05rem] font-semibold tracking-[-0.02em] text-white shadow-[0_10px_24px_rgba(47,118,221,0.28)]">
                 {orgInitials}
               </div>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-[15px] font-semibold tracking-[-0.02em] text-[#202020]">
                   {displayName ?? "Canopy Platform"}
                 </p>
-                <p className="mt-0.5 text-[13px] text-[#6b7280]">Canopy Portal</p>
+                <p className="mt-0.5 text-[13px] text-[#6f7e90]">Canopy Portal</p>
               </div>
               <ChevronDown className="h-4 w-4 shrink-0 text-[#94a3b8]" />
             </button>
@@ -242,44 +244,46 @@ export function PortalSidebar({
 
       {/* Nav */}
       <nav className="px-4 py-6">
-        <p className="mb-3 px-3 text-[12px] font-semibold uppercase tracking-[0.06em] text-[#9ca3af]">Navigation</p>
-        <div className="space-y-0.5">
-          <Link href={`/app${suffix}`} className={navClass(pathname === "/app")}>
-            <IconHome className="h-[18px] w-[18px]" />
-            Home
-          </Link>
-          <Link href={`/app/account${suffix}`} className={navClass(pathname.startsWith("/app/account"))}>
-            <IconUser className="h-[18px] w-[18px]" />
-            Account
-          </Link>
-          {showProvisioning && (
-            <Link href={`/app/provisioning${suffix}`} className={navClass(pathname.startsWith("/app/provisioning"))}>
-              <IconShield className="h-[18px] w-[18px]" />
-              Provisioning
+        <div className="rounded-[28px] bg-transparent px-4 py-4 shadow-none">
+          <p className="mb-3 px-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#8ea0b7]">Navigation</p>
+          <div className="space-y-1.5">
+            <Link href={`/app${suffix}`} className={navClass(pathname === "/app")}>
+              <IconHome className="h-[18px] w-[18px]" />
+              Home
             </Link>
-          )}
-        </div>
+            <Link href={`/app/account${suffix}`} className={navClass(pathname.startsWith("/app/account"))}>
+              <IconUser className="h-[18px] w-[18px]" />
+              Account
+            </Link>
+            {showProvisioning && (
+              <Link href={`/app/provisioning${suffix}`} className={navClass(pathname.startsWith("/app/provisioning"))}>
+                <IconShield className="h-[18px] w-[18px]" />
+                Provisioning
+              </Link>
+            )}
+          </div>
 
-        <p className="mb-3 mt-6 px-3 text-[12px] font-semibold uppercase tracking-[0.06em] text-[#9ca3af]">Launch</p>
-        <div className="space-y-0.5">
-          {launchableProductKeys.has("photovault") && (
-            <Link href={photoVaultHref} className={navClass(false)}>
-              <IconPhoto className="h-[18px] w-[18px]" />
-              Open PhotoVault
-            </Link>
-          )}
-          {launchableProductKeys.has("stories_canopy") && (
-            <Link href={storiesHref} className={navClass(false)}>
-              <IconStories className="h-[18px] w-[18px]" />
-              Open Stories
-            </Link>
-          )}
-          {launchableProductKeys.has("reach_canopy") && (
-            <Link href={reachHref} className={navClass(false)}>
-              <IconReach className="h-[18px] w-[18px]" />
-              Open Reach
-            </Link>
-          )}
+          <p className="mb-3 mt-6 px-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#8ea0b7]">Launch</p>
+          <div className="space-y-1.5">
+            {launchableProductKeys.has("photovault") && (
+              <Link href={photoVaultHref} className={navClass(false)}>
+                <IconPhoto className="h-[18px] w-[18px]" />
+                Open PhotoVault
+              </Link>
+            )}
+            {launchableProductKeys.has("stories_canopy") && (
+              <Link href={storiesHref} className={navClass(false)}>
+                <IconStories className="h-[18px] w-[18px]" />
+                Open Stories
+              </Link>
+            )}
+            {launchableProductKeys.has("reach_canopy") && (
+              <Link href={reachHref} className={navClass(false)}>
+                <IconReach className="h-[18px] w-[18px]" />
+                Open Reach
+              </Link>
+            )}
+          </div>
         </div>
       </nav>
     </div>
