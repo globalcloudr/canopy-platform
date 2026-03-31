@@ -343,7 +343,7 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
 
   return (
     <div className="space-y-6 pb-10">
-      <header className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-5 shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
+      <header className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
         <p className="eyebrow">Admin</p>
         <h2 className="mb-1">Workspace Provisioning</h2>
         <p className="m-0 max-w-[60ch] text-sm text-muted">
@@ -353,7 +353,7 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
       </header>
 
       <form onSubmit={onSubmit} className="space-y-6">
-        <section className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-5 shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
+        <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
           <p className="eyebrow">Workspace</p>
           <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Choose a workspace</h3>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -428,7 +428,7 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
           ) : null}
         </section>
 
-        <section className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-5 shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
+        <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
           <p className="eyebrow">Primary Admin</p>
           <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Assign the initial admin</h3>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -470,7 +470,7 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
         </section>
 
         {workspaceMode === "existing" && (
-          <section className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-5 shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
+          <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
             <p className="eyebrow">Currently Enabled</p>
             <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Active products for this workspace</h3>
             {entitlementsLoading ? (
@@ -487,7 +487,7 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
                   return (
                     <div
                       key={ent.productKey}
-                      className="flex items-center justify-between gap-4 rounded-xl border border-[rgba(15,31,61,0.1)] px-4 py-3"
+                      className="flex items-center justify-between gap-4 rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 px-4 py-3"
                     >
                       <div>
                         <p className="m-0 text-sm font-semibold text-ink">{productLabel(ent.productKey)}</p>
@@ -533,11 +533,11 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
           </section>
         )}
 
-        <section className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-5 shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
+        <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
           <p className="eyebrow">Products</p>
           <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Enable workspace apps</h3>
           {!enabledProductKeys.has("photovault") && (
-            <div className="rounded-xl border border-[rgba(15,31,61,0.1)] p-4">
+            <div className="rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 p-4">
               <label className="flex items-start justify-between gap-4">
                 <div>
                   <p className="m-0 text-sm font-semibold text-ink">PhotoVault</p>
@@ -573,7 +573,7 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
           )}
 
           {!enabledProductKeys.has("stories_canopy") && (
-            <div className="mt-4 rounded-xl border border-[rgba(15,31,61,0.1)] p-4">
+            <div className="mt-4 rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 p-4">
               <label className="flex items-start justify-between gap-4">
                 <div>
                   <p className="m-0 text-sm font-semibold text-ink">Canopy Stories</p>
@@ -609,7 +609,7 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
           )}
 
           {!enabledProductKeys.has("reach_canopy") && (
-            <div className="mt-4 rounded-xl border border-[rgba(15,31,61,0.1)] p-4">
+            <div className="mt-4 rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 p-4">
               <label className="flex items-start justify-between gap-4">
                 <div>
                   <p className="m-0 text-sm font-semibold text-ink">Canopy Reach</p>
@@ -649,11 +649,11 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
           )}
         </section>
 
-        <section className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-5 shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
+        <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
           <p className="eyebrow">Services</p>
           <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Set service visibility</h3>
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-xl border border-[rgba(15,31,61,0.1)] p-4">
+            <div className="rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 p-4">
               <label className="flex items-start justify-between gap-4">
                 <div>
                   <p className="m-0 text-sm font-semibold text-ink">School Website Setup</p>
@@ -686,7 +686,7 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
               ) : null}
             </div>
 
-            <div className="rounded-xl border border-[rgba(15,31,61,0.1)] p-4">
+            <div className="rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 p-4">
               <label className="flex items-start justify-between gap-4">
                 <div>
                   <p className="m-0 text-sm font-semibold text-ink">Creative Retainer</p>
@@ -721,7 +721,7 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
           </div>
         </section>
 
-        <section className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-5 shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
+        <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
           <p className="eyebrow">Notes</p>
           <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Internal context</h3>
           <Label className="sr-only">Internal context notes</Label>
@@ -733,7 +733,7 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
           />
         </section>
 
-        <section className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-[rgba(15,31,61,0.025)] p-5">
+        <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-white/38 p-5">
           <p className="eyebrow">Review</p>
           <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Provision this workspace</h3>
           <div className="grid gap-3 text-sm text-ink sm:grid-cols-2">
@@ -759,16 +759,16 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
       </form>
 
       {result ? (
-        <section className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-5 shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
+        <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
           <p className="eyebrow">Provisioning Result</p>
           <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">{result.workspace.displayName}</h3>
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-xl border border-[rgba(15,31,61,0.1)] p-4">
+            <div className="rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 p-4">
               <p className="m-0 text-sm font-semibold text-ink">Invitation</p>
               <p className="m-0 mt-1 text-sm text-muted">{result.invitation.email}</p>
               <p className="m-0 mt-2 text-sm text-ink">{invitationStatusLabel(result.invitation.status)}</p>
             </div>
-            <div className="rounded-xl border border-[rgba(15,31,61,0.1)] p-4">
+            <div className="rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 p-4">
               <p className="m-0 text-sm font-semibold text-ink">Membership</p>
               <p className="m-0 mt-1 text-sm text-muted">
                 {result.membership ? `${result.membership.role} • ${result.membership.created ? "Created now" : "Already existed"}` : "No membership row created yet"}
@@ -808,7 +808,7 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
         </section>
       ) : null}
 
-      <section className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-5 shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
+        <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
         <p className="eyebrow">Invitation Status</p>
         <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Current workspace invitations</h3>
         {workspaceMode !== "existing" && !result ? (
@@ -820,7 +820,7 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
             {workspaceInvitations.map((invitation) => (
               <div
                 key={invitation.id}
-                className="flex items-center justify-between gap-4 rounded-xl border border-[rgba(15,31,61,0.1)] px-4 py-3"
+                className="flex items-center justify-between gap-4 rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 px-4 py-3"
               >
                 <div>
                   <p className="m-0 text-sm font-semibold text-ink">{invitation.email}</p>

@@ -1,4 +1,4 @@
-import { Badge, BodyText, Card, Eyebrow, LabelText, MetaText, PageTitle, SectionTitle } from "@canopy/ui";
+import { AppPill, AppSurface, BodyText, Eyebrow, LabelText, MetaText, PageTitle, SectionTitle } from "@canopy/ui";
 import { redirect } from "next/navigation";
 import { WorkspaceInvitationsPanel } from "@/components/workspace-invitations-panel";
 import { canManageWorkspaceInvitations, resolvePortalSession } from "@/lib/platform";
@@ -37,8 +37,8 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
           </BodyText>
         </header>
 
-        <Card className="overflow-hidden">
-          <div className="relative h-36 border-b border-slate-200 bg-gradient-to-r from-slate-900 to-slate-700 sm:h-44">
+        <AppSurface variant="clear" className="overflow-hidden">
+          <div className="relative h-36 bg-gradient-to-r from-slate-900 to-slate-700 sm:h-44">
             <div className="absolute inset-0 bg-slate-900/20" />
             <div className="absolute inset-x-0 bottom-0 p-4 text-white sm:p-5">
               <Eyebrow className="text-slate-100">Account Context</Eyebrow>
@@ -47,19 +47,19 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2 px-4 py-3">
-            <Badge>{session.platformRole?.replace(/_/g, " ") ?? "platform operator"}</Badge>
-            <Badge>{memberships.length} workspaces visible</Badge>
-            <Badge>Workspace context not selected</Badge>
+            <AppPill>{session.platformRole?.replace(/_/g, " ") ?? "platform operator"}</AppPill>
+            <AppPill>{memberships.length} workspaces visible</AppPill>
+            <AppPill>Workspace context not selected</AppPill>
           </div>
-        </Card>
+        </AppSurface>
 
-        <Card padding="md" className="sm:p-6">
+        <AppSurface variant="clear" padding="md" className="sm:p-6">
           <SectionTitle as="h2" className="mb-1 text-slate-900">Platform Context</SectionTitle>
           <BodyText muted className="m-0 max-w-[58ch]">
             Choose a workspace from the header when you want to review workspace-specific products, services, or
             account details. Until then, this page stays at the platform layer.
           </BodyText>
-        </Card>
+        </AppSurface>
       </div>
     );
   }
@@ -78,8 +78,8 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
         </BodyText>
       </header>
 
-      <Card className="overflow-hidden">
-        <div className="relative h-36 border-b border-slate-200 bg-gradient-to-r from-slate-900 to-slate-700 sm:h-44">
+      <AppSurface variant="clear" className="overflow-hidden">
+        <div className="relative h-36 bg-gradient-to-r from-slate-900 to-slate-700 sm:h-44">
           <div className="absolute inset-0 bg-slate-900/20" />
           <div className="absolute inset-x-0 bottom-0 p-4 text-white sm:p-5">
             <Eyebrow className="text-slate-100">Workspace Account</Eyebrow>
@@ -90,13 +90,13 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2 px-4 py-3">
-          <Badge>{activeMembership?.role ?? "staff"} access</Badge>
-          <Badge>{activeEntitlements.length} active entitlements</Badge>
-          <Badge>{memberships.length} workspace{memberships.length === 1 ? "" : "s"} visible</Badge>
+          <AppPill>{activeMembership?.role ?? "staff"} access</AppPill>
+          <AppPill>{activeEntitlements.length} active entitlements</AppPill>
+          <AppPill>{memberships.length} workspace{memberships.length === 1 ? "" : "s"} visible</AppPill>
         </div>
-      </Card>
+      </AppSurface>
 
-      <Card padding="md" className="sm:p-6">
+      <AppSurface variant="clear" padding="md" className="sm:p-6">
         <div className="mb-4">
           <Eyebrow>Workspace</Eyebrow>
           <SectionTitle as="h2" className="text-slate-900">Organization details</SectionTitle>
@@ -110,27 +110,27 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
             { label: "Your role", value: activeMembership?.role ?? "staff", sub: `Signed in as ${user.displayName}` },
             { label: "Active products", value: String(activeEntitlements.length), sub: "Products and services enabled" },
           ].map((stat) => (
-            <div key={stat.label} className="rounded-xl border border-slate-200 bg-slate-50/60 p-5">
+            <div key={stat.label} className="rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/54 p-5">
               <MetaText className="mb-2 uppercase tracking-[0.08em]">{stat.label}</MetaText>
               <strong className="block text-2xl font-bold tracking-[-0.02em] text-ink mb-1">{stat.value}</strong>
               <BodyText muted className="text-[0.825rem]">{stat.sub}</BodyText>
             </div>
           ))}
         </div>
-      </Card>
+      </AppSurface>
 
       {canManageInvitations ? (
         <WorkspaceInvitationsPanel workspace={workspace} initialInvitations={workspaceInvitations} />
       ) : (
-        <Card padding="md" className="sm:p-6">
+        <AppSurface variant="clear" padding="md" className="sm:p-6">
           <SectionTitle as="h2" className="mb-1 text-slate-900">Workspace access</SectionTitle>
           <BodyText muted className="m-0 max-w-[54ch]">
             Owners and admins manage workspace invitations in Canopy Portal. Your current role does not allow changing staff access for this workspace.
           </BodyText>
-        </Card>
+        </AppSurface>
       )}
 
-      <Card padding="md" className="sm:p-6">
+      <AppSurface variant="clear" padding="md" className="sm:p-6">
         <div className="mb-4 flex justify-between gap-6 max-sm:flex-col sm:items-end">
           <div>
             <Eyebrow>Products &amp; Services</Eyebrow>
@@ -141,7 +141,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+        <div className="overflow-hidden rounded-[24px] border border-[var(--app-surface-soft-border)] bg-white/72">
           {activeEntitlements.map((entitlement, i) => {
             const def = getProductDefinition(entitlement.productKey);
             return (
@@ -165,14 +165,12 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
                     </BodyText>
                   </div>
                 </div>
-                <Badge variant={(entitlement.status === "active" ? "enabled" : entitlement.status) as ProductState}>
-                  {entitlement.status.charAt(0).toUpperCase() + entitlement.status.slice(1)}
-                </Badge>
+                <AppPill>{entitlement.status.charAt(0).toUpperCase() + entitlement.status.slice(1)}</AppPill>
               </div>
             );
           })}
         </div>
-      </Card>
+      </AppSurface>
     </div>
   );
 }

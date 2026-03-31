@@ -10,13 +10,13 @@ export function ProductLauncherCard({ product, dim }: ProductLauncherCardProps) 
   return (
     <article
       className={cn(
-        "overflow-hidden rounded-xl border border-slate-200 bg-white transition-[box-shadow,border-color,transform] duration-200",
+        "overflow-hidden rounded-[26px] border border-[var(--app-surface-border)] bg-transparent transition-[border-color,transform,background-color] duration-200",
         dim
           ? "opacity-70 hover:opacity-90"
-          : "shadow-[0_1px_3px_rgba(15,31,61,0.08)] hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-[0_6px_18px_rgba(15,31,61,0.08)]"
+          : "hover:-translate-y-0.5 hover:border-[var(--app-pill-border)] hover:bg-white/34"
       )}
     >
-      <div className="h-20 border-b border-slate-200" style={{ background: product.iconColor }} />
+      <div className="h-20" style={{ background: product.iconColor }} />
 
       <div className="relative p-4">
         <div className="-mt-10 mb-3 flex items-start justify-between gap-3">
@@ -36,7 +36,7 @@ export function ProductLauncherCard({ product, dim }: ProductLauncherCardProps) 
         <BodyText muted className="mt-2 min-h-[3.3rem] text-[0.86rem]">{product.shortDescription}</BodyText>
       </div>
 
-      <div className="space-y-3 border-t border-slate-200 px-3 py-3">
+      <div className="space-y-3 border-t border-[var(--app-surface-soft-border)] px-3 py-3">
         <div className="flex flex-wrap items-center gap-2">
           <Button asChild size="sm" variant="secondary">
             <a href={product.primaryActionTarget}>{product.primaryActionLabel}</a>

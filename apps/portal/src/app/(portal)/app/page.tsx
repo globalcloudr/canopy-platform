@@ -1,4 +1,4 @@
-import { Badge, BodyText, Card, Eyebrow, PageTitle, SectionTitle } from "@canopy/ui";
+import { AppPill, AppSurface, BodyText, Eyebrow, PageTitle, SectionTitle } from "@canopy/ui";
 import { redirect } from "next/navigation";
 import { ProductLauncherCard } from "@/components/product-launcher-card";
 import { resolvePortalSession } from "@/lib/platform";
@@ -47,8 +47,8 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
           </BodyText>
         </header>
 
-        <Card className="overflow-hidden">
-          <div className="relative h-36 border-b border-slate-200 bg-gradient-to-r from-slate-900 to-slate-700 sm:h-44">
+        <AppSurface variant="clear" className="overflow-hidden">
+          <div className="relative h-36 bg-gradient-to-r from-slate-900 to-slate-700 sm:h-44">
             <div className="absolute inset-0 bg-slate-900/20" />
             <div className="absolute inset-x-0 bottom-0 p-4 text-white sm:p-5">
               <Eyebrow className="text-slate-100">Platform Control</Eyebrow>
@@ -59,19 +59,19 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2 px-4 py-3">
-            <Badge>{session.memberships.length} workspaces visible</Badge>
-            <Badge>{session.platformRole?.replace(/_/g, " ") ?? "platform operator"}</Badge>
-            <Badge>Workspace context not selected</Badge>
+            <AppPill>{session.memberships.length} workspaces visible</AppPill>
+            <AppPill>{session.platformRole?.replace(/_/g, " ") ?? "platform operator"}</AppPill>
+            <AppPill>Workspace context not selected</AppPill>
           </div>
-        </Card>
+        </AppSurface>
 
-        <Card padding="md" className="sm:p-6">
+        <AppSurface variant="clear" padding="md" className="sm:p-6">
           <SectionTitle as="h2" className="mb-1 text-slate-900">Workspace Context</SectionTitle>
           <BodyText muted className="m-0 max-w-[58ch]">
             Use the workspace menu in the header when you want to inspect launcher state, account details, or enter a
             product in client context. Until then, this view stays intentionally neutral.
           </BodyText>
-        </Card>
+        </AppSurface>
       </div>
     );
   }
@@ -85,8 +85,8 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
         </BodyText>
       </header>
 
-      <Card className="overflow-hidden">
-        <div className="relative h-36 border-b border-slate-200 bg-gradient-to-r from-slate-900 to-slate-700 sm:h-44">
+      <AppSurface variant="clear" className="overflow-hidden">
+        <div className="relative h-36 bg-gradient-to-r from-slate-900 to-slate-700 sm:h-44">
           <div className="absolute inset-0 bg-slate-900/20" />
           <div className="absolute inset-x-0 bottom-0 p-4 text-white sm:p-5">
             <Eyebrow className="text-slate-100">Workspace Control</Eyebrow>
@@ -97,14 +97,14 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2 px-4 py-3">
-          <Badge>{launchableCount} active product{launchableCount === 1 ? "" : "s"}</Badge>
-          <Badge>{totalServices} service{totalServices === 1 ? "" : "s"}</Badge>
-          <Badge>{activeMembership?.role ?? "staff"} access</Badge>
+          <AppPill>{launchableCount} active product{launchableCount === 1 ? "" : "s"}</AppPill>
+          <AppPill>{totalServices} service{totalServices === 1 ? "" : "s"}</AppPill>
+          <AppPill>{activeMembership?.role ?? "staff"} access</AppPill>
         </div>
-      </Card>
+      </AppSurface>
 
       {launcherProducts.length > 0 && (
-        <Card id="products" padding="md" className="sm:p-6">
+        <AppSurface id="products" variant="clear" padding="md" className="sm:p-6">
           <div className="mb-4 flex justify-between gap-6 max-sm:flex-col sm:items-end">
             <div>
               <Eyebrow>Your Apps</Eyebrow>
@@ -117,11 +117,11 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
               <ProductLauncherCard key={product.productKey} product={product} />
             ))}
           </div>
-        </Card>
+        </AppSurface>
       )}
 
       {launcherServices.length > 0 && (
-        <Card padding="md" className="sm:p-6">
+        <AppSurface variant="clear" padding="md" className="sm:p-6">
           <div className="mb-4 flex justify-between gap-6 max-sm:flex-col sm:items-end">
             <div>
               <Eyebrow>Services</Eyebrow>
@@ -131,7 +131,7 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
               </BodyText>
             </div>
           </div>
-          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+          <div className="overflow-hidden rounded-[24px] border border-[var(--app-surface-soft-border)] bg-white/72">
             {launcherServices.map((service, i) => (
               <div
                 key={service.productKey}
@@ -150,7 +150,7 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
                   </div>
                 </div>
                 <div className="flex items-center gap-3 shrink-0">
-                  <Badge variant={service.state as ProductState}>{service.stateLabel}</Badge>
+                  <AppPill>{service.stateLabel}</AppPill>
                   <a
                     className="text-[0.845rem] font-semibold text-blue no-underline whitespace-nowrap transition-colors hover:text-blue-hover hover:underline"
                     href={service.primaryActionTarget}
@@ -161,11 +161,11 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
               </div>
             ))}
           </div>
-        </Card>
+        </AppSurface>
       )}
 
       {additionalProducts.length > 0 && (
-        <Card variant="soft" padding="md" className="sm:p-6">
+        <AppSurface variant="clear" padding="md" className="sm:p-6">
           <div className="mb-4 flex justify-between gap-6 max-sm:flex-col sm:items-end">
             <div>
               <Eyebrow>More from Canopy</Eyebrow>
@@ -180,7 +180,7 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
               <ProductLauncherCard key={product.productKey} product={product} dim />
             ))}
           </div>
-        </Card>
+        </AppSurface>
       )}
     </div>
   );

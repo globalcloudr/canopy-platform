@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Badge, BodyText, Button, Card, Input, Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@canopy/ui";
+import { AppPill, AppSurface, BodyText, Button, Input, Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@canopy/ui";
 import type { PortalWorkspace, WorkspaceRole } from "@/lib/platform";
 import type { WorkspaceAdminInvitation } from "@/lib/provisioning";
 
@@ -172,7 +172,7 @@ export function WorkspaceInvitationsPanel({
   }
 
   return (
-    <Card padding="md" className="sm:p-6">
+    <AppSurface variant="clear" padding="md" className="sm:p-6">
       <div className="mb-4">
         <h2 className="text-[1.1rem] font-semibold tracking-[-0.03em] text-slate-900">Workspace access</h2>
         <BodyText muted className="m-0 max-w-[56ch]">
@@ -180,7 +180,7 @@ export function WorkspaceInvitationsPanel({
         </BodyText>
       </div>
 
-      <form className="grid gap-4 rounded-xl border border-slate-200 bg-slate-50/50 p-4 sm:grid-cols-[minmax(0,1fr)_220px_auto]" onSubmit={submitInvite}>
+      <form className="grid gap-4 rounded-[24px] border border-[var(--app-surface-soft-border)] bg-white/54 p-4 sm:grid-cols-[minmax(0,1fr)_220px_auto]" onSubmit={submitInvite}>
         <label className="space-y-2">
           <Label>Email</Label>
           <Input
@@ -228,6 +228,7 @@ export function WorkspaceInvitationsPanel({
             className={[
               "rounded-xl border px-4 py-3",
               role === item.role ? "border-blue-300 bg-blue-50/70" : "border-slate-200 bg-white",
+              
             ].join(" ")}
           >
             <p className="m-0 text-sm font-semibold text-slate-900">{item.title}</p>
@@ -252,7 +253,7 @@ export function WorkspaceInvitationsPanel({
         {sortedInvitations.length === 0 ? (
           <BodyText muted className="m-0">No invitation records yet for this workspace.</BodyText>
         ) : (
-          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+          <div className="overflow-hidden rounded-[24px] border border-[var(--app-surface-soft-border)] bg-white/72">
             {sortedInvitations.map((invitation, index) => (
               <div
                 key={invitation.id}
@@ -265,7 +266,7 @@ export function WorkspaceInvitationsPanel({
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Badge>{statusLabel(invitation)}</Badge>
+                  <AppPill>{statusLabel(invitation)}</AppPill>
                   {invitation.status === "pending" ? (
                     <Button
                       type="button"
@@ -283,6 +284,6 @@ export function WorkspaceInvitationsPanel({
           </div>
         )}
       </div>
-    </Card>
+    </AppSurface>
   );
 }
