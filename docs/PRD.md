@@ -59,7 +59,7 @@ See `docs/community-prd.md`, `docs/reach-prd.md`, `docs/create-prd.md`, `docs/pu
 
 - Each school customer is a **Workspace** (currently bridged through the `organizations` table)
 - Users join workspaces through **Memberships**
-- Workspace roles: `owner`, `admin`, `staff` (plus PhotoVault-specific `uploader`, `viewer`)
+- Workspace roles: `owner`, `admin`, `staff`, `social_media`, `uploader`, `viewer`
 - Platform operators have `platform_role = 'super_admin'` or `'platform_staff'` in `profiles`
 - **ProductEntitlements** control which products a workspace can access
 
@@ -83,8 +83,9 @@ The product determines:
 
 When a user launches a product, the portal:
 1. Creates a fresh Supabase session
-2. Passes `access_token` + `refresh_token` in the URL hash with `type=canopy_handoff`
-3. Passes `?workspace=<slug>` so the product knows the active workspace
+2. Writes a short-lived single-use launch record to `product_launch_handoffs`
+3. Redirects to the product with `?launch=<code>&workspace=<slug>`
+4. The product exchanges that code server-side for session tokens, sets the Supabase session locally, and then resolves the active workspace from its own server session endpoint
 
 Products must verify the session and workspace membership on receipt — they do not trust the launch URL alone.
 

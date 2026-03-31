@@ -4,6 +4,28 @@ Append new sessions at the top. Do not overwrite history.
 
 ---
 
+## 2026-03-31 — Launch hardening and server-backed workspace sessions
+
+- Replaced raw cross-product token handoff with a one-time launch exchange:
+  - Portal now creates short-lived single-use handoff records in `product_launch_handoffs`
+  - Reach, Stories, and PhotoVault exchange launch codes server-side before calling `supabase.auth.setSession`
+- Added SQL migration `cp-005` for the new launch-handoff table
+- Moved active workspace resolution to product-side server session endpoints:
+  - Reach: `/api/app-session`
+  - Stories: `/api/app-session`
+  - PhotoVault: `/api/org-session`
+- Products no longer rediscover workspace context from mixed client-side fallbacks on first load
+- Hardened Portal session resolution so it only trusts the real cookie-backed Supabase session and not caller-supplied email params
+
+### Verification
+- `npm run build` passed in:
+  - `canopy-platform/apps/portal`
+  - `canopy-reach`
+  - `canopy-stories`
+  - `photovault`
+
+---
+
 ## 2026-03-31 — Shared navigation and Portal visual alignment
 
 - Added shared shell primitives to `@canopy/ui`:
@@ -36,10 +58,10 @@ Append new sessions at the top. Do not overwrite history.
 
 ## 2026-03-30 — Canopy Reach portal integration
 
-- Added `/auth/launch/reach` token handoff route (same pattern as photovault and stories)
+- Added `/auth/launch/reach` launch route (later hardened into the one-time handoff exchange pattern now used by all products)
 - Added `getReachLaunchPath()` to `products.ts`; `reach_canopy` catalog entry now has `externalUrl` and live launch paths
-- Primary action (enabled/pilot): launches to `/posts/new` via handoff
-- Secondary action: launches to `/calendar` via handoff
+- Primary action (enabled/pilot): launches to `/posts/new`
+- Secondary action: launches to `/calendar`
 - `REACH_APP_URL` added to `.env.local` (localhost:3002 for dev; update to Vercel URL on deploy)
 
 ---
@@ -65,13 +87,13 @@ Key accuracy fixes applied during the audit:
 
 ## Current Status (as of 2026-03-31)
 
-The portal is live and functional. Three connected products are now wired into the platform surface: PhotoVault, Canopy Stories, and Canopy Reach. The platform handles auth, workspace resolution, entitlements, provisioning, invitations, and cross-product launch for all three.
+The portal is live and functional. Three connected products are wired into the platform surface: PhotoVault, Canopy Stories, and Canopy Reach. The platform now handles cookie-backed auth, one-time cross-product launch exchange, server-backed workspace context, entitlements, provisioning, invitations, and shared navigation for all three.
 
 ## What Was Recently Completed
 
-- Seamless Canopy-to-PhotoVault login implemented (token handoff via URL hash)
-- Canopy-to-Stories launch route added (`/auth/launch/stories`)
-- Workspace param fix so users can log in directly from Canopy with correct workspace context
+- One-time launch exchange implemented across Portal, Reach, Stories, and PhotoVault
+- Server-backed workspace session endpoints added to products to eliminate first-load workspace drift
+- Portal session resolution hardened to rely only on cookie-backed auth
 - Header and sidebar navigation cleanup for platform users and school users
 - Operator provisioning: workspace creation, product/service enablement, invite send/resend, invite acceptance
 
@@ -101,7 +123,8 @@ Candidates and their specs:
 ## Architecture Decisions (Locked)
 
 - One shared Supabase project across all products (canopy-platform, photovault, canopy-stories, canopy-reach)
-- Products run on separate domains and receive auth via token handoff, not a shared session cookie
+- Products run on separate domains and launch via a one-time handoff exchange, not a shared session cookie or raw token hash
+- Each product resolves active workspace from a server-backed session endpoint rather than rediscovering context client-side
 - School users should not see a fake cross-school switcher; school context is fixed and product switching belongs in the workspace launcher
 - `organizations` table remains the workspace bridge for MVP; no forced migration to a `workspaces` table yet
 - Platform operators use `profiles.platform_role` as the compatibility source for operator access

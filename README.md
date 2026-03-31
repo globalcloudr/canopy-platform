@@ -28,7 +28,7 @@ Platform portal and shared infrastructure for the Canopy product suite.
 | Canopy Stories | Live (beta) | `/auth/launch/stories` | https://canopy-stories.vercel.app |
 | Canopy Reach | Active development | `/auth/launch/reach` | https://canopy-reach.vercel.app |
 
-All products receive auth tokens via URL hash handoff (`type=canopy_handoff`) and honor `?workspace=` context.
+All products launch through a one-time handoff exchange. The portal creates a short-lived, single-use launch code in `product_launch_handoffs`, each product exchanges it server-side for session tokens, and the active workspace is carried by `?workspace=` plus a product-side server session endpoint.
 
 ### Shared UI (`@canopy/ui`)
 
