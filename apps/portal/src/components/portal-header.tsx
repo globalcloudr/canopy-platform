@@ -5,6 +5,8 @@ import { CanopyHeader } from "@canopy/ui";
 import { useSearchParams } from "next/navigation";
 import type { PortalSession } from "@/lib/platform";
 
+const ACTIVE_WORKSPACE_COOKIE = "canopy_portal_workspace";
+
 export function PortalHeader() {
   const searchParams = useSearchParams();
   const qs = searchParams.toString();
@@ -30,6 +32,14 @@ export function PortalHeader() {
   const activeWorkspace = session?.activeWorkspace ?? null;
   const user = session?.user ?? null;
   const memberships = session?.memberships ?? [];
+
+  useEffect(() => {
+    if (!activeWorkspace?.slug || typeof document === "undefined") {
+      return;
+    }
+
+    document.cookie = `${ACTIVE_WORKSPACE_COOKIE}=${encodeURIComponent(activeWorkspace.slug)}; path=/; max-age=31536000; samesite=lax`;
+  }, [activeWorkspace?.slug]);
 
   const workspaceLabel = activeWorkspace?.displayName
     ?? (session ? (session.isPlatformOperator ? "All workspaces" : "Select workspace") : "Loading...");

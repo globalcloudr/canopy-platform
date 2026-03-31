@@ -1,8 +1,26 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { cn } from "@canopy/ui";
+import type { PortalSession } from "@/lib/platform";
+
+const ACTIVE_WORKSPACE_COOKIE = "canopy_portal_workspace";
+
+function readCookie(name: string) {
+  if (typeof document === "undefined") {
+    return null;
+  }
+
+  const prefix = `${name}=`;
+  const match = document.cookie
+    .split(";")
+    .map((value) => value.trim())
+    .find((value) => value.startsWith(prefix));
+
+  return match ? decodeURIComponent(match.slice(prefix.length)) : null;
+}
 
 function navClass(active: boolean) {
   return cn(
@@ -94,7 +112,36 @@ export function PortalSidebar({
   const searchParams = useSearchParams();
   const qs = searchParams.toString();
   const suffix = qs ? `?${qs}` : "";
-  const workspace = workspaceSlug ?? searchParams.get("workspace");
+  const [session, setSession] = useState<PortalSession | null>(null);
+  const [workspaceCookie, setWorkspaceCookie] = useState<string | null>(null);
+
+  useEffect(() => {
+    setWorkspaceCookie(readCookie(ACTIVE_WORKSPACE_COOKIE));
+  }, [qs]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function loadSession() {
+      try {
+        const response = await fetch(`/api/portal-session${suffix}`, { cache: "no-store", signal: controller.signal });
+        if (!response.ok) {
+          return;
+        }
+        const payload = (await response.json()) as { session?: PortalSession | null };
+        setSession(payload.session ?? null);
+      } catch {
+        if (!controller.signal.aborted) {
+          setSession(null);
+        }
+      }
+    }
+
+    void loadSession();
+    return () => controller.abort();
+  }, [suffix]);
+
+  const workspace = workspaceSlug ?? searchParams.get("workspace") ?? session?.activeWorkspace?.slug ?? workspaceCookie;
   const photoVaultHref = workspace
     ? `/auth/launch/photovault?workspace=${encodeURIComponent(workspace)}`
     : "/auth/launch/photovault";
@@ -105,7 +152,7 @@ export function PortalSidebar({
     ? `/auth/launch/reach?workspace=${encodeURIComponent(workspace)}`
     : "/auth/launch/reach";
 
-  const displayName = workspaceName ?? workspace ?? null;
+  const displayName = workspaceName ?? session?.activeWorkspace?.displayName ?? workspace ?? null;
   const orgInitials = displayName
     ? displayName.split(" ").map((p: string) => p[0] ?? "").join("").slice(0, 2).toUpperCase()
     : "CP";

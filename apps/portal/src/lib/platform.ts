@@ -60,6 +60,7 @@ export type PortalSession = {
 
 export const ACCESS_TOKEN_COOKIE = "canopy_portal_access_token";
 export const REFRESH_TOKEN_COOKIE = "canopy_portal_refresh_token";
+export const ACTIVE_WORKSPACE_COOKIE = "canopy_portal_workspace";
 
 type ServiceEnv = {
   supabaseUrl: string;
@@ -274,6 +275,24 @@ export function canManageWorkspaceInvitations(role: WorkspaceRole | null | undef
   return role === "owner" || role === "admin";
 }
 
+function getWorkspaceRolePriority(role: WorkspaceRole) {
+  switch (role) {
+    case "owner":
+      return 0;
+    case "admin":
+      return 1;
+    case "social_media":
+      return 2;
+    case "staff":
+      return 3;
+    case "uploader":
+      return 4;
+    case "viewer":
+    default:
+      return 5;
+  }
+}
+
 function normalizeWorkspace(row: OrganizationRow): PortalWorkspace | null {
   if (!row.id || !row.slug) {
     return null;
@@ -444,9 +463,20 @@ export async function resolvePortalSession(options?: {
     };
   });
 
+  const store = await cookies();
+  const requestedWorkspaceSlug =
+    options?.workspace?.trim() || store.get(ACTIVE_WORKSPACE_COOKIE)?.value?.trim() || undefined;
+  const preferredMembership = [...memberships].sort((left, right) => {
+    const roleDelta = getWorkspaceRolePriority(left.role) - getWorkspaceRolePriority(right.role);
+    if (roleDelta !== 0) {
+      return roleDelta;
+    }
+    return left.workspace.displayName.localeCompare(right.workspace.displayName);
+  })[0] ?? null;
+
   const activeWorkspace = isPlatformOperator(profile)
-    ? workspaces.find((workspace) => workspace.slug === options?.workspace) ?? null
-    : workspaces.find((workspace) => workspace.slug === options?.workspace) ?? workspaces[0];
+    ? workspaces.find((workspace) => workspace.slug === requestedWorkspaceSlug) ?? null
+    : workspaces.find((workspace) => workspace.slug === requestedWorkspaceSlug) ?? preferredMembership?.workspace ?? workspaces[0];
   const entitlements = activeWorkspace ? await getEntitlementsForWorkspace(activeWorkspace.id) : [];
 
   return {
