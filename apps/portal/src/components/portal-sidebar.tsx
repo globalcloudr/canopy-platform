@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { cn } from "@canopy/ui";
 import type { PortalSession } from "@/lib/platform";
+import { getEnabledLauncherProducts } from "@/lib/products";
 
 const ACTIVE_WORKSPACE_COOKIE = "canopy_portal_workspace";
 
@@ -103,21 +104,27 @@ export function PortalSidebar({
   showProvisioning = false,
   workspaceName,
   workspaceSlug,
+  initialSession = null,
 }: {
   showProvisioning?: boolean;
   workspaceName?: string | null;
   workspaceSlug?: string | null;
+  initialSession?: PortalSession | null;
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const qs = searchParams.toString();
-  const suffix = qs ? `?${qs}` : "";
-  const [session, setSession] = useState<PortalSession | null>(null);
+  const requestedWorkspace = searchParams.get("workspace") ?? workspaceSlug ?? null;
+  const workspaceRequest = new URLSearchParams();
+  if (requestedWorkspace) {
+    workspaceRequest.set("workspace", requestedWorkspace);
+  }
+  const suffix = workspaceRequest.toString() ? `?${workspaceRequest.toString()}` : "";
+  const [session, setSession] = useState<PortalSession | null>(initialSession);
   const [workspaceCookie, setWorkspaceCookie] = useState<string | null>(null);
 
   useEffect(() => {
     setWorkspaceCookie(readCookie(ACTIVE_WORKSPACE_COOKIE));
-  }, [qs]);
+  }, [requestedWorkspace]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -141,7 +148,7 @@ export function PortalSidebar({
     return () => controller.abort();
   }, [suffix]);
 
-  const workspace = workspaceSlug ?? searchParams.get("workspace") ?? session?.activeWorkspace?.slug ?? workspaceCookie;
+  const workspace = requestedWorkspace ?? session?.activeWorkspace?.slug ?? workspaceCookie;
   const photoVaultHref = workspace
     ? `/auth/launch/photovault?workspace=${encodeURIComponent(workspace)}`
     : "/auth/launch/photovault";
@@ -151,6 +158,11 @@ export function PortalSidebar({
   const reachHref = workspace
     ? `/auth/launch/reach?workspace=${encodeURIComponent(workspace)}`
     : "/auth/launch/reach";
+  const launchableProductKeys = new Set(
+    getEnabledLauncherProducts(session?.entitlements ?? [], { workspaceSlug: workspace ?? undefined })
+      .filter((product) => product.canLaunch)
+      .map((product) => product.productKey)
+  );
 
   const displayName = workspaceName ?? session?.activeWorkspace?.displayName ?? workspace ?? null;
   const orgInitials = displayName
@@ -195,18 +207,24 @@ export function PortalSidebar({
 
         <p className="mb-3 mt-6 px-3 text-[12px] font-semibold uppercase tracking-[0.06em] text-[#9ca3af]">Launch</p>
         <div className="space-y-0.5">
-          <Link href={photoVaultHref} className={navClass(false)}>
-            <IconPhoto className="h-[18px] w-[18px]" />
-            Open PhotoVault
-          </Link>
-          <Link href={storiesHref} className={navClass(false)}>
-            <IconStories className="h-[18px] w-[18px]" />
-            Open Stories
-          </Link>
-          <Link href={reachHref} className={navClass(false)}>
-            <IconReach className="h-[18px] w-[18px]" />
-            Open Reach
-          </Link>
+          {launchableProductKeys.has("photovault") && (
+            <Link href={photoVaultHref} className={navClass(false)}>
+              <IconPhoto className="h-[18px] w-[18px]" />
+              Open PhotoVault
+            </Link>
+          )}
+          {launchableProductKeys.has("stories_canopy") && (
+            <Link href={storiesHref} className={navClass(false)}>
+              <IconStories className="h-[18px] w-[18px]" />
+              Open Stories
+            </Link>
+          )}
+          {launchableProductKeys.has("reach_canopy") && (
+            <Link href={reachHref} className={navClass(false)}>
+              <IconReach className="h-[18px] w-[18px]" />
+              Open Reach
+            </Link>
+          )}
         </div>
       </nav>
     </div>
