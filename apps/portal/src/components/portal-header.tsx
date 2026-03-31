@@ -44,14 +44,16 @@ export function PortalHeader() {
   const workspaceLabel = activeWorkspace?.displayName
     ?? (session ? (session.isPlatformOperator ? "All workspaces" : "Select workspace") : "Loading...");
 
-  const workspaceLinks = memberships
-    .map((m) => m.workspace)
-    .filter((w, i, arr) => arr.findIndex((c) => c.id === w.id) === i)
-    .map((w) => {
-      const params = new URLSearchParams(qs);
-      params.set("workspace", w.slug);
-      return { id: w.id, label: w.displayName, href: `/app?${params.toString()}` };
-    });
+  const workspaceLinks = session?.isPlatformOperator
+    ? memberships
+        .map((m) => m.workspace)
+        .filter((w, i, arr) => arr.findIndex((c) => c.id === w.id) === i)
+        .map((w) => {
+          const params = new URLSearchParams(qs);
+          params.set("workspace", w.slug);
+          return { id: w.id, label: w.displayName, href: `/app?${params.toString()}` };
+        })
+    : [];
 
   const userInitials = user?.email
     ? user.email.split("@")[0].split(/[.\-_]/).filter(Boolean).slice(0, 2).map((p) => p[0]?.toUpperCase() ?? "").join("")
