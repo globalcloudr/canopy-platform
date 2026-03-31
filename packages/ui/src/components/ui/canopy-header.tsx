@@ -80,6 +80,8 @@ export function CanopyHeader({
   onSignOut,
   signOutLabel = "Sign out",
 }: CanopyHeaderProps) {
+  const canSwitchWorkspace = isPlatformOperator || workspaceLinks.length > 0;
+
   return (
     <header className="border-b border-[var(--border)] bg-white/95">
       <div className="flex h-14 items-center justify-between gap-3 px-4 sm:px-6">
@@ -93,44 +95,48 @@ export function CanopyHeader({
             <span className="text-[0.95rem] font-bold tracking-[-0.01em] text-[var(--foreground)]">Canopy</span>
           </a>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="secondary" size="sm" className="hidden min-w-[200px] justify-start gap-1.5 shadow-none sm:inline-flex">
-                <span className="mr-0.5 text-[0.7rem] font-bold uppercase tracking-[0.06em] text-[var(--text-muted)]">Workspace</span>
-                <span className="truncate">{workspaceLabel}</span>
-                <ChevronDown className="ml-auto shrink-0 text-[var(--text-muted)]" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-72 bg-white">
-              <DropdownMenuLabel>Switch workspace</DropdownMenuLabel>
-              <DropdownMenuGroup>
-                {isPlatformOperator && (
-                  <DropdownMenuItem onSelect={() => { window.location.assign(platformOverviewHref); }}>
-                    Platform overview
-                  </DropdownMenuItem>
-                )}
-                {workspaceLinks.map((ws) =>
-                  ws.onSelect ? (
-                    <DropdownMenuItem
-                      key={ws.id}
-                      onSelect={ws.onSelect}
-                      className={ws.active ? "font-semibold" : ""}
-                    >
-                      {ws.label}
-                      {ws.active && <span className="ml-auto text-[11px] text-[var(--text-muted)]">active</span>}
+          {canSwitchWorkspace ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="secondary" size="sm" className="hidden min-w-[200px] justify-start gap-1.5 shadow-none sm:inline-flex">
+                  <span className="mr-0.5 text-[0.7rem] font-bold uppercase tracking-[0.06em] text-[var(--text-muted)]">Workspace</span>
+                  <span className="truncate">{workspaceLabel}</span>
+                  <ChevronDown className="ml-auto shrink-0 text-[var(--text-muted)]" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-72 bg-white">
+                <DropdownMenuLabel>Switch workspace</DropdownMenuLabel>
+                <DropdownMenuGroup>
+                  {isPlatformOperator && (
+                    <DropdownMenuItem onSelect={() => { window.location.assign(platformOverviewHref); }}>
+                      Platform overview
                     </DropdownMenuItem>
-                  ) : (
-                    <DropdownMenuItem key={ws.id} asChild>
-                      <a href={ws.href ?? "#"}>{ws.label}</a>
-                    </DropdownMenuItem>
-                  )
-                )}
-                {workspaceLinks.length === 0 && !isPlatformOperator && (
-                  <DropdownMenuItem disabled>No workspaces found</DropdownMenuItem>
-                )}
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                  )}
+                  {workspaceLinks.map((ws) =>
+                    ws.onSelect ? (
+                      <DropdownMenuItem
+                        key={ws.id}
+                        onSelect={ws.onSelect}
+                        className={ws.active ? "font-semibold" : ""}
+                      >
+                        {ws.label}
+                        {ws.active && <span className="ml-auto text-[11px] text-[var(--text-muted)]">active</span>}
+                      </DropdownMenuItem>
+                    ) : (
+                      <DropdownMenuItem key={ws.id} asChild>
+                        <a href={ws.href ?? "#"}>{ws.label}</a>
+                      </DropdownMenuItem>
+                    )
+                  )}
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <div className="hidden min-w-[200px] items-center gap-2 rounded-md border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-2 text-sm sm:flex">
+              <span className="text-[0.7rem] font-bold uppercase tracking-[0.06em] text-[var(--text-muted)]">Workspace</span>
+              <span className="truncate text-[var(--foreground)]">{workspaceLabel}</span>
+            </div>
+          )}
         </div>
 
         {/* Right: avatar */}
