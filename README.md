@@ -24,8 +24,9 @@ Platform portal and shared infrastructure for the Canopy product suite.
 |---|---|---|---|
 | PhotoVault by Canopy | Live | `/auth/launch/photovault` | https://photovault.school |
 | Canopy Stories | Live (beta) | `/auth/launch/stories` | https://canopy-stories.vercel.app |
+| Canopy Reach | In development | `/auth/launch/reach` | https://canopy-reach.vercel.app |
 
-Both products receive auth tokens via URL hash handoff (`type=canopy_handoff`) and honor `?workspace=` context.
+All products receive auth tokens via URL hash handoff (`type=canopy_handoff`) and honor `?workspace=` context.
 
 ### Shared UI (`@canopy/ui`)
 
@@ -58,11 +59,12 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
 PHOTOVAULT_APP_URL=https://photovault.school
 STORIES_APP_URL=https://canopy-stories.vercel.app
+REACH_APP_URL=https://canopy-reach.vercel.app
 ```
 
 ## Database
 
-Shared Supabase project with PhotoVault and Canopy Stories.
+Shared Supabase project with PhotoVault, Canopy Stories, and Canopy Reach.
 
 Platform-owned tables: `product_entitlements`, `workspace_service_states`, `workspace_admin_invitations`
 

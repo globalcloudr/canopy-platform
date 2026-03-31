@@ -4,6 +4,14 @@ Append new sessions at the top. Do not overwrite history.
 
 ---
 
+## 2026-03-30 — Canopy Reach provisioning and product page
+
+- Added Canopy Reach (`reach_canopy`) to the Provisioning page — operators can now enable it for workspaces alongside PhotoVault and Stories
+- Added full `/app/products/reach-canopy` detail page (how it works, highlights, request access CTA) matching the Stories and PhotoVault pattern
+- "Open Reach" link added to the operator sidebar under Launch
+
+---
+
 ## 2026-03-30 — Canopy Reach portal integration
 
 - Added `/auth/launch/reach` token handoff route (same pattern as photovault and stories)
@@ -54,18 +62,23 @@ The portal is live and functional. Two products are connected: PhotoVault (live)
 - SQL migration files in `docs/sql/` should eventually move to `supabase/migrations/` in each respective repo
 - `references/replit/` folder archived — contains Replit prototypes of future products (Community, Reach, Create, Publish, etc.) that will be rebuilt as Canopy products
 
-## Next Product
+## Active Products
 
-Canopy Stories is the current active product. Once it stabilizes out of beta, the next product to build will be determined. Candidates and their specs:
+- **PhotoVault** — Live at https://photovault.school
+- **Canopy Stories** — Live (beta) at https://canopy-stories.vercel.app
+- **Canopy Reach** — In development at https://canopy-reach.vercel.app (Phases 1–4 complete, portal-connected)
+
+## Future Products
+
+Candidates and their specs:
 
 - `docs/community-prd.md` — Canopy Community (newsletter)
-- `docs/reach-prd.md` — Canopy Reach (social media)
 - `docs/create-prd.md` — Canopy Create (design requests)
 - `docs/publish-prd.md` — Canopy Publish (digital publications)
 
 ## Architecture Decisions (Locked)
 
-- One shared Supabase project across all products (canopy-platform, photovault, canopy-stories)
+- One shared Supabase project across all products (canopy-platform, photovault, canopy-stories, canopy-reach)
 - Products run on separate domains and receive auth via token handoff, not a shared session cookie
 - `organizations` table remains the workspace bridge for MVP; no forced migration to a `workspaces` table yet
 - Platform operators use `profiles.platform_role` as the compatibility source for operator access
