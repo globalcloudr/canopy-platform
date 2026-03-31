@@ -25,5 +25,11 @@ export default async function ProvisioningPage({ searchParams }: ProvisioningPag
   const workspaces = session.memberships.map((membership) => membership.workspace);
   const invitations = await listWorkspaceAdminInvitations(workspaces.map((workspace) => workspace.id));
 
-  return <ProvisioningForm workspaces={workspaces} invitations={invitations} />;
+  return (
+    <ProvisioningForm
+      workspaces={workspaces}
+      invitations={invitations}
+      activeWorkspaceId={session.activeWorkspace?.id ?? null}
+    />
+  );
 }

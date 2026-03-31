@@ -720,6 +720,7 @@ export async function finalizeWorkspaceAdminInvitationsForUser(user: { id: strin
 }
 
 type EntitlementRow = {
+  workspace_id?: string | null;
   organization_id?: string | null;
   org_id?: string | null;
   product_key?: string | null;
@@ -754,6 +755,10 @@ function normalizeEntitlement(row: EntitlementRow, workspaceId: string): Workspa
 export async function getWorkspaceEntitlements(workspaceId: string): Promise<WorkspaceEntitlement[]> {
   const attempts: Array<{ col: string; params: URLSearchParams }> = [
     {
+      col: "workspace_id",
+      params: new URLSearchParams({ select: "workspace_id,product_key,status,setup_state,plan_key", workspace_id: `eq.${workspaceId}` }),
+    },
+    {
       col: "organization_id",
       params: new URLSearchParams({ select: "organization_id,product_key,status,setup_state,plan_key", organization_id: `eq.${workspaceId}` }),
     },
@@ -763,39 +768,73 @@ export async function getWorkspaceEntitlements(workspaceId: string): Promise<Wor
     },
   ];
 
+  const entitlements = new Map<ProductKey, WorkspaceEntitlement>();
+
   for (const attempt of attempts) {
     try {
       const rows = await requestJson<EntitlementRow[]>("/rest/v1/product_entitlements", { searchParams: attempt.params });
-      return rows.map((r) => normalizeEntitlement(r, workspaceId)).filter((r): r is WorkspaceEntitlement => r !== null);
+      rows
+        .map((row) => normalizeEntitlement(row, workspaceId))
+        .filter((row): row is WorkspaceEntitlement => row !== null)
+        .forEach((row) => {
+          entitlements.set(row.productKey, row);
+        });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       if (!message.includes("product_entitlements") && !message.includes(attempt.col)) throw error;
     }
   }
-  return [];
+
+  return [...entitlements.values()];
+}
+
+async function mutateEntitlement(
+  workspaceId: string,
+  productKey: ProductKey,
+  method: "PATCH" | "DELETE",
+  body?: { status: "active" | "paused" }
+) {
+  const attempts: Array<{ col: string; params: URLSearchParams }> = [
+    {
+      col: "workspace_id",
+      params: new URLSearchParams({ workspace_id: `eq.${workspaceId}`, product_key: `eq.${productKey}` }),
+    },
+    {
+      col: "organization_id",
+      params: new URLSearchParams({ organization_id: `eq.${workspaceId}`, product_key: `eq.${productKey}` }),
+    },
+    {
+      col: "org_id",
+      params: new URLSearchParams({ org_id: `eq.${workspaceId}`, product_key: `eq.${productKey}` }),
+    },
+  ];
+
+  for (const attempt of attempts) {
+    try {
+      await requestJson<unknown>("/rest/v1/product_entitlements", {
+        method,
+        searchParams: attempt.params,
+        body,
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      if (!message.includes("product_entitlements") && !message.includes(attempt.col)) {
+        throw error;
+      }
+    }
+  }
 }
 
 export async function pauseEntitlement(workspaceId: string, productKey: ProductKey): Promise<void> {
-  await requestJson<unknown>("/rest/v1/product_entitlements", {
-    method: "PATCH",
-    searchParams: new URLSearchParams({ organization_id: `eq.${workspaceId}`, product_key: `eq.${productKey}` }),
-    body: { status: "paused" },
-  });
+  await mutateEntitlement(workspaceId, productKey, "PATCH", { status: "paused" });
 }
 
 export async function resumeEntitlement(workspaceId: string, productKey: ProductKey): Promise<void> {
-  await requestJson<unknown>("/rest/v1/product_entitlements", {
-    method: "PATCH",
-    searchParams: new URLSearchParams({ organization_id: `eq.${workspaceId}`, product_key: `eq.${productKey}` }),
-    body: { status: "active" },
-  });
+  await mutateEntitlement(workspaceId, productKey, "PATCH", { status: "active" });
 }
 
 export async function removeEntitlement(workspaceId: string, productKey: ProductKey): Promise<void> {
-  await requestJson<unknown>("/rest/v1/product_entitlements", {
-    method: "DELETE",
-    searchParams: new URLSearchParams({ organization_id: `eq.${workspaceId}`, product_key: `eq.${productKey}` }),
-  });
+  await mutateEntitlement(workspaceId, productKey, "DELETE");
 }
 
 export async function provisionWorkspace(input: ProvisionWorkspaceInput): Promise<ProvisionWorkspaceResult> {

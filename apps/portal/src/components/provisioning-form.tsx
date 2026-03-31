@@ -18,6 +18,7 @@ import type { WorkspaceAdminInvitation, WorkspaceEntitlement } from "@/lib/provi
 type ProvisioningFormProps = {
   workspaces: PortalWorkspace[];
   invitations: WorkspaceAdminInvitation[];
+  activeWorkspaceId?: string | null;
 };
 
 type ProvisioningResult = {
@@ -125,9 +126,13 @@ function entitlementStatusLabel(status: WorkspaceEntitlement["status"]) {
   return "Active";
 }
 
-export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormProps) {
+export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }: ProvisioningFormProps) {
+  const initialWorkspaceId =
+    (activeWorkspaceId && workspaces.some((workspace) => workspace.id === activeWorkspaceId) ? activeWorkspaceId : null)
+    ?? workspaces[0]?.id
+    ?? "";
   const [workspaceMode, setWorkspaceMode] = useState<"existing" | "new">("existing");
-  const [workspaceId, setWorkspaceId] = useState(workspaces[0]?.id ?? "");
+  const [workspaceId, setWorkspaceId] = useState(initialWorkspaceId);
   const [workspaceName, setWorkspaceName] = useState("");
   const [workspaceSlug, setWorkspaceSlug] = useState("");
   const [primaryAdminEmail, setPrimaryAdminEmail] = useState("");
@@ -156,6 +161,21 @@ export function ProvisioningForm({ workspaces, invitations }: ProvisioningFormPr
     () => workspaces.find((workspace) => workspace.id === workspaceId) ?? null,
     [workspaceId, workspaces]
   );
+
+  useEffect(() => {
+    if (workspaceMode !== "existing") {
+      return;
+    }
+
+    const preferredWorkspaceId =
+      (activeWorkspaceId && workspaces.some((workspace) => workspace.id === activeWorkspaceId) ? activeWorkspaceId : null)
+      ?? workspaces[0]?.id
+      ?? "";
+
+    if (!workspaceId || !workspaces.some((workspace) => workspace.id === workspaceId)) {
+      setWorkspaceId(preferredWorkspaceId);
+    }
+  }, [activeWorkspaceId, workspaceId, workspaceMode, workspaces]);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
