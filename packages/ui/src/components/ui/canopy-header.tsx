@@ -105,8 +105,8 @@ export function CanopyHeader({
               <DropdownMenuLabel>Switch workspace</DropdownMenuLabel>
               <DropdownMenuGroup>
                 {isPlatformOperator && (
-                  <DropdownMenuItem asChild>
-                    <a href={platformOverviewHref}>Platform overview</a>
+                  <DropdownMenuItem onSelect={() => { window.location.assign(platformOverviewHref); }}>
+                    Platform overview
                   </DropdownMenuItem>
                 )}
                 {workspaceLinks.map((ws) =>
