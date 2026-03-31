@@ -4,6 +4,28 @@ Append new sessions at the top. Do not overwrite history.
 
 ---
 
+## 2026-03-31 — Shared navigation and Portal visual alignment
+
+- Added shared shell primitives to `@canopy/ui`:
+  - `AppSurface`
+  - `AppPill`
+- Updated Portal, Reach, and Stories to consume the newer shared shell/surface language instead of drifting page by page
+- Refined the platform navigation model:
+  - platform operators still have a true workspace switcher in the header
+  - school users now see a fixed school context instead of a misleading school switcher
+  - the sidebar school lockup now acts as the school-level product launcher
+  - Reach and Stories now expose a direct `Back to portal home` path for the current school
+- Aligned Portal’s shell, dashboard, account page, provisioning page, launcher cards, and sidebar with the newer Reach/Stories visual system
+- Added launcher-product APIs in Reach and Stories so the product switcher only shows products the current workspace is actually entitled to
+
+### Verification
+- `npm run build` passed in:
+  - `canopy-platform/apps/portal`
+  - `canopy-reach`
+  - `canopy-stories`
+
+---
+
 ## 2026-03-30 — Canopy Reach provisioning and product page
 
 - Added Canopy Reach (`reach_canopy`) to the Provisioning page — operators can now enable it for workspaces alongside PhotoVault and Stories
@@ -41,16 +63,16 @@ Key accuracy fixes applied during the audit:
 
 ---
 
-## Current Status (as of 2026-03-28)
+## Current Status (as of 2026-03-31)
 
-The portal is live and functional. Two products are connected: PhotoVault (live) and Canopy Stories (beta). The platform handles auth, workspace resolution, entitlements, provisioning, and product launch for both.
+The portal is live and functional. Three connected products are now wired into the platform surface: PhotoVault, Canopy Stories, and Canopy Reach. The platform handles auth, workspace resolution, entitlements, provisioning, invitations, and cross-product launch for all three.
 
 ## What Was Recently Completed
 
 - Seamless Canopy-to-PhotoVault login implemented (token handoff via URL hash)
 - Canopy-to-Stories launch route added (`/auth/launch/stories`)
 - Workspace param fix so users can log in directly from Canopy with correct workspace context
-- Header area cleanup for Super Admin and Platform users
+- Header and sidebar navigation cleanup for platform users and school users
 - Operator provisioning: workspace creation, product/service enablement, invite send/resend, invite acceptance
 
 ## Open Items
@@ -66,7 +88,7 @@ The portal is live and functional. Two products are connected: PhotoVault (live)
 
 - **PhotoVault** — Live at https://photovault.school
 - **Canopy Stories** — Live (beta) at https://canopy-stories.vercel.app
-- **Canopy Reach** — In development at https://canopy-reach.vercel.app (Phases 1–4 complete, portal-connected)
+- **Canopy Reach** — Active development at https://canopy-reach.vercel.app (portal-connected, school account flow and media foundation in place)
 
 ## Future Products
 
@@ -80,6 +102,7 @@ Candidates and their specs:
 
 - One shared Supabase project across all products (canopy-platform, photovault, canopy-stories, canopy-reach)
 - Products run on separate domains and receive auth via token handoff, not a shared session cookie
+- School users should not see a fake cross-school switcher; school context is fixed and product switching belongs in the workspace launcher
 - `organizations` table remains the workspace bridge for MVP; no forced migration to a `workspaces` table yet
 - Platform operators use `profiles.platform_role` as the compatibility source for operator access
 - Each product repo stays separate; no product workflow code in `canopy-platform`

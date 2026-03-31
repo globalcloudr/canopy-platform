@@ -32,13 +32,13 @@ The portal does **not** own any product workflow. Each product handles its own d
 |---|---|---|---|
 | PhotoVault by Canopy | `photovault` | https://photovault.school | Live |
 | Canopy Stories | `stories_canopy` | https://canopy-stories.vercel.app | Beta |
+| Canopy Reach | `reach_canopy` | https://canopy-reach.vercel.app | Active development |
 
 ### Planned Products
 
 | Product | Key | Description |
 |---|---|---|
 | Canopy Community | `community_canopy` | Newsletter and recurring school communication |
-| Canopy Reach | `reach_canopy` | Social media scheduling and outreach |
 | Canopy Create | `create_canopy` | Design request and collateral production |
 | Canopy Publish | `publish_canopy` | Digital brochures and publication management |
 | Canopy Website | `canopy_web` | School web publishing and CMS |
@@ -88,10 +88,17 @@ When a user launches a product, the portal:
 
 Products must verify the session and workspace membership on receipt — they do not trust the launch URL alone.
 
+## Navigation Model
+
+- Platform operators can switch workspaces from the header.
+- School users should stay anchored to their current school context rather than seeing a misleading cross-school switcher.
+- Product switching for school users belongs in the workspace launcher, not in the global header control.
+- Products should provide an intuitive path back to the current school’s Portal home.
+
 ## Design System
 
 `@canopy/ui` is the shared component library for all Canopy products. Products should use it for consistent UI.
 
 Primary brand color: navy `#0f1f3d`. Accent: blue `#2563eb`. Background: `#eef2ff`.
 
-Shell pattern: `h-14` top bar + left sidebar + flex content area. All products should follow this shell to feel like the same product family.
+Shell pattern: `h-14` top bar + left sidebar + flex content area. All products should follow this shell to feel like the same product family, with a lighter content canvas, transparent outer surfaces, and consistent sidebar treatment.

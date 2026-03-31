@@ -1,35 +1,38 @@
 # Canopy Portal App
 
-This folder is reserved for the future Canopy platform portal at:
+Workspace portal app for the Canopy product suite.
 
 - `usecanopy.school`
 
 ## Purpose
 
-The portal should become the control plane for Canopy.
+The portal is the control plane for Canopy.
 
 It is responsible for:
 
 - authentication entry
-- workspace selection
+- workspace resolution and school context
 - product launcher and product access visibility
 - account and service overview
 - shared platform navigation
+- owner/admin invitation and role management
+- operator provisioning for products and services
 
 It is not responsible for reimplementing each product's internal workflows.
 
-## MVP Direction
+## Current Direction
 
-The first version of the portal should focus on:
+The live portal currently focuses on:
 
 - sign-in
 - workspace resolution
 - entitlement-aware dashboard
-- launching `PhotoVault by Canopy`
+- product launch across PhotoVault, Stories, and Reach
+- school context for normal workspace users
+- true workspace switching only for platform operators
 
 See:
 
-- [Portal MVP Scope](/Users/zylstra/Code/canopy-platform/docs/portal-mvp-scope.md)
-- [Workspace and Identity Model](/Users/zylstra/Code/canopy-platform/docs/workspace-identity-model.md)
-- [Product Entitlements](/Users/zylstra/Code/canopy-platform/docs/product-entitlements.md)
-- [Platform Navigation Model](/Users/zylstra/Code/canopy-platform/docs/platform-navigation-model.md)
+- [Canopy Platform README](/Users/zylstra/Code/canopy-platform/README.md)
+- [Platform PRD](/Users/zylstra/Code/canopy-platform/docs/PRD.md)
+- [Platform Progress](/Users/zylstra/Code/canopy-platform/docs/progress.md)

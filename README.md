@@ -10,13 +10,15 @@ Platform portal and shared infrastructure for the Canopy product suite.
 ### Portal App
 
 - Supabase-backed sign-in with cookie-based sessions
-- Workspace resolution — single-workspace users land directly on dashboard; multi-workspace users get a switcher
+- Workspace resolution — platform operators can switch workspaces; school users stay in a fixed school context
 - Entitlement-aware product launcher — shows enabled products, pilot products, and service cards per workspace
+- Role-aware navigation — school users see school context, product switching, and a direct path back to portal home; platform users retain true workspace switching
 - Account page — workspace details, user info, active products and services
 - Operator provisioning page (`/app/provisioning`) — create/select workspaces, enable products and services, invite workspace admins, resend invitations
 - Invite acceptance flow — Supabase invite email → Canopy sign-in → membership creation → workspace redirect
 - Neutral platform overview for operators without an explicit `?workspace=` selection
 - Public homepage with product grid and marketing content
+- Portal shell refreshed to match Reach and Stories with a lighter sidebar/content treatment and shared UI primitives
 
 ### Product Integrations
 
@@ -24,15 +26,15 @@ Platform portal and shared infrastructure for the Canopy product suite.
 |---|---|---|---|
 | PhotoVault by Canopy | Live | `/auth/launch/photovault` | https://photovault.school |
 | Canopy Stories | Live (beta) | `/auth/launch/stories` | https://canopy-stories.vercel.app |
-| Canopy Reach | In development | `/auth/launch/reach` | https://canopy-reach.vercel.app |
+| Canopy Reach | Active development | `/auth/launch/reach` | https://canopy-reach.vercel.app |
 
 All products receive auth tokens via URL hash handoff (`type=canopy_handoff`) and honor `?workspace=` context.
 
 ### Shared UI (`@canopy/ui`)
 
-Shared component library at `packages/ui/`. Used by the portal. Available for future products.
+Shared component library at `packages/ui/`. Used by Portal, Reach, and Stories for shared shell and surface styling.
 
-Components: Button, Badge, Input, Avatar, Card, Dialog, DropdownMenu, IconButton, Label, MenuSurface, SegmentedToggle, Select, Separator, Textarea, Typography, CanopyHeader, cn()
+Components: Button, Badge, Input, Avatar, Card, Dialog, DropdownMenu, IconButton, Label, MenuSurface, SegmentedToggle, Select, Separator, Textarea, Typography, CanopyHeader, AppSurface, AppPill, cn()
 
 ## What Is Not Done Yet
 
