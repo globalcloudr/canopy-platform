@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "@/lib/platform";
+import { createProductLaunchHandoff } from "@/lib/launch-handoff";
 
 const DEFAULT_REACH_URL = "http://localhost:3002";
 
@@ -36,16 +37,17 @@ export async function GET(request: NextRequest) {
     getReachAppUrl()
   );
   const workspaceSlug = request.nextUrl.searchParams.get("workspace")?.trim();
+  const handoffCode = await createProductLaunchHandoff({
+    productKey: "reach_canopy",
+    accessToken,
+    refreshToken,
+    workspaceSlug,
+  });
 
   if (workspaceSlug) {
     targetUrl.searchParams.set("workspace", workspaceSlug);
   }
-
-  targetUrl.hash = new URLSearchParams({
-    access_token: accessToken,
-    refresh_token: refreshToken,
-    type: "canopy_handoff",
-  }).toString();
+  targetUrl.searchParams.set("launch", handoffCode);
 
   return NextResponse.redirect(targetUrl);
 }
