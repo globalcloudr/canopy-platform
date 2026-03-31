@@ -41,6 +41,8 @@ export type CanopyHeaderProps = {
   brandHref?: string;
   /** Label shown in the workspace switcher button */
   workspaceLabel: string;
+  /** Label used for the static school/workspace context chip when switching is not available */
+  workspaceContextLabel?: string;
   /** List of workspaces the user can switch to */
   workspaceLinks: CanopyHeaderWorkspaceLink[];
   /** Show a "Platform overview" item at the top of the workspace list */
@@ -68,6 +70,7 @@ export type CanopyHeaderProps = {
 export function CanopyHeader({
   brandHref = "/",
   workspaceLabel,
+  workspaceContextLabel,
   workspaceLinks,
   isPlatformOperator = false,
   platformOverviewHref = "/",
@@ -80,7 +83,8 @@ export function CanopyHeader({
   onSignOut,
   signOutLabel = "Sign out",
 }: CanopyHeaderProps) {
-  const canSwitchWorkspace = isPlatformOperator || workspaceLinks.length > 0;
+  const canSwitchWorkspace = isPlatformOperator && workspaceLinks.length > 0;
+  const contextLabel = workspaceContextLabel ?? (isPlatformOperator ? "Workspace" : "School");
 
   return (
     <header className="border-b border-[var(--border)] bg-white/95">
@@ -133,7 +137,7 @@ export function CanopyHeader({
             </DropdownMenu>
           ) : (
             <div className="hidden min-w-[200px] items-center gap-2 rounded-md border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-2 text-sm sm:flex">
-              <span className="text-[0.7rem] font-bold uppercase tracking-[0.06em] text-[var(--text-muted)]">Workspace</span>
+              <span className="text-[0.7rem] font-bold uppercase tracking-[0.06em] text-[var(--text-muted)]">{contextLabel}</span>
               <span className="truncate text-[var(--foreground)]">{workspaceLabel}</span>
             </div>
           )}

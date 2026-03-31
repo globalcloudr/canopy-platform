@@ -66,6 +66,7 @@ export function PortalHeader() {
     <CanopyHeader
       brandHref={`/app${suffix}`}
       workspaceLabel={workspaceLabel}
+      workspaceContextLabel="School"
       workspaceLinks={workspaceLinks}
       isPlatformOperator={session?.isPlatformOperator}
       platformOverviewHref={`/app${suffix}`}

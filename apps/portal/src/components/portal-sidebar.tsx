@@ -3,7 +3,16 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { cn } from "@canopy/ui";
+import {
+  cn,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@canopy/ui";
 import type { PortalSession } from "@/lib/platform";
 import { getEnabledLauncherProducts } from "@/lib/products";
 
@@ -100,6 +109,14 @@ function IconReach({ className }: { className?: string }) {
   );
 }
 
+function ChevronDown({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className} aria-hidden="true">
+      <path d="m6 9 6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export function PortalSidebar({
   showProvisioning = false,
   workspaceName,
@@ -168,22 +185,60 @@ export function PortalSidebar({
   const orgInitials = displayName
     ? displayName.split(" ").map((p: string) => p[0] ?? "").join("").slice(0, 2).toUpperCase()
     : "CP";
+  const portalHomeHref = `/app${suffix}`;
+  const launcherItems = [
+    { key: "portal", label: "Canopy Portal", href: portalHomeHref, current: true },
+    ...(launchableProductKeys.has("photovault") ? [{ key: "photovault", label: "PhotoVault", href: photoVaultHref }] : []),
+    ...(launchableProductKeys.has("stories_canopy") ? [{ key: "stories", label: "Canopy Stories", href: storiesHref }] : []),
+    ...(launchableProductKeys.has("reach_canopy") ? [{ key: "reach", label: "Canopy Reach", href: reachHref }] : []),
+  ];
 
   return (
     <div className="flex h-full flex-col">
 
       {/* Workspace lockup */}
-      <section className="flex items-center gap-4 border-b border-[#e5e7eb] px-6 py-6">
-        <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-[#2f76dd] text-[1.05rem] font-semibold tracking-[-0.02em] text-white">
-          {orgInitials}
-        </div>
-        <div className="min-w-0">
-          <p className="truncate text-[15px] font-semibold tracking-[-0.02em] text-[#202020]">
-            {displayName ?? "Canopy Platform"}
-          </p>
-          <p className="mt-0.5 text-[13px] text-[#6b7280]">Canopy Portal</p>
-        </div>
-      </section>
+      <div className="border-b border-[#e5e7eb] px-4 py-4">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              className="flex w-full items-center gap-4 rounded-2xl px-2 py-2 text-left transition hover:bg-[#f7f8fb]"
+            >
+              <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-[#2f76dd] text-[1.05rem] font-semibold tracking-[-0.02em] text-white">
+                {orgInitials}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-[15px] font-semibold tracking-[-0.02em] text-[#202020]">
+                  {displayName ?? "Canopy Platform"}
+                </p>
+                <p className="mt-0.5 text-[13px] text-[#6b7280]">Canopy Portal</p>
+              </div>
+              <ChevronDown className="h-4 w-4 shrink-0 text-[#94a3b8]" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-72 bg-white">
+            <DropdownMenuLabel>{displayName ?? "Workspace"}</DropdownMenuLabel>
+            <DropdownMenuGroup>
+              {launcherItems.map((item) =>
+                item.current ? (
+                  <DropdownMenuItem key={item.key} className="font-medium">
+                    {item.label}
+                    <span className="ml-auto text-[11px] text-[var(--text-muted)]">current</span>
+                  </DropdownMenuItem>
+                ) : (
+                  <DropdownMenuItem key={item.key} asChild>
+                    <a href={item.href}>{item.label}</a>
+                  </DropdownMenuItem>
+                )
+              )}
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <a href={portalHomeHref}>Back to portal home</a>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
 
       {/* Nav */}
       <nav className="px-4 py-6">

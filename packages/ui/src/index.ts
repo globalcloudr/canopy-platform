@@ -29,6 +29,10 @@ export type { TextareaProps } from "./components/ui/textarea";
 
 export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, cardVariants } from "./components/ui/card";
 export type { CardProps } from "./components/ui/card";
+export { AppSurface, appSurfaceVariants } from "./components/ui/app-surface";
+export type { AppSurfaceProps } from "./components/ui/app-surface";
+export { AppPill, appPillVariants } from "./components/ui/app-pill";
+export type { AppPillProps } from "./components/ui/app-pill";
 
 export { MenuSurface, MenuHeader, MenuSection, MenuItem, MenuButton, MenuSeparator } from "./components/ui/menu-surface";
 export type { MenuSurfaceProps, MenuHeaderProps, MenuSectionProps, MenuItemProps, MenuButtonProps, MenuSeparatorProps } from "./components/ui/menu-surface";
