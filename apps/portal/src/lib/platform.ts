@@ -385,7 +385,7 @@ async function getEntitlementsForWorkspace(workspaceId: string) {
   return [];
 }
 
-async function resolveUserFromRequest(options?: { email?: string }) {
+async function resolveUserFromRequest() {
   const store = await cookies();
   const accessToken = store.get(ACCESS_TOKEN_COOKIE)?.value;
 
@@ -396,7 +396,7 @@ async function resolveUserFromRequest(options?: { email?: string }) {
     }
   }
 
-  return findUserByEmail(options?.email);
+  return null;
 }
 
 export async function signInWithSupabasePassword(email: string, password: string): Promise<SupabasePasswordAuthResult> {
@@ -424,14 +424,13 @@ export async function signInWithSupabasePassword(email: string, password: string
 }
 
 export async function resolvePortalSession(options?: {
-  email?: string;
   workspace?: string;
 }): Promise<PortalSession | null> {
   if (!getServiceEnv()) {
     return null;
   }
 
-  const user = await resolveUserFromRequest(options);
+  const user = await resolveUserFromRequest();
   if (!user?.id || !user.email) {
     return null;
   }
