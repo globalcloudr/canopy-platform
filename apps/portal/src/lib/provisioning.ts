@@ -113,6 +113,15 @@ type InvitationRow = {
   accepted_at?: string | null;
 };
 
+type ServiceStateRow = {
+  workspace_id?: string | null;
+  organization_id?: string | null;
+  org_id?: string | null;
+  service_key?: string | null;
+  status?: string | null;
+  setup_state?: string | null;
+};
+
 function getProvisioningEnv(): ProvisioningEnv {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -736,6 +745,12 @@ export type WorkspaceEntitlement = {
   planKey?: string;
 };
 
+export type WorkspaceServiceState = {
+  serviceKey: string;
+  status: ServiceStatus;
+  setupState: ServiceSetupState;
+};
+
 function normalizeEntitlement(row: EntitlementRow, workspaceId: string): WorkspaceEntitlement | null {
   const productKey = row.product_key;
   const validKeys: ProductKey[] = [
@@ -786,6 +801,56 @@ export async function getWorkspaceEntitlements(workspaceId: string): Promise<Wor
   }
 
   return [...entitlements.values()];
+}
+
+function normalizeWorkspaceServiceState(row: ServiceStateRow): WorkspaceServiceState | null {
+  if (!row.service_key) {
+    return null;
+  }
+
+  return {
+    serviceKey: row.service_key,
+    status: normalizeServiceStatus(row.status as ServiceStatus | undefined),
+    setupState: normalizeServiceSetupState(row.setup_state as ServiceSetupState | undefined),
+  };
+}
+
+export async function getWorkspaceServiceStates(workspaceId: string): Promise<WorkspaceServiceState[]> {
+  const attempts: Array<{ col: string; params: URLSearchParams }> = [
+    {
+      col: "workspace_id",
+      params: new URLSearchParams({ select: "workspace_id,service_key,status,setup_state", workspace_id: `eq.${workspaceId}` }),
+    },
+    {
+      col: "organization_id",
+      params: new URLSearchParams({ select: "organization_id,service_key,status,setup_state", organization_id: `eq.${workspaceId}` }),
+    },
+    {
+      col: "org_id",
+      params: new URLSearchParams({ select: "org_id,service_key,status,setup_state", org_id: `eq.${workspaceId}` }),
+    },
+  ];
+
+  const serviceStates = new Map<string, WorkspaceServiceState>();
+
+  for (const attempt of attempts) {
+    try {
+      const rows = await requestJson<ServiceStateRow[]>("/rest/v1/workspace_service_states", { searchParams: attempt.params });
+      rows
+        .map((row) => normalizeWorkspaceServiceState(row))
+        .filter((row): row is WorkspaceServiceState => row !== null)
+        .forEach((row) => {
+          serviceStates.set(row.serviceKey, row);
+        });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      if (!message.includes("workspace_service_states") && !message.includes(attempt.col)) {
+        throw error;
+      }
+    }
+  }
+
+  return [...serviceStates.values()];
 }
 
 async function mutateEntitlement(
@@ -870,8 +935,10 @@ export async function provisionWorkspace(input: ProvisionWorkspaceInput): Promis
         }
       );
 
-  const entitlements = await upsertEntitlements(workspace.id, input.products, input.notes);
-  const services = await upsertServiceStates(workspace.id, input.services, input.notes);
+  await upsertEntitlements(workspace.id, input.products, input.notes);
+  await upsertServiceStates(workspace.id, input.services, input.notes);
+  const entitlements = await getWorkspaceEntitlements(workspace.id);
+  const services = await getWorkspaceServiceStates(workspace.id);
 
   if (invitation?.id) {
     await logAuditEvent({

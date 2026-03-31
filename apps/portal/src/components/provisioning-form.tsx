@@ -228,6 +228,26 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
 
     const nextResult = body.result;
     setResult(nextResult);
+    if (workspaceMode === "existing" && nextResult.workspace.id === workspaceId) {
+      setCurrentEntitlements(
+        nextResult.entitlements.map((item) => ({
+          productKey: item.productKey as ProductKey,
+          status: item.status as WorkspaceEntitlement["status"],
+          setupState: item.setupState as WorkspaceEntitlement["setupState"],
+          planKey: item.planKey,
+        }))
+      );
+    }
+    if (workspaceMode === "new") {
+      setWorkspaceMode("existing");
+      setWorkspaceId(nextResult.workspace.id);
+    }
+    setEnablePhotoVault(false);
+    setEnableStories(false);
+    setEnableReach(false);
+    setEnableWebsiteSetup(false);
+    setEnableCreativeRetainer(false);
+    setNotes("");
     const invitationId = nextResult.invitation.id;
     const invitationCreatedAt = nextResult.invitation.createdAt;
     if ((nextResult.invitation.status === "invitation_recorded" || nextResult.invitation.status === "invitation_sent") && invitationId && invitationCreatedAt) {
@@ -780,12 +800,16 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
             <div className="rounded-xl border border-[rgba(15,31,61,0.1)] p-4">
               <p className="m-0 text-sm font-semibold text-ink">Products</p>
               <div className="mt-3 space-y-2">
-                {result.entitlements.map((item) => (
-                  <div key={item.productKey} className="flex items-center justify-between gap-3 text-sm">
-                    <span className="font-medium text-ink">{item.productKey}</span>
-                    <span className="text-muted">{item.status} • {item.setupState}</span>
-                  </div>
-                ))}
+                {result.entitlements.length === 0 ? (
+                  <p className="m-0 text-sm text-muted">No products enabled.</p>
+                ) : (
+                  result.entitlements.map((item) => (
+                    <div key={item.productKey} className="flex items-center justify-between gap-3 text-sm">
+                      <span className="font-medium text-ink">{productLabel(item.productKey as ProductKey)}</span>
+                      <span className="text-muted">{entitlementStatusLabel(item.status as WorkspaceEntitlement["status"])} • {item.setupState}</span>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
 
