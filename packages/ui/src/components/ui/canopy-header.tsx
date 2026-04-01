@@ -109,7 +109,7 @@ export function CanopyHeader({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-72 bg-white">
-                <DropdownMenuLabel>Switch workspace</DropdownMenuLabel>
+                <DropdownMenuLabel className="text-[#66758a]">Switch workspace</DropdownMenuLabel>
                 <DropdownMenuGroup>
                   {isPlatformOperator && (
                     <DropdownMenuItem onSelect={() => { window.location.assign(platformOverviewHref); }}>
