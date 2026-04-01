@@ -1,9 +1,9 @@
-import { AppPill, AppSurface, BodyText, Eyebrow, LabelText, MetaText, PageTitle, SectionTitle } from "@canopy/ui";
+import { AppPill, AppSurface, BodyText, Eyebrow, LabelText, MetaText, SectionTitle } from "@canopy/ui";
 import { redirect } from "next/navigation";
+import { PortalPageHeader } from "@/components/portal-page-header";
 import { WorkspaceInvitationsPanel } from "@/components/workspace-invitations-panel";
 import { canManageWorkspaceInvitations, resolvePortalSession } from "@/lib/platform";
 import { getProductDefinition } from "@/lib/products";
-import type { ProductState } from "@/lib/products";
 import { listWorkspaceAdminInvitations } from "@/lib/provisioning";
 
 type AccountPageProps = {
@@ -30,28 +30,18 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
   if (session.isPlatformOperator && !activeWorkspace) {
     return (
       <div className="space-y-5 pb-10">
-        <header>
-          <PageTitle className="mb-2 text-slate-900">Account</PageTitle>
-          <BodyText muted className="m-0 max-w-3xl text-[0.95rem]">
-            Your portal identity, workspace visibility, and current platform access.
-          </BodyText>
-        </header>
-
-        <AppSurface variant="clear" className="overflow-hidden">
-          <div className="relative h-36 bg-gradient-to-r from-slate-900 to-slate-700 sm:h-44">
-            <div className="absolute inset-0 bg-slate-900/20" />
-            <div className="absolute inset-x-0 bottom-0 p-4 text-white sm:p-5">
-              <Eyebrow className="text-slate-100">Account Context</Eyebrow>
-              <SectionTitle as="h2" className="mb-1 text-white">{user.displayName}</SectionTitle>
-              <BodyText muted className="m-0 text-slate-200">{user.email}</BodyText>
-            </div>
-          </div>
-          <div className="flex flex-wrap items-center gap-2 px-4 py-3">
-            <AppPill>{session.platformRole?.replace(/_/g, " ") ?? "platform operator"}</AppPill>
-            <AppPill>{memberships.length} workspaces visible</AppPill>
-            <AppPill>Workspace context not selected</AppPill>
-          </div>
-        </AppSurface>
+        <PortalPageHeader
+          eyebrow="Platform Account"
+          title="Account"
+          subtitle="Your portal identity, workspace visibility, and current platform access."
+          meta={
+            <>
+              <AppPill>{session.platformRole?.replace(/_/g, " ") ?? "platform operator"}</AppPill>
+              <AppPill>{memberships.length} workspaces visible</AppPill>
+              <AppPill>Workspace context not selected</AppPill>
+            </>
+          }
+        />
 
         <AppSurface variant="clear" padding="md" className="sm:p-6">
           <SectionTitle as="h2" className="mb-1 text-slate-900">Platform Context</SectionTitle>
@@ -71,30 +61,18 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
 
   return (
     <div className="space-y-5 pb-10">
-      <header>
-        <PageTitle className="mb-2 text-slate-900">Account</PageTitle>
-        <BodyText muted className="m-0 max-w-3xl text-[0.95rem]">
-          Workspace identity, role context, and product access for {workspace.displayName}.
-        </BodyText>
-      </header>
-
-      <AppSurface variant="clear" className="overflow-hidden">
-        <div className="relative h-36 bg-gradient-to-r from-slate-900 to-slate-700 sm:h-44">
-          <div className="absolute inset-0 bg-slate-900/20" />
-          <div className="absolute inset-x-0 bottom-0 p-4 text-white sm:p-5">
-            <Eyebrow className="text-slate-100">Workspace Account</Eyebrow>
-            <SectionTitle as="h2" className="mb-1 text-white">{workspace.displayName}</SectionTitle>
-            <BodyText muted className="m-0 text-slate-200">
-              {user.displayName} • {user.email}
-            </BodyText>
-          </div>
-        </div>
-        <div className="flex flex-wrap items-center gap-2 px-4 py-3">
-          <AppPill>{activeMembership?.role ?? "staff"} access</AppPill>
-          <AppPill>{activeEntitlements.length} active entitlements</AppPill>
-          <AppPill>{memberships.length} workspace{memberships.length === 1 ? "" : "s"} visible</AppPill>
-        </div>
-      </AppSurface>
+      <PortalPageHeader
+        eyebrow="Workspace Account"
+        title="Account"
+        subtitle={`Workspace identity, role context, and product access for ${workspace.displayName}.`}
+        meta={
+          <>
+            <AppPill>{activeMembership?.role ?? "staff"} access</AppPill>
+            <AppPill>{activeEntitlements.length} active entitlements</AppPill>
+            <AppPill>{memberships.length} workspace{memberships.length === 1 ? "" : "s"} visible</AppPill>
+          </>
+        }
+      />
 
       <AppSurface variant="clear" padding="md" className="sm:p-6">
         <div className="mb-4">

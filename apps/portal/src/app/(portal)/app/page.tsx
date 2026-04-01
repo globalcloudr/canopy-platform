@@ -1,9 +1,9 @@
-import { AppPill, AppSurface, BodyText, Eyebrow, PageTitle, SectionTitle } from "@canopy/ui";
+import { AppPill, AppSurface, BodyText, Eyebrow, SectionTitle } from "@canopy/ui";
 import { redirect } from "next/navigation";
+import { PortalPageHeader } from "@/components/portal-page-header";
 import { ProductLauncherCard } from "@/components/product-launcher-card";
 import { resolvePortalSession } from "@/lib/platform";
 import { getAdditionalLauncherProducts, getEnabledLauncherProducts, getLauncherServices } from "@/lib/products";
-import type { ProductState } from "@/lib/products";
 
 type PortalDashboardPageProps = {
   searchParams?: Promise<{
@@ -30,7 +30,6 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
     workspaceSlug: session.activeWorkspace?.slug,
   });
   const launchableCount = launcherProducts.filter((p) => p.canLaunch).length;
-  const firstName = session.user.displayName.split(" ")[0];
   const activeWorkspace = session.activeWorkspace;
   const activeMembership = activeWorkspace
     ? session.memberships.find((m) => m.workspaceId === activeWorkspace.id)
@@ -40,30 +39,18 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
   if (session.isPlatformOperator && !activeWorkspace) {
     return (
       <div className="space-y-5 pb-10">
-        <header>
-          <PageTitle className="mb-2 text-slate-900">Platform Overview</PageTitle>
-          <BodyText muted className="m-0 max-w-3xl text-[0.95rem]">
-            Platform operations, workspace visibility, and launcher access across Canopy.
-          </BodyText>
-        </header>
-
-        <AppSurface variant="clear" className="overflow-hidden">
-          <div className="relative h-36 bg-gradient-to-r from-slate-900 to-slate-700 sm:h-44">
-            <div className="absolute inset-0 bg-slate-900/20" />
-            <div className="absolute inset-x-0 bottom-0 p-4 text-white sm:p-5">
-              <Eyebrow className="text-slate-100">Platform Control</Eyebrow>
-              <SectionTitle as="h2" className="mb-1 text-white">Welcome back, {firstName}.</SectionTitle>
-              <BodyText muted className="m-0 text-slate-200">
-                Neutral overview for support and operator work before entering a client workspace.
-              </BodyText>
-            </div>
-          </div>
-          <div className="flex flex-wrap items-center gap-2 px-4 py-3">
-            <AppPill>{session.memberships.length} workspaces visible</AppPill>
-            <AppPill>{session.platformRole?.replace(/_/g, " ") ?? "platform operator"}</AppPill>
-            <AppPill>Workspace context not selected</AppPill>
-          </div>
-        </AppSurface>
+        <PortalPageHeader
+          eyebrow="Platform Home"
+          title="Platform Overview"
+          subtitle="Platform operations, workspace visibility, and launcher access across Canopy."
+          meta={
+            <>
+              <AppPill>{session.memberships.length} workspaces visible</AppPill>
+              <AppPill>{session.platformRole?.replace(/_/g, " ") ?? "platform operator"}</AppPill>
+              <AppPill>Workspace context not selected</AppPill>
+            </>
+          }
+        />
 
         <AppSurface variant="clear" padding="md" className="sm:p-6">
           <SectionTitle as="h2" className="mb-1 text-slate-900">Workspace Context</SectionTitle>
@@ -78,30 +65,18 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
 
   return (
     <div className="space-y-5 pb-10">
-      <header>
-        <PageTitle className="mb-2 text-slate-900">{activeWorkspace?.displayName ?? "Workspace Overview"}</PageTitle>
-        <BodyText muted className="m-0 max-w-3xl text-[0.95rem]">
-          Launch products, review active services, and move across your Canopy workspace.
-        </BodyText>
-      </header>
-
-      <AppSurface variant="clear" className="overflow-hidden">
-        <div className="relative h-36 bg-gradient-to-r from-slate-900 to-slate-700 sm:h-44">
-          <div className="absolute inset-0 bg-slate-900/20" />
-          <div className="absolute inset-x-0 bottom-0 p-4 text-white sm:p-5">
-            <Eyebrow className="text-slate-100">Workspace Control</Eyebrow>
-            <SectionTitle as="h2" className="mb-1 text-white">Welcome back, {firstName}.</SectionTitle>
-            <BodyText muted className="m-0 text-slate-200">
-              {activeWorkspace?.displayName} is ready for product launch and workspace operations.
-            </BodyText>
-          </div>
-        </div>
-        <div className="flex flex-wrap items-center gap-2 px-4 py-3">
-          <AppPill>{launchableCount} active product{launchableCount === 1 ? "" : "s"}</AppPill>
-          <AppPill>{totalServices} service{totalServices === 1 ? "" : "s"}</AppPill>
-          <AppPill>{activeMembership?.role ?? "staff"} access</AppPill>
-        </div>
-      </AppSurface>
+      <PortalPageHeader
+        eyebrow="Workspace Home"
+        title={activeWorkspace?.displayName ?? "Workspace Overview"}
+        subtitle="Launch products, review active services, and move across your Canopy workspace."
+        meta={
+          <>
+            <AppPill>{launchableCount} active product{launchableCount === 1 ? "" : "s"}</AppPill>
+            <AppPill>{totalServices} service{totalServices === 1 ? "" : "s"}</AppPill>
+            <AppPill>{activeMembership?.role ?? "staff"} access</AppPill>
+          </>
+        }
+      />
 
       {launcherProducts.length > 0 && (
         <AppSurface id="products" variant="clear" padding="md" className="sm:p-6">
