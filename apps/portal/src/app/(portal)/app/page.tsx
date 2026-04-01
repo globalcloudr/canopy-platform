@@ -40,7 +40,7 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
           subtitle="Platform operations, workspace visibility, and launcher access across Canopy."
         />
 
-        <AppSurface variant="clear" padding="md" className="sm:p-6">
+        <AppSurface id="workspace-context" variant="clear" padding="md" className="sm:p-6">
           <SectionTitle as="h2" className="mb-1 text-slate-900">Workspace Context</SectionTitle>
           <BodyText muted className="m-0 max-w-[58ch]">
             Use the workspace menu in the header when you want to inspect launcher state, account details, or enter a
@@ -77,7 +77,7 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
       )}
 
       {launcherServices.length > 0 && (
-        <AppSurface variant="clear" padding="md" className="sm:p-6">
+        <AppSurface id="services" variant="clear" padding="md" className="sm:p-6">
           <div className="mb-4 flex justify-between gap-6 max-sm:flex-col sm:items-end">
             <div>
               <Eyebrow>Services</Eyebrow>
@@ -121,7 +121,7 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
       )}
 
       {additionalProducts.length > 0 && (
-        <AppSurface variant="clear" padding="md" className="sm:p-6">
+        <AppSurface id="more-products" variant="clear" padding="md" className="sm:p-6">
           <div className="mb-4 flex justify-between gap-6 max-sm:flex-col sm:items-end">
             <div>
               <Eyebrow>More from Canopy</Eyebrow>

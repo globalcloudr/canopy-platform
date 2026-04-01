@@ -36,7 +36,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
           subtitle="Your portal identity, workspace visibility, and current platform access."
         />
 
-        <AppSurface variant="clear" padding="md" className="sm:p-6">
+        <AppSurface id="platform-context" variant="clear" padding="md" className="sm:p-6">
           <SectionTitle as="h2" className="mb-1 text-slate-900">Platform Context</SectionTitle>
           <BodyText muted className="m-0 max-w-[58ch]">
             Choose a workspace from the header when you want to review workspace-specific products, services, or
@@ -60,7 +60,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
         subtitle="Manage your workspace account, role context, and product access."
       />
 
-      <AppSurface variant="clear" padding="md" className="sm:p-6">
+      <AppSurface id="organization-details" variant="clear" padding="md" className="sm:p-6">
         <div className="mb-4">
           <Eyebrow>Workspace</Eyebrow>
           <SectionTitle as="h2" className="text-slate-900">Organization details</SectionTitle>
@@ -84,9 +84,11 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
       </AppSurface>
 
       {canManageInvitations ? (
-        <WorkspaceInvitationsPanel workspace={workspace} initialInvitations={workspaceInvitations} />
+        <div id="workspace-access">
+          <WorkspaceInvitationsPanel workspace={workspace} initialInvitations={workspaceInvitations} />
+        </div>
       ) : (
-        <AppSurface variant="clear" padding="md" className="sm:p-6">
+        <AppSurface id="workspace-access" variant="clear" padding="md" className="sm:p-6">
           <SectionTitle as="h2" className="mb-1 text-slate-900">Workspace access</SectionTitle>
           <BodyText muted className="m-0 max-w-[54ch]">
             Owners and admins manage workspace invitations in Canopy Portal. Your current role does not allow changing staff access for this workspace.
@@ -94,7 +96,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
         </AppSurface>
       )}
 
-      <AppSurface variant="clear" padding="md" className="sm:p-6">
+      <AppSurface id="products-services" variant="clear" padding="md" className="sm:p-6">
         <div className="mb-4 flex justify-between gap-6 max-sm:flex-col sm:items-end">
           <div>
             <Eyebrow>Products &amp; Services</Eyebrow>
