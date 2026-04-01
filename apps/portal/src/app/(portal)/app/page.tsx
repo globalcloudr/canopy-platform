@@ -29,12 +29,7 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
   const launcherServices = getLauncherServices(session.entitlements, {
     workspaceSlug: session.activeWorkspace?.slug,
   });
-  const launchableCount = launcherProducts.filter((p) => p.canLaunch).length;
   const activeWorkspace = session.activeWorkspace;
-  const activeMembership = activeWorkspace
-    ? session.memberships.find((m) => m.workspaceId === activeWorkspace.id)
-    : null;
-  const totalServices = launcherServices.length;
 
   if (session.isPlatformOperator && !activeWorkspace) {
     return (
@@ -43,13 +38,6 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
           eyebrow="Platform Home"
           title="Platform Overview"
           subtitle="Platform operations, workspace visibility, and launcher access across Canopy."
-          meta={
-            <>
-              <AppPill>{session.memberships.length} workspaces visible</AppPill>
-              <AppPill>{session.platformRole?.replace(/_/g, " ") ?? "platform operator"}</AppPill>
-              <AppPill>Workspace context not selected</AppPill>
-            </>
-          }
         />
 
         <AppSurface variant="clear" padding="md" className="sm:p-6">
@@ -67,15 +55,8 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
     <div className="space-y-5 pb-10">
       <PortalPageHeader
         eyebrow="Workspace Home"
-        title={activeWorkspace?.displayName ?? "Workspace Overview"}
+        title="Welcome to Canopy by Akkedis Digital"
         subtitle="Launch products, review active services, and move across your Canopy workspace."
-        meta={
-          <>
-            <AppPill>{launchableCount} active product{launchableCount === 1 ? "" : "s"}</AppPill>
-            <AppPill>{totalServices} service{totalServices === 1 ? "" : "s"}</AppPill>
-            <AppPill>{activeMembership?.role ?? "staff"} access</AppPill>
-          </>
-        }
       />
 
       {launcherProducts.length > 0 && (

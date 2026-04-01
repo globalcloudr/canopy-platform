@@ -34,13 +34,6 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
           eyebrow="Platform Account"
           title="Account"
           subtitle="Your portal identity, workspace visibility, and current platform access."
-          meta={
-            <>
-              <AppPill>{session.platformRole?.replace(/_/g, " ") ?? "platform operator"}</AppPill>
-              <AppPill>{memberships.length} workspaces visible</AppPill>
-              <AppPill>Workspace context not selected</AppPill>
-            </>
-          }
         />
 
         <AppSurface variant="clear" padding="md" className="sm:p-6">
@@ -64,14 +57,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
       <PortalPageHeader
         eyebrow="Workspace Account"
         title="Account"
-        subtitle={`Workspace identity, role context, and product access for ${workspace.displayName}.`}
-        meta={
-          <>
-            <AppPill>{activeMembership?.role ?? "staff"} access</AppPill>
-            <AppPill>{activeEntitlements.length} active entitlements</AppPill>
-            <AppPill>{memberships.length} workspace{memberships.length === 1 ? "" : "s"} visible</AppPill>
-          </>
-        }
+        subtitle="Manage your workspace account, role context, and product access."
       />
 
       <AppSurface variant="clear" padding="md" className="sm:p-6">
