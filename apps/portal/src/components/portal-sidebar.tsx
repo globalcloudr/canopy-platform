@@ -133,27 +133,19 @@ function ChevronDown({ className }: { className?: string }) {
 
 export function PortalSidebar({
   showProvisioning = false,
-  workspaceName,
-  workspaceSlug,
-  initialSession = null,
 }: {
   showProvisioning?: boolean;
-  workspaceName?: string | null;
-  workspaceSlug?: string | null;
-  initialSession?: PortalSession | null;
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const queryWorkspace = searchParams.get("workspace")?.trim() || null;
-  const requestedWorkspace = queryWorkspace ?? workspaceSlug ?? null;
+  const requestedWorkspace = queryWorkspace;
   const workspaceRequest = new URLSearchParams();
   if (requestedWorkspace) {
     workspaceRequest.set("workspace", requestedWorkspace);
   }
   const suffix = workspaceRequest.toString() ? `?${workspaceRequest.toString()}` : "";
-  const initialSessionMatchesWorkspace =
-    !requestedWorkspace || initialSession?.activeWorkspace?.slug === requestedWorkspace;
-  const [session, setSession] = useState<PortalSession | null>(initialSessionMatchesWorkspace ? initialSession : null);
+  const [session, setSession] = useState<PortalSession | null>(null);
   const [workspaceCookie, setWorkspaceCookie] = useState<string | null>(null);
 
   useEffect(() => {
@@ -182,8 +174,9 @@ export function PortalSidebar({
     return () => controller.abort();
   }, [suffix]);
 
-  const sessionMatchesWorkspace = !requestedWorkspace || session?.activeWorkspace?.slug === requestedWorkspace;
-  const workspace = requestedWorkspace ?? (sessionMatchesWorkspace ? session?.activeWorkspace?.slug : null) ?? workspaceCookie;
+  const activeWorkspace = session?.activeWorkspace ?? null;
+  const sessionMatchesWorkspace = !requestedWorkspace || activeWorkspace?.slug === requestedWorkspace;
+  const workspace = requestedWorkspace ?? (sessionMatchesWorkspace ? activeWorkspace?.slug : null) ?? workspaceCookie;
   const photoVaultHref = workspace
     ? `/auth/launch/photovault?workspace=${encodeURIComponent(workspace)}`
     : "/auth/launch/photovault";
@@ -199,11 +192,7 @@ export function PortalSidebar({
       .map((product) => product.productKey)
   );
 
-  const displayName = sessionMatchesWorkspace
-    ? session?.activeWorkspace?.displayName
-      ?? (!queryWorkspace ? workspaceName : null)
-      ?? formatWorkspaceLabel(workspace)
-    : formatWorkspaceLabel(requestedWorkspace);
+  const displayName = sessionMatchesWorkspace ? activeWorkspace?.displayName ?? formatWorkspaceLabel(workspace) : formatWorkspaceLabel(requestedWorkspace);
   const orgInitials = displayName
     ? displayName.split(" ").map((p: string) => p[0] ?? "").join("").slice(0, 2).toUpperCase()
     : "CP";
