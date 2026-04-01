@@ -1,166 +1,551 @@
-import { Button } from "@canopy/ui";
 import Link from "next/link";
+import {
+  Image as ImageIcon,
+  Sparkles,
+  Send,
+  Newspaper,
+  Palette,
+  Globe,
+  BarChart3,
+  ChevronRight,
+  BotMessageSquare,
+} from "lucide-react";
 
-const allProducts = [
-  { key: "photovault",        name: "PhotoVault by Canopy", desc: "Organize approved school photos, logos, and brand assets in one shared library.", color: "#0f1f3d" },
-  { key: "community",         name: "Canopy Community",     desc: "Create and send recurring newsletters that keep your school community informed.", color: "#7c3aed" },
-  { key: "reach",             name: "Canopy Reach",         desc: "Write, schedule, and publish social posts to Facebook, Instagram, LinkedIn, and more.", color: "#db2777" },
-  { key: "stories",           name: "Canopy Stories",       desc: "Turn student successes into blog posts, social content, and short video — automatically.", color: "#d97706" },
-  { key: "publish",           name: "Canopy Publish",       desc: "Give schools a digital home for class catalogs, brochures, and program guides.", color: "#0369a1" },
-  { key: "create",            name: "Canopy Create",        desc: "Submit design requests, track revisions, and download finished files — all in one place.", color: "#ea580c" },
-  { key: "web",               name: "Canopy Website",       desc: "Publish school websites and program pages that stay current and on-brand.", color: "#0d9488" },
-  { key: "assist",            name: "Canopy Assistant",     desc: "Give staff a smart assistant for drafting communications and answering everyday questions.", color: "#4f46e5" },
-  { key: "insights",          name: "Canopy Insights",      desc: "Track campaign performance, social reach, and school visibility across every channel.", color: "#16a34a" },
+// TODO: Replace with your Calendly link before deploying
+const DEMO_URL = "https://calendly.com/globalclouder/30min";
+
+// Coral glow / orange palette
+const B = {
+  50:  "#ffede5",
+  100: "#ffdbcc",
+  200: "#ffb899",
+  300: "#ff9466",
+  400: "#ff7033",
+  500: "#ff4d00",
+  600: "#cc3d00",
+  700: "#992e00",
+  800: "#661f00",
+  900: "#330f00",
+  950: "#240b00",
+};
+
+const liveProducts = [
+  {
+    key: "photovault",
+    Icon: ImageIcon,
+    eyebrow: "Photo & Asset Management",
+    accentColor: B[800],
+    accentBg: B[50],
+    headline: "Your approved photos and brand assets — always organized.",
+    body: "Upload your marketing-approved photos, logos, and brand files once. Your whole team knows exactly what's cleared for use — no version confusion, no wrong photos in the wrong place.",
+  },
+  {
+    key: "stories",
+    Icon: Sparkles,
+    eyebrow: "AI Content Production",
+    accentColor: B[700],
+    accentBg: B[100],
+    headline: "Turn student successes into polished content — automatically.",
+    body: "Your staff sends a short intake form. The student fills it out. Canopy transforms their answers into a blog post, newsletter feature, social posts, and a short video — ready for your review before anything goes public.",
+  },
+  {
+    key: "reach",
+    Icon: Send,
+    eyebrow: "Social Media Publishing",
+    accentColor: B[600],
+    accentBg: B[50],
+    headline: "Write, schedule, and publish to every channel — from one place.",
+    body: "Connect your school's social accounts and manage your entire publishing calendar from one dashboard. Draft a post, pick a time, and Canopy handles the rest.",
+  },
+];
+
+const comingSoon = [
+  { Icon: Newspaper,      label: "Canopy Community", desc: "Newsletters and recurring communications" },
+  { Icon: Palette,        label: "Canopy Create",    desc: "Design requests and collateral production" },
+  { Icon: Globe,          label: "Canopy Publish",   desc: "Digital brochures and publications" },
+  { Icon: BotMessageSquare, label: "Canopy Assistant", desc: "AI knowledge and communications layer" },
+  { Icon: BarChart3,      label: "Canopy Insights",  desc: "Cross-product analytics and reporting" },
 ];
 
 const differentiators = [
   {
     n: "01",
-    title: "One platform for school communications",
-    body: "Canopy brings newsletters, social media, websites, stories, and publications into one platform with one login and one dashboard.",
+    title: "Your brand, always under control",
+    body: "Approved photos, logos, and brand assets in one place — so your team always knows what's cleared for marketing. No version confusion, no wrong-photo moments.",
   },
   {
     n: "02",
-    title: "Built for adult education",
-    body: "Designed for ESL, workforce, and adult diploma programs — not K-12. Every workflow reflects how adult education marketing actually works.",
+    title: "Built for schools like yours",
+    body: "Not K-12. Not a generic marketing tool. Canopy is designed around how adult education teams actually work — ESL programs, workforce training, adult diploma tracks.",
   },
   {
     n: "03",
-    title: "Canopy does the work",
-    body: "From setup to sending, Canopy handles the heavy lifting. Your team gets consistent output without the operational overhead.",
+    title: "Less work, better results",
+    body: "Canopy handles the repetitive work automatically — turning a student interview into a blog post, newsletter feature, and social content in minutes, not hours.",
   },
 ];
 
-export default function MarketingHomePage() {
+/** Browser-chrome mockup placeholder — replace each instance with <Image> once screenshots are ready */
+function ProductMockup() {
   return (
-    <div className="overflow-hidden">
-
-      {/* ── Dark hero band ───────────────────────────── */}
-      <div className="marketing-hero-band">
-        <div className="max-w-[1160px] mx-auto px-6 max-[580px]:px-4">
-
-          {/* Nav */}
-          <nav className="flex items-center justify-between py-[22px]">
-            <div className="flex items-center gap-2.5 no-underline text-white">
-              <div className="grid place-items-center w-8 h-8 rounded-[7px] bg-white/12 text-white text-[0.95rem] font-extrabold tracking-[-0.02em]">
-                C
-              </div>
-              <p className="m-0 text-white text-[0.95rem] font-bold tracking-[-0.01em]">Canopy</p>
-            </div>
-            <div className="flex items-center gap-2">
-              <a
-                href="#products"
-                className="text-sm font-medium text-white/60 no-underline px-3 py-1.5 rounded-md transition-colors hover:text-white hover:bg-white/8"
-              >
-                Products
-              </a>
-              <Button asChild variant="blue">
-                <Link href="/sign-in">Sign in</Link>
-              </Button>
-            </div>
-          </nav>
-
-          {/* Hero */}
-          <section className="py-20 pb-24 max-w-[700px] relative max-[580px]:py-14 max-[580px]:pb-18">
-            <p className="eyebrow" style={{ color: "var(--blue)", opacity: 0.9 }}>School growth platform</p>
-            <h1 className="text-white mb-5">
-              Everything your school needs to communicate, grow, and get noticed.
-            </h1>
-            <p className="text-white/65 text-[1.1rem] leading-[1.7] mb-9 max-w-[52ch]">
-              Canopy brings newsletters, social media, success stories, publications,
-              and design into one connected platform — built for adult education schools.
-            </p>
-            <div className="flex items-center gap-3 flex-wrap">
-              <Button asChild variant="blue" size="lg">
-                <Link href="/sign-in">Sign in to your workspace</Link>
-              </Button>
-              <Button
-                asChild
-                variant="secondary"
-                size="lg"
-                className="border-white/20 bg-transparent text-white/85 shadow-none hover:border-white/45 hover:bg-white/5 hover:text-white"
-              >
-                <Link href="#products">Explore the products →</Link>
-              </Button>
-            </div>
-          </section>
-
-          {/* Floating product blobs */}
-          <div className="hero-floats" aria-hidden="true">
-            <div className="hero-float" style={{ background: "#7c3aed", top: "18%", right: "8%",  width: 52, height: 52, animationDelay: "0s" }}>C</div>
-            <div className="hero-float" style={{ background: "#db2777", top: "52%", right: "18%", width: 40, height: 40, animationDelay: "0.6s" }}>R</div>
-            <div className="hero-float" style={{ background: "#d97706", top: "72%", right: "6%",  width: 36, height: 36, animationDelay: "1.1s" }}>S</div>
-            <div className="hero-float" style={{ background: "#0369a1", top: "35%", right: "28%", width: 30, height: 30, animationDelay: "0.3s" }}>P</div>
-            <div className="hero-float" style={{ background: "#0d9488", top: "62%", right: "32%", width: 26, height: 26, animationDelay: "0.9s" }}>W</div>
+    <div className="cp-mockup" aria-hidden="true">
+      <div className="cp-mockup-chrome">
+        <span className="cp-mockup-dot" style={{ background: "#f87171" }} />
+        <span className="cp-mockup-dot" style={{ background: "#fbbf24" }} />
+        <span className="cp-mockup-dot" style={{ background: "#4ade80" }} />
+        <div className="cp-mockup-bar" />
+      </div>
+      <div className="cp-mockup-body">
+        <div className="cp-mockup-sidebar">
+          <div className="cp-mockup-row" style={{ background: B[200], width: "75%" }} />
+          <div className="cp-mockup-row" />
+          <div className="cp-mockup-row" />
+          <div className="cp-mockup-row" style={{ width: "60%" }} />
+        </div>
+        <div className="cp-mockup-content">
+          <div className="cp-mockup-headline" style={{ width: "42%" }} />
+          <div className="cp-mockup-grid">
+            <div className="cp-mockup-tile" />
+            <div className="cp-mockup-tile" />
+            <div className="cp-mockup-tile" />
+            <div className="cp-mockup-tile" />
           </div>
         </div>
       </div>
+    </div>
+  );
+}
 
-      {/* ── Light content area ───────────────────────── */}
-      <div className="max-w-[1160px] mx-auto px-6 pb-20 max-[580px]:px-4">
+export default function MarketingHomePage() {
+  return (
+    <div className="overflow-hidden bg-white">
 
-        {/* Product grid */}
-        <section className="pt-18 mb-20" id="products">
-          <p className="eyebrow">The platform</p>
-          <h2>Nine tools to grow your school. One centralized dashboard.</h2>
-          <p className="text-muted text-[0.9rem] max-w-[44ch] mt-2 mb-0">
-            A connected platform for the products and services your school uses every day.
-          </p>
-          <div className="grid grid-cols-3 gap-3 mt-9 max-[960px]:grid-cols-2 max-[580px]:grid-cols-1">
-            {allProducts.map((product) => (
-              <div
-                key={product.key}
-                className="bg-surface border border-[rgba(15,31,61,0.1)] rounded-[14px] p-7 pb-6 flex flex-col transition-[box-shadow,border-color,transform] duration-200 hover:shadow-[0_4px_12px_rgba(15,31,61,0.08),0_2px_4px_rgba(15,31,61,0.05)] hover:border-[rgba(15,31,61,0.18)] hover:-translate-y-0.5"
-              >
-                <div
-                  className="grid place-items-center w-11 h-11 rounded-[11px] text-white text-[1.05rem] font-extrabold tracking-[-0.02em] mb-4"
-                  style={{ background: product.color }}
-                  aria-hidden="true"
-                >
-                  {product.name[0]}
-                </div>
-                <h3 className="text-[0.95rem] mb-1.5">{product.name}</h3>
-                <p className="text-[0.845rem] text-muted m-0 leading-relaxed">{product.desc}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Why Canopy */}
-        <section className="pt-18 pb-20 border-t border-[rgba(15,31,61,0.1)]">
-          <p className="eyebrow">Why Canopy</p>
-          <h2>Built for adult education marketing teams.</h2>
-          <div className="grid grid-cols-3 gap-8 mt-9 max-[840px]:grid-cols-1 max-[840px]:gap-6">
-            {differentiators.map((d) => (
-              <div key={d.n}>
-                <p className="m-0 mb-3 text-xs font-extrabold tracking-[0.08em] text-blue">{d.n}</p>
-                <h3 className="text-[1.05rem] font-bold mb-2.5">{d.title}</h3>
-                <p className="text-[0.9rem] text-muted leading-[1.7] m-0">{d.body}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Bottom CTA */}
-        <section className="pt-18 border-t border-[rgba(15,31,61,0.1)] text-center">
-          <h2 className="mb-3">Ready to get started?</h2>
-          <p className="text-muted text-[0.9rem] mb-7 max-w-[44ch] mx-auto">
-            Sign in to your workspace or contact Canopy to set up your account.
-          </p>
-          <div className="flex items-center justify-center gap-3 flex-wrap">
-            <Button asChild variant="primary">
-              <Link href="/sign-in">Sign in</Link>
-            </Button>
-            <a
-              className="text-sm font-medium text-muted no-underline transition-colors hover:text-ink"
-              href="mailto:info@akkedisdigital.com"
+      {/* ── Sticky nav ────────────────────────────── */}
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-slate-200/70">
+        <div className="cp-container h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div
+              className="w-8 h-8 rounded-lg grid place-items-center text-white font-extrabold text-sm"
+              style={{ background: B[800] }}
             >
-              Contact us →
-            </a>
+              C
+            </div>
+            <span className="font-bold text-[#0f1f3d] text-[0.95rem] tracking-tight">Canopy</span>
           </div>
-        </section>
+          <nav className="hidden md:flex items-center gap-7">
+            <a href="#products" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">
+              Products
+            </a>
+            <Link href="/sign-in" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">
+              Sign in
+            </Link>
+            <a
+              href={DEMO_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cp-btn text-white text-sm font-semibold px-5 py-2 rounded-full"
+              style={{ background: B[600] }}
+            >
+              Book a demo
+            </a>
+          </nav>
+          <Link href="/sign-in" className="md:hidden text-sm font-semibold text-[#0f1f3d]">
+            Sign in
+          </Link>
+        </div>
+      </header>
 
+      {/* ── Hero ──────────────────────────────────── */}
+      <section
+        className="relative overflow-hidden"
+        style={{
+          background: B[800],
+          backgroundImage: [
+            // Dot grid
+            "radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px)",
+            // Warm glow top-right
+            "radial-gradient(ellipse 65% 50% at 75% -10%, rgba(255,120,50,0.35) 0%, transparent 60%)",
+            // Subtle glow bottom-left
+            "radial-gradient(ellipse 40% 35% at 0% 100%, rgba(255,80,0,0.18) 0%, transparent 65%)",
+          ].join(", "),
+          backgroundSize: "28px 28px, auto, auto",
+        }}
+      >
+        {/* Decorative rings */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+          {/* Large ring — top right */}
+          <div
+            className="absolute rounded-full border border-white/10"
+            style={{ width: 520, height: 520, top: -160, right: -100 }}
+          />
+          {/* Medium ring — offset inside the large */}
+          <div
+            className="absolute rounded-full border border-white/[0.07]"
+            style={{ width: 340, height: 340, top: -60, right: 0 }}
+          />
+          {/* Small filled blob — bottom right */}
+          <div
+            className="absolute rounded-full"
+            style={{
+              width: 180,
+              height: 180,
+              bottom: -60,
+              right: "12%",
+              background: "rgba(255,100,0,0.18)",
+              filter: "blur(40px)",
+            }}
+          />
+          {/* Diagonal rule line */}
+          <div
+            className="absolute"
+            style={{
+              width: 1,
+              height: "140%",
+              top: "-20%",
+              right: "38%",
+              background: "linear-gradient(to bottom, transparent, rgba(255,255,255,0.06) 40%, transparent)",
+              transform: "rotate(12deg)",
+            }}
+          />
+        </div>
+        <div className="cp-container py-20 lg:py-28 relative">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+
+            {/* Left — copy + CTAs */}
+            <div>
+              <p className="cp-eyebrow mb-5" style={{ color: B[300] }}>
+                From Akkedis Digital — built for adult education
+              </p>
+              <h1 className="cp-hero-headline text-white mb-6">
+                Better tools.<br />Stronger schools.
+              </h1>
+              <p className="text-slate-300 text-lg leading-relaxed mb-10 max-w-[42ch]">
+                Everything you need to organize your brand assets, turn student
+                successes into polished content, and publish to every channel —
+                from one platform built for adult education.
+              </p>
+              <div className="flex flex-wrap gap-4 items-center">
+                <a
+                  href={DEMO_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="cp-btn text-white font-semibold px-7 py-3.5 rounded-full"
+                  style={{ background: B[600] }}
+                >
+                  Book a free demo
+                </a>
+                <Link
+                  href="/sign-in"
+                  className="text-slate-300 hover:text-white transition-colors flex items-center gap-1.5 text-sm"
+                >
+                  Sign in to your workspace <ChevronRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Right — hero mockup (desktop only) */}
+            <div className="hidden lg:block">
+              <ProductMockup />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Trust band ────────────────────────────── */}
+      <div className="bg-slate-50 border-b border-slate-100 py-4">
+        <div className="cp-container flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm text-center">
+          <span className="font-semibold text-slate-700">Trusted by adult education schools</span>
+          <span className="text-slate-300 hidden sm:inline">&middot;</span>
+          <span className="text-slate-400 hidden sm:inline">ESL programs &middot; Workforce training &middot; Adult diploma tracks &middot; Community schools</span>
+        </div>
       </div>
+
+      {/* ── Products overview ─────────────────────── */}
+      <section className="py-20 lg:py-28" id="products">
+        <div className="cp-container">
+          <div className="text-center mb-14">
+            <p className="cp-eyebrow mb-4">Three tools, one platform</p>
+            <h2 className="cp-section-headline text-[#0f1f3d]">
+              Every interaction shapes<br className="hidden sm:block" /> the school experience.
+            </h2>
+          </div>
+
+          {/* Accordion — uses native <details> for zero-JS expand/collapse */}
+          <div className="divide-y divide-slate-100 border-y border-slate-100 mb-14">
+            {liveProducts.map(({ key, Icon, eyebrow, accentColor, accentBg, headline, body }) => (
+              <details key={key} className="group">
+                <summary className="cp-accordion-summary">
+                  <span
+                    className="w-10 h-10 rounded-xl grid place-items-center shrink-0"
+                    style={{ background: accentBg }}
+                  >
+                    <Icon className="w-5 h-5" style={{ color: accentColor }} />
+                  </span>
+                  <span className="flex-1 font-semibold text-[#0f1f3d]">{eyebrow}</span>
+                  <ChevronRight className="w-5 h-5 text-slate-400 shrink-0 transition-transform duration-200 group-open:rotate-90" />
+                </summary>
+                <div className="pb-8 pt-2">
+                  <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+                    <div>
+                      <h3 className="font-bold text-[#0f1f3d] text-xl leading-snug mb-3">{headline}</h3>
+                      <p className="text-slate-600 leading-relaxed mb-6">{body}</p>
+                      <a
+                        href={DEMO_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-sm font-semibold transition-colors"
+                        style={{ color: accentColor }}
+                      >
+                        See it in action <ChevronRight className="w-4 h-4" />
+                      </a>
+                    </div>
+                    <ProductMockup />
+                  </div>
+                </div>
+              </details>
+            ))}
+          </div>
+
+          {/* Coming-soon strip */}
+          <p className="cp-eyebrow text-center mb-6">Coming soon</p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3">
+            {comingSoon.map(({ Icon, label, desc }) => (
+              <div key={label} className="bg-slate-50 border border-slate-100 rounded-2xl p-5 flex items-start gap-3">
+                <span className="w-8 h-8 rounded-lg bg-slate-100 grid place-items-center shrink-0 mt-0.5">
+                  <Icon className="w-4 h-4 text-slate-400" />
+                </span>
+                <div>
+                  <p className="text-sm font-semibold text-[#0f1f3d] mb-0.5">{label}</p>
+                  <p className="text-xs text-slate-400 leading-snug">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Feature: Stories ──────────────────────── */}
+      <section
+        className="border-y py-20 lg:py-28"
+        style={{ background: B[50], borderColor: B[100] }}
+      >
+        <div className="cp-container">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+            <div>
+              <p className="cp-eyebrow mb-4" style={{ color: B[700] }}>Canopy Stories — AI Content Production</p>
+              <h2 className="cp-feature-headline mb-5">
+                Your school&apos;s stories,<br />told well.
+              </h2>
+              <p className="text-slate-600 text-lg leading-relaxed mb-8">
+                Build school pride, grow community support, and drive student
+                success. One intake form becomes a blog post, newsletter feature,
+                social content, and a short video — ready for your review before
+                anything goes public.
+              </p>
+              <a
+                href={DEMO_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="cp-btn inline-flex items-center gap-2 text-white font-semibold px-6 py-3 rounded-full"
+                style={{ background: B[700] }}
+              >
+                See Canopy Stories <ChevronRight className="w-4 h-4" />
+              </a>
+            </div>
+            <ProductMockup />
+          </div>
+        </div>
+      </section>
+
+      {/* ── Feature: PhotoVault ───────────────────── */}
+      <section className="py-20 lg:py-28">
+        <div className="cp-container">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+            <div className="order-2 lg:order-1">
+              <ProductMockup />
+            </div>
+            <div className="order-1 lg:order-2">
+              <p className="cp-eyebrow mb-4">PhotoVault by Canopy — Photo &amp; Asset Management</p>
+              <h2 className="cp-feature-headline mb-5">
+                Instant access to every<br />approved asset.
+              </h2>
+              <p className="text-slate-600 text-lg leading-relaxed mb-8">
+                Make it easier than ever for your team to find the right photos
+                and brand files. Everything uploaded is organized, searchable, and
+                cleared for use — so no one ever publishes the wrong thing.
+              </p>
+              <a
+                href={DEMO_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="cp-btn inline-flex items-center gap-2 text-white font-semibold px-6 py-3 rounded-full"
+                style={{ background: B[800] }}
+              >
+                See PhotoVault <ChevronRight className="w-4 h-4" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Feature: Reach ────────────────────────── */}
+      <section
+        className="border-y py-20 lg:py-28"
+        style={{ background: B[100], borderColor: B[200] }}
+      >
+        <div className="cp-container">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+            <div>
+              <p className="cp-eyebrow mb-4" style={{ color: B[600] }}>Canopy Reach — Social Media Publishing</p>
+              <h2 className="cp-feature-headline mb-5">
+                Reach your community<br />anytime, everywhere.
+              </h2>
+              <p className="text-slate-600 text-lg leading-relaxed mb-8">
+                Connect your school&apos;s social accounts and manage your entire
+                publishing calendar from one dashboard. Write, schedule, and
+                publish to every channel — with your team coordinated and your
+                brand consistent.
+              </p>
+              <a
+                href={DEMO_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="cp-btn inline-flex items-center gap-2 text-white font-semibold px-6 py-3 rounded-full"
+                style={{ background: B[600] }}
+              >
+                See Canopy Reach <ChevronRight className="w-4 h-4" />
+              </a>
+            </div>
+            <ProductMockup />
+          </div>
+        </div>
+      </section>
+
+      {/* ── Why Canopy ────────────────────────────── */}
+      <section className="py-20 lg:py-28">
+        <div className="cp-container">
+          <div className="text-center mb-14">
+            <p className="cp-eyebrow mb-4">Why Canopy</p>
+            <h2 className="cp-section-headline text-[#0f1f3d]">
+              Built for adult education<br className="hidden sm:block" /> marketing teams.
+            </h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+            {differentiators.map((d) => (
+              <div key={d.n} className="rounded-2xl p-7" style={{ background: B[50] }}>
+                <p className="text-3xl font-extrabold mb-4 tracking-tight" style={{ color: B[200] }}>{d.n}</p>
+                <h3 className="font-bold text-[#0f1f3d] text-lg mb-3">{d.title}</h3>
+                <p className="text-slate-600 leading-relaxed">{d.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Founder ───────────────────────────────── */}
+      <section className="border-y border-slate-100 bg-slate-50 py-20 lg:py-28">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="flex flex-col sm:flex-row gap-10 items-start sm:items-center">
+            {/* Replace with <Image> once photo is available */}
+            <div
+              className="w-20 h-20 rounded-full bg-slate-200 shrink-0 self-center sm:self-start sm:mt-1"
+              aria-label="Photo of the founder"
+            />
+            <div>
+              <p className="cp-eyebrow mb-4">About Canopy</p>
+              <h2 className="font-bold text-[#0f1f3d] text-2xl leading-snug mb-4">
+                Built by someone who&apos;s done this work.
+              </h2>
+              <p className="text-slate-600 leading-relaxed mb-3">
+                Canopy comes from years of doing this work firsthand — building websites,
+                writing newsletters, managing photos, and publishing social media for adult
+                education schools across the Bay Area. Every workflow in Canopy exists
+                because it was run by hand first.
+              </p>
+              <p className="text-slate-600 leading-relaxed mb-6">
+                Now your team can use the same tools directly.
+              </p>
+              <a
+                href="https://akkedisdigital.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#0f1f3d] border border-slate-300 hover:border-slate-500 px-5 py-2.5 rounded-full transition-colors"
+              >
+                Akkedis Digital — full-service marketing for schools <ChevronRight className="w-4 h-4" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Bottom CTA ────────────────────────────── */}
+      <section
+        className="py-20 lg:py-28 relative overflow-hidden"
+        style={{
+          background: B[800],
+          backgroundImage:
+            "radial-gradient(ellipse 55% 45% at 50% 0%, rgba(255,120,50,0.25) 0%, transparent 70%)",
+        }}
+      >
+        <div className="max-w-3xl mx-auto px-6 text-center">
+          <h2 className="cp-section-headline mb-5" style={{ color: "white" }}>
+            Meet the schools who love<br className="hidden sm:block" /> working with Canopy.
+          </h2>
+          <p className="text-slate-300 text-lg mb-10 max-w-[44ch] mx-auto">
+            Book a 20-minute demo and see how Canopy can work for your school.
+          </p>
+          <div className="flex flex-wrap gap-4 justify-center">
+            <a
+              href={DEMO_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-white hover:bg-slate-100 font-semibold px-8 py-4 rounded-full transition-colors"
+              style={{ color: B[800] }}
+            >
+              Book a free demo
+            </a>
+            <Link
+              href="/sign-in"
+              className="text-slate-300 hover:text-white py-4 px-2 transition-colors flex items-center gap-1.5 text-sm"
+            >
+              Sign in to your workspace <ChevronRight className="w-4 h-4" />
+            </Link>
+          </div>
+          <p className="text-slate-500 text-sm mt-8">
+            Questions?{" "}
+            <a
+              href="mailto:info@usecanopy.school"
+              className="text-white/40 hover:text-white/70 underline decoration-white/20 transition-colors"
+            >
+              info@usecanopy.school
+            </a>
+          </p>
+        </div>
+      </section>
+
+      {/* ── Footer ────────────────────────────────── */}
+      <footer className="bg-white border-t border-slate-200 py-6">
+        <div className="cp-container flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <div
+              className="w-6 h-6 rounded-[5px] grid place-items-center text-white text-[0.65rem] font-extrabold"
+              style={{ background: B[800] }}
+            >
+              C
+            </div>
+            <span className="text-sm font-semibold text-[#0f1f3d]">Canopy</span>
+          </div>
+          <div className="flex items-center gap-5 text-xs text-slate-400">
+            <a href="#products" className="hover:text-slate-600 transition-colors">Products</a>
+            <Link href="/sign-in" className="hover:text-slate-600 transition-colors">Sign in</Link>
+            <a href="mailto:info@usecanopy.school" className="hover:text-slate-600 transition-colors">Contact</a>
+          </div>
+          <p className="text-xs text-slate-400">
+            © {new Date().getFullYear()} Akkedis Digital. All rights reserved.
+          </p>
+        </div>
+      </footer>
+
     </div>
   );
 }
