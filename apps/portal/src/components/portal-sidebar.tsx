@@ -214,7 +214,7 @@ export function PortalSidebar({
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-72 bg-white">
-            <DropdownMenuLabel>{displayName ?? "Workspace"}</DropdownMenuLabel>
+            <DropdownMenuLabel className="text-[#66758a]">{displayName ?? "Workspace"}</DropdownMenuLabel>
             <DropdownMenuGroup>
               {launcherItems.map((item) =>
                 item.current ? (
