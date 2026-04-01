@@ -11,8 +11,9 @@ Read `README.md` for current implementation status. Read `docs/PRD.md` for the f
 | `canopy-platform` | Portal, identity, entitlements, provisioning, launch | `https://canopy-platform-portal.vercel.app` |
 | `photovault` | PhotoVault by Canopy product | `https://photovault.school` |
 | `canopy-stories` | Canopy Stories product | `https://canopy-stories.vercel.app` |
+| `canopy-reach` | Canopy Reach product | `https://canopy-reach.vercel.app` |
 
-All three repos share one Supabase project.
+All four repos share one Supabase project.
 
 ## Tech Stack
 
@@ -57,8 +58,9 @@ canopy-platform/
 - `/auth/sign-in` — Supabase sign-in handler
 - `/auth/sign-out` — clears portal cookies
 - `/auth/accept-invite` — invite token acceptance, creates membership
-- `/auth/launch/photovault` — token handoff to PhotoVault
-- `/auth/launch/stories` — token handoff to Canopy Stories
+- `/auth/launch/photovault` — one-time handoff exchange launch to PhotoVault
+- `/auth/launch/stories` — one-time handoff exchange launch to Canopy Stories
+- `/auth/launch/reach` — one-time handoff exchange launch to Canopy Reach
 
 ### Authenticated (`/app/*`)
 - `/app` — dashboard
@@ -126,17 +128,20 @@ type ProductKey =
 
 ## Product Launch Handoff Protocol
 
-Both PhotoVault and Canopy Stories receive auth tokens via URL hash:
+PhotoVault, Canopy Stories, and Canopy Reach launch through a one-time handoff exchange:
 
-```
-{product-url}/auth/callback#access_token=...&refresh_token=...&type=canopy_handoff
-```
+1. Portal verifies the workspace entitlement for the target product
+2. Portal creates a short-lived single-use row in `product_launch_handoffs`
+3. Portal redirects to the product's launch entry with the handoff code plus `?workspace=<slug>` and optional `?path=...`
+4. The product calls its `/api/auth/exchange-handoff` route server-side to exchange the code for Supabase session tokens
+5. The product sets the session locally and loads workspace context from its server-backed session endpoint
 
-Optional query params: `?workspace=<slug>&path=<destination>`
+Products do not receive raw auth tokens in the URL hash anymore.
 
 Environment variables controlling product URLs:
 - `PHOTOVAULT_APP_URL` (default: `https://photovault.school`)
 - `STORIES_APP_URL` (default: `http://localhost:3001` in dev)
+- `REACH_APP_URL` (default: `http://localhost:3002` in dev)
 
 ## @canopy/ui Design System
 
@@ -193,4 +198,5 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
 PHOTOVAULT_APP_URL=           # defaults to https://photovault.school
 STORIES_APP_URL=              # defaults to http://localhost:3001
+REACH_APP_URL=                # defaults to http://localhost:3002
 ```
