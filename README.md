@@ -56,6 +56,61 @@ npm run dev          # runs portal at localhost:3000
 
 Portal only: `cd apps/portal && npm run dev`
 
+## Playwright E2E
+
+The repo now includes a minimal Playwright smoke suite for portal runtime testing.
+
+Current coverage:
+- portal sign-in smoke
+- portal dashboard render smoke
+- cross-app smoke: Portal -> Stories -> Reach -> Portal
+
+Run it with:
+
+```bash
+npm run test:e2e
+```
+
+Optional headed mode:
+
+```bash
+npm run test:e2e:headed
+```
+
+Interactive Playwright UI:
+
+```bash
+npm run test:e2e:ui
+```
+
+Open the HTML report after a run:
+
+```bash
+npm run test:e2e:report
+```
+
+Required E2E env vars:
+
+```bash
+E2E_PORTAL_EMAIL=
+E2E_PORTAL_PASSWORD=
+```
+
+Optional E2E env vars:
+
+```bash
+PLAYWRIGHT_BASE_URL=http://127.0.0.1:3100
+E2E_WORKSPACE_SLUG=
+E2E_STORIES_URL=https://canopy-stories.vercel.app
+E2E_REACH_URL=https://canopy-reach.vercel.app
+PLAYWRIGHT_SKIP_WEBSERVER=1
+```
+
+Notes:
+- the Playwright web server uses `apps/portal` on port `3100`
+- the E2E dev server uses a separate Next dist directory (`.next-e2e`) so it can run alongside normal local dev
+- if the E2E credential env vars are missing, the smoke tests skip cleanly instead of failing
+
 ## Environment Variables
 
 Create `apps/portal/.env.local`:

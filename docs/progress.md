@@ -4,6 +4,31 @@ Append new sessions at the top. Do not overwrite history.
 
 ---
 
+## 2026-04-02 — Playwright runtime smoke scaffold
+
+- Added a first Playwright runtime testing scaffold at the repo root:
+  - `playwright.config.ts`
+  - `tests/e2e/portal-auth.spec.ts`
+  - `tests/e2e/cross-app-smoke.spec.ts`
+  - `tests/e2e/support/*`
+- Added root scripts:
+  - `npm run test:e2e`
+  - `npm run test:e2e:headed`
+- Added `apps/portal` E2E dev script on port `3100`
+- Added `NEXT_DIST_DIR=.next-e2e` support so the Playwright-managed portal server can run without colliding with a normal local `next dev`
+- Current smoke coverage is intentionally small:
+  - sign in to Portal
+  - verify dashboard loads
+  - launch Stories from Portal
+  - switch from Stories to Reach
+  - return from Reach to Portal
+- Verified the scaffold boots and skips cleanly when `E2E_PORTAL_EMAIL` / `E2E_PORTAL_PASSWORD` are not configured
+
+### Verification
+- `npm run test:e2e` passed with both tests skipped when E2E credential env vars were absent
+
+---
+
 ## 2026-04-01 — Switcher stabilization and portal handoff cleanup
 
 - Added internal Portal POST handlers for in-app switching and return flows:

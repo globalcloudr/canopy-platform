@@ -30,6 +30,7 @@ All four repos share one Supabase project.
 canopy-platform/
   apps/portal/          — portal app
   packages/ui/          — @canopy/ui shared component library
+  tests/e2e/            — Playwright smoke coverage for portal and cross-app flows
   docs/                 — platform docs
 ```
 
@@ -196,6 +197,24 @@ Located at `packages/ui/`. Installed as `"@canopy/ui": "*"`.
 - Keep the portal focused on: identity, workspace context, entitlements, product launch
 - Products receive workspace context via the handoff protocol — they do not reimplement identity
 - Use `@canopy/ui` components; do not introduce new component libraries
+- Prefer extending the Playwright smoke suite when fixing auth, launcher, or cross-app handoff regressions
+
+## E2E Runtime Testing
+
+- Playwright config lives at `playwright.config.ts`
+- E2E specs live in `tests/e2e/`
+- Default managed E2E base URL is `http://127.0.0.1:3100`
+- The managed E2E server runs `npm run dev:e2e --workspace @canopy/portal`
+- `apps/portal` uses `NEXT_DIST_DIR=.next-e2e` for E2E so the test server does not collide with a normal local `next dev`
+- Required env vars to run authenticated smoke tests:
+  - `E2E_PORTAL_EMAIL`
+  - `E2E_PORTAL_PASSWORD`
+- Optional env vars:
+  - `E2E_WORKSPACE_SLUG`
+  - `E2E_STORIES_URL`
+  - `E2E_REACH_URL`
+  - `PLAYWRIGHT_BASE_URL`
+  - `PLAYWRIGHT_SKIP_WEBSERVER=1`
 
 ## Environment Variables
 

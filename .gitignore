@@ -4,9 +4,13 @@
 # Node / JavaScript
 node_modules/
 .next/
+.next-e2e/
 dist/
 build/
 coverage/
+playwright-report/
+test-results/
+playwright/.auth/
 
 # Env files
 .env
