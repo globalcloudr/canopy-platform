@@ -4,6 +4,26 @@ Append new sessions at the top. Do not overwrite history.
 
 ---
 
+## 2026-04-01 — Switcher stabilization and portal handoff cleanup
+
+- Added internal Portal POST handlers for in-app switching and return flows:
+  - `POST /auth/product-launch`
+  - `POST /auth/portal-return`
+- Updated Reach and Stories to route product switching and Portal return through those handlers instead of relying on brittle cross-site fetch redirects
+- Updated PhotoVault's top app control to return through Portal's cookie-restore flow instead of a plain link
+- Corrected PhotoVault's default product launch target to `/albums`
+- Updated production fallback app URLs so missing env vars no longer silently redirect switchers to `localhost`
+- Forced the POST-based handoff redirects to use `303` so browsers follow up with `GET` requests to the destination app, avoiding product-side `405` errors
+- Extended `@canopy/ui` `CanopyHeader` so product shells can wire Portal-return callbacks instead of only plain `href` links
+
+### Verification
+- `npm run build` passed in:
+  - `canopy-platform/packages/ui`
+  - `canopy-reach`
+  - `canopy-stories`
+
+---
+
 ## 2026-03-31 — Launch hardening and server-backed workspace sessions
 
 - Replaced raw cross-product token handoff with a one-time launch exchange:

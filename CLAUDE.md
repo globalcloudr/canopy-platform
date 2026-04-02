@@ -61,6 +61,8 @@ canopy-platform/
 - `/auth/launch/photovault` — one-time handoff exchange launch to PhotoVault
 - `/auth/launch/stories` — one-time handoff exchange launch to Canopy Stories
 - `/auth/launch/reach` — one-time handoff exchange launch to Canopy Reach
+- `POST /auth/product-launch` — internal portal handoff for in-app product switching from Reach/Stories
+- `POST /auth/portal-return` — internal portal cookie-restore path for returning from products to Portal
 
 ### Authenticated (`/app/*`)
 - `/app` — dashboard
@@ -136,12 +138,17 @@ PhotoVault, Canopy Stories, and Canopy Reach launch through a one-time handoff e
 4. The product calls its `/api/auth/exchange-handoff` route server-side to exchange the code for Supabase session tokens
 5. The product sets the session locally and loads workspace context from its server-backed session endpoint
 
+**In-app switchers**:
+- Reach and Stories submit `POST /auth/product-launch` back to Portal so Portal can mint a fresh product handoff before redirecting to the target app
+- Reach, Stories, and PhotoVault return to Portal through `POST /auth/portal-return` so Portal can restore its own cookies before redirecting to `/app`
+- These POST redirects should use `303` semantics so the browser follows up with a normal `GET` to the destination app or portal page
+
 Products do not receive raw auth tokens in the URL hash anymore.
 
 Environment variables controlling product URLs:
 - `PHOTOVAULT_APP_URL` (default: `https://photovault.school`)
-- `STORIES_APP_URL` (default: `http://localhost:3001` in dev)
-- `REACH_APP_URL` (default: `http://localhost:3002` in dev)
+- `STORIES_APP_URL` (default: `https://canopy-stories.vercel.app`)
+- `REACH_APP_URL` (default: `https://canopy-reach.vercel.app`)
 
 ## @canopy/ui Design System
 
@@ -197,6 +204,6 @@ NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
 PHOTOVAULT_APP_URL=           # defaults to https://photovault.school
-STORIES_APP_URL=              # defaults to http://localhost:3001
-REACH_APP_URL=                # defaults to http://localhost:3002
+STORIES_APP_URL=              # defaults to https://canopy-stories.vercel.app
+REACH_APP_URL=                # defaults to https://canopy-reach.vercel.app
 ```

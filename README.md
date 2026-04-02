@@ -30,6 +30,11 @@ Platform portal and shared infrastructure for the Canopy product suite.
 
 All products launch through a one-time handoff exchange. The portal creates a short-lived, single-use launch code in `product_launch_handoffs`, each product exchanges it server-side for session tokens, and the active workspace is carried by `?workspace=` plus a product-side server session endpoint.
 
+Reach and Stories also route in-app product switching back through the portal so the portal can restore its own cookies and issue fresh cross-product handoffs. Internal switcher handlers live at:
+
+- `POST /auth/product-launch` — product-to-product switching
+- `POST /auth/portal-return` — product-to-portal return
+
 ### Shared UI (`@canopy/ui`)
 
 Shared component library at `packages/ui/`. Used by Portal, Reach, and Stories for shared shell and surface styling.
