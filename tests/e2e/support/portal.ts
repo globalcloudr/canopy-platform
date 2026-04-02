@@ -1,6 +1,19 @@
 import { expect, type Page } from "@playwright/test";
 import { getPortalE2EConfig } from "./env";
 
+function matchesExpectedOrigin(actual: URL, expectedBaseURL: string) {
+  const expected = new URL(expectedBaseURL);
+  const expectedHostname = expected.hostname.replace(/^www\./i, "");
+  const actualHostname = actual.hostname.replace(/^www\./i, "");
+  const expectedPath = expected.pathname === "/" ? "" : expected.pathname;
+
+  return (
+    actual.protocol === expected.protocol &&
+    actualHostname === expectedHostname &&
+    (expectedPath ? actual.pathname.startsWith(expectedPath) : true)
+  );
+}
+
 export async function signInToPortal(page: Page) {
   const config = getPortalE2EConfig();
 
@@ -36,14 +49,14 @@ export async function signInToPortalAsSuperAdmin(page: Page) {
   }
 
   await signInToPortalAs(page, config.superAdminEmail, config.superAdminPassword);
-  await expect(page.getByRole("heading", { name: "Welcome to Canopy by Akkedis Digital" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Platform Overview" })).toBeVisible();
 }
 
 export async function launchPortalProduct(page: Page, buttonName: string, expectedBaseURL: string) {
   const button = page.getByRole("link", { name: buttonName }).first();
   await expect(button).toBeVisible();
   await button.click();
-  await page.waitForURL((url) => url.toString().startsWith(expectedBaseURL), { timeout: 60_000 });
+  await page.waitForURL((url) => matchesExpectedOrigin(url, expectedBaseURL), { timeout: 60_000 });
 }
 
 export async function openStoriesSwitcher(page: Page) {
@@ -91,4 +104,5 @@ export async function waitForReachShellReady(page: Page) {
 export async function waitForPhotoVaultReady(page: Page) {
   await expect(page.locator("body")).toContainText("PhotoVault");
   await expect(page.locator("body")).not.toContainText("Application error:");
+  await expect(page.locator("body")).not.toContainText("No active organization selected");
 }
