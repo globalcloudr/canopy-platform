@@ -59,6 +59,24 @@ export async function launchPortalProduct(page: Page, buttonName: string, expect
   await page.waitForURL((url) => matchesExpectedOrigin(url, expectedBaseURL), { timeout: 60_000 });
 }
 
+export async function expectPortalDashboard(page: Page) {
+  const config = getPortalE2EConfig();
+
+  await page.waitForURL(
+    (url) =>
+      url.origin === new URL(config.expectedPortalReturnURL).origin &&
+      url.pathname === "/app" &&
+      (
+        !config.workspaceSlug ||
+        !url.searchParams.has("workspace") ||
+        url.searchParams.get("workspace") === config.workspaceSlug
+      ),
+    { timeout: 60_000 }
+  );
+
+  await expect(page.getByRole("heading", { name: "Welcome to Canopy by Akkedis Digital" })).toBeVisible();
+}
+
 export async function openStoriesSwitcher(page: Page) {
   const switcher = page.locator("button").filter({ hasText: /Canopy Stories/i }).first();
   await expect(switcher).toBeVisible();
