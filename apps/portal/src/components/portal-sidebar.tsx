@@ -44,6 +44,19 @@ function formatWorkspaceLabel(slug: string | null | undefined) {
     .join(" ");
 }
 
+function buildPhotoVaultLaunchHref(workspaceSlug: string | null | undefined, path: string) {
+  const params = new URLSearchParams();
+  if (workspaceSlug) {
+    params.set("workspace", workspaceSlug);
+  }
+  if (path && path !== "/") {
+    params.set("path", path);
+  }
+
+  const query = params.toString();
+  return query ? `/auth/launch/photovault?${query}` : "/auth/launch/photovault";
+}
+
 function navClass(active: boolean) {
   return cn(
     "flex items-center gap-2.5 rounded-2xl px-3.5 py-3 font-medium text-[15px] tracking-[-0.01em] transition",
@@ -137,6 +150,7 @@ export function PortalSidebar({
   }, [suffix]);
 
   const activeWorkspace = session?.activeWorkspace ?? null;
+  const isSuperAdmin = session?.platformRole === "super_admin";
   const sessionMatchesWorkspace = !requestedWorkspace || activeWorkspace?.slug === requestedWorkspace;
   const workspace = requestedWorkspace ?? (sessionMatchesWorkspace ? activeWorkspace?.slug : null) ?? workspaceCookie;
   const photoVaultHref = workspace
@@ -183,6 +197,11 @@ export function PortalSidebar({
     ? displayName.split(" ").map((p: string) => p[0] ?? "").join("").slice(0, 2).toUpperCase()
     : "CP";
   const portalHomeHref = `/app${suffix}`;
+  const schoolOpsHref = `/app/school-ops${suffix}`;
+  const platformUsersHref = `/app/platform-users${suffix}`;
+  const brandPortalHref = buildPhotoVaultLaunchHref(workspace, "/collections/brand-guidelines");
+  const workspaceHref = buildPhotoVaultLaunchHref(workspace, "/albums");
+  const auditHref = buildPhotoVaultLaunchHref(workspace, "/audit");
   const launcherItems = [
     { key: "portal", label: "Canopy Portal", href: portalHomeHref, current: true },
     ...(launchableProductKeys.has("photovault") ? [{ key: "photovault", label: "PhotoVault", href: photoVaultHref }] : []),
@@ -278,9 +297,43 @@ export function PortalSidebar({
                 Provisioning
               </Link>
             )}
+            {isSuperAdmin && (
+              <Link href={schoolOpsHref} className={navClass(pathname.startsWith("/app/school-ops"))}>
+                <IconShield className="h-[18px] w-[18px]" />
+                School Ops
+              </Link>
+            )}
+            {isSuperAdmin && (
+              <Link href={platformUsersHref} className={navClass(pathname.startsWith("/app/platform-users"))}>
+                <IconUser className="h-[18px] w-[18px]" />
+                Platform Users
+              </Link>
+            )}
           </div>
         </div>
       </nav>
+
+      {isSuperAdmin && workspace ? (
+        <section className="px-4 pb-6">
+          <div className="rounded-[28px] bg-transparent px-4 py-4 shadow-none">
+            <p className="mb-3 px-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#8ea0b7]">Active Workspace</p>
+            <div className="space-y-1.5">
+              <a href={brandPortalHref} className={navClass(false)}>
+                <IconHome className="h-[18px] w-[18px]" />
+                Open Brand Portal
+              </a>
+              <a href={workspaceHref} className={navClass(false)}>
+                <IconHome className="h-[18px] w-[18px]" />
+                Open Workspace
+              </a>
+              <a href={auditHref} className={navClass(false)}>
+                <IconShield className="h-[18px] w-[18px]" />
+                Open Audit Log
+              </a>
+            </div>
+          </div>
+        </section>
+      ) : null}
     </div>
   );
 }

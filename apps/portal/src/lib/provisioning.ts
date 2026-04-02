@@ -80,6 +80,17 @@ export type WorkspaceAdminInvitation = {
   acceptedAt?: string | null;
 };
 
+export type WorkspaceOwnerStatus = {
+  workspaceId: string;
+  ownerCount: number;
+  acceptedOwnerCount: number;
+  owners: Array<{
+    userId: string;
+    email: string | null;
+    accepted: boolean;
+  }>;
+};
+
 type OrganizationRow = {
   id: string;
   name: string | null;
@@ -564,6 +575,96 @@ export async function listWorkspaceAdminInvitations(workspaceIds: string[]): Pro
   return rows
     .map(normalizeWorkspaceInvitation)
     .filter((row): row is WorkspaceAdminInvitation => row !== null);
+}
+
+type ListedAuthUser = {
+  id: string;
+  email?: string | null;
+  last_sign_in_at?: string | null;
+  email_confirmed_at?: string | null;
+};
+
+export async function listWorkspaceOwnerStatuses(workspaceIds: string[]): Promise<WorkspaceOwnerStatus[]> {
+  if (workspaceIds.length === 0) {
+    return [];
+  }
+
+  const ownerRows = await requestJson<MembershipRow[]>(
+    "/rest/v1/memberships",
+    {
+      searchParams: new URLSearchParams({
+        select: "org_id,user_id,role",
+        org_id: `in.(${workspaceIds.join(",")})`,
+        role: "eq.owner",
+      }),
+    }
+  );
+
+  const ownerUserIds = Array.from(new Set(ownerRows.map((row) => row.user_id).filter(Boolean)));
+  const userAcceptedMap = new Map<string, boolean>();
+  const userEmailMap = new Map<string, string | null>();
+
+  if (ownerUserIds.length > 0) {
+    let page = 1;
+    while (page <= 10) {
+      const payload = await requestJson<{ users?: ListedAuthUser[] }>(
+        "/auth/v1/admin/users",
+        {
+          searchParams: new URLSearchParams({
+            page: String(page),
+            per_page: "1000",
+          }),
+        }
+      );
+
+      const users = payload.users ?? [];
+      users
+        .filter((user) => ownerUserIds.includes(user.id))
+        .forEach((user) => {
+          userAcceptedMap.set(user.id, Boolean(user.last_sign_in_at || user.email_confirmed_at));
+          userEmailMap.set(user.id, user.email ?? null);
+        });
+
+      if (users.length < 1000) {
+        break;
+      }
+
+      page += 1;
+    }
+  }
+
+  const statusMap = new Map<string, WorkspaceOwnerStatus>();
+  for (const row of ownerRows) {
+    if (!row.org_id || !row.user_id) {
+      continue;
+    }
+
+    const current = statusMap.get(row.org_id) ?? {
+      workspaceId: row.org_id,
+      ownerCount: 0,
+      acceptedOwnerCount: 0,
+      owners: [],
+    };
+
+    const accepted = Boolean(userAcceptedMap.get(row.user_id));
+    current.ownerCount += 1;
+    if (accepted) {
+      current.acceptedOwnerCount += 1;
+    }
+    current.owners.push({
+      userId: row.user_id,
+      email: userEmailMap.get(row.user_id) ?? null,
+      accepted,
+    });
+    statusMap.set(row.org_id, current);
+  }
+
+  return workspaceIds.map((workspaceId) => statusMap.get(workspaceId) ?? {
+    workspaceId,
+    ownerCount: 0,
+    acceptedOwnerCount: 0,
+    owners: [],
+  });
 }
 
 async function listPendingInvitationsByEmail(email: string) {

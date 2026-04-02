@@ -15,6 +15,8 @@ Platform portal and shared infrastructure for the Canopy product suite.
 - Role-aware navigation — school users see school context, product switching, and a direct path back to portal home; platform users retain true workspace switching
 - Account page — workspace details, user info, active products and services
 - Operator provisioning page (`/app/provisioning`) — create/select workspaces, enable products and services, invite workspace admins, resend invitations, and review current provisioning status for the selected workspace
+- Super Admin `School Ops` page (`/app/school-ops`) — review owner status across schools, launch directly into Brand Portal/workspace/audit, and transfer ownership from Portal
+- Super Admin `Platform Users` page (`/app/platform-users`) — invite and manage internal Portal team access from Portal instead of PhotoVault
 - Active provisioning transition plan at `docs/workspace-provisioning-transition-plan.md` — defines Portal as the long-term Super Admin provisioning home and PhotoVault as a temporary compatibility path
 - Invite acceptance flow — Supabase invite email → Canopy sign-in → membership creation → workspace redirect
 - Neutral platform overview for operators without an explicit `?workspace=` selection

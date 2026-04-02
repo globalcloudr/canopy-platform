@@ -45,6 +45,8 @@ canopy-platform/
 | `apps/portal/src/app/(portal)/app/layout.tsx` | Authenticated shell — top bar + sidebar + content area |
 | `apps/portal/src/app/(portal)/app/page.tsx` | Dashboard / product launcher |
 | `apps/portal/src/app/(portal)/app/provisioning/page.tsx` | Operator provisioning UI |
+| `apps/portal/src/app/(portal)/app/school-ops/page.tsx` | Super Admin school operations surface and owner transfer entry point |
+| `apps/portal/src/app/(portal)/app/platform-users/page.tsx` | Super Admin internal platform-user management page |
 | `docs/workspace-provisioning-transition-plan.md` | Active cutover plan for making Portal the single Super Admin provisioning workflow |
 | `apps/portal/src/components/portal-header.tsx` | Top bar with brand mark, workspace chip, avatar dropdown |
 | `apps/portal/src/components/portal-sidebar.tsx` | Left nav — contextual per section |
@@ -71,6 +73,8 @@ canopy-platform/
 - `/app` — dashboard
 - `/app/account` — workspace + user details
 - `/app/provisioning` — operator only: create workspaces, enable products, send invites
+- `/app/school-ops` — Super Admin only: workspace ownership/status overview plus active-workspace launch shortcuts
+- `/app/platform-users` — Super Admin only: internal Canopy team access management
 - `/app/products/[slug]` — placeholder pages for not-yet-active products
 - `/app/services/[slug]` — placeholder pages for services
 
@@ -79,6 +83,8 @@ canopy-platform/
 - `POST /api/update-entitlement` — operator only: pause/resume/remove entitlements
 - `POST /api/provision-workspace` — operator only: provisioning backend
 - `POST /api/resend-workspace-invitation` — operator only: resend invite
+- `POST /api/transfer-workspace-owner` — Super Admin only: invite a new owner and handle prior owner memberships
+- `/api/platform-users` — Super Admin only: invite, update, and remove internal Portal team access
 - `GET /api/get-workspace-services` — operator only: current service visibility/setup state for a workspace
 
 ## Data Model (Shared Supabase Project)

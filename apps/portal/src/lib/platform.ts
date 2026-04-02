@@ -58,6 +58,22 @@ export type PortalSession = {
   isPlatformOperator: boolean;
 };
 
+export function isSuperAdminPlatformRole(platformRole: string | null | undefined) {
+  return platformRole === "super_admin";
+}
+
+export function canManageSchools(platformRole: string | null | undefined) {
+  return isSuperAdminPlatformRole(platformRole);
+}
+
+export function canManagePlatformUsers(platformRole: string | null | undefined) {
+  return isSuperAdminPlatformRole(platformRole);
+}
+
+export function canViewPlatformAudit(platformRole: string | null | undefined) {
+  return isSuperAdminPlatformRole(platformRole);
+}
+
 export const ACCESS_TOKEN_COOKIE = "canopy_portal_access_token";
 export const REFRESH_TOKEN_COOKIE = "canopy_portal_refresh_token";
 export const ACTIVE_WORKSPACE_COOKIE = "canopy_portal_workspace";

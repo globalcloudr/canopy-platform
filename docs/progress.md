@@ -4,6 +4,27 @@ Append new sessions at the top. Do not overwrite history.
 
 ---
 
+## 2026-04-02 — Moved remaining Super Admin admin surfaces into Portal
+
+- Added `School Ops` to Portal at `/app/school-ops`
+  - workspace ownership status across schools
+  - direct launch shortcuts for active Brand Portal, workspace, and audit
+  - ownership transfer flow from Portal
+- Added `Platform Users` to Portal at `/app/platform-users`
+  - invite internal platform users
+  - update platform role
+  - remove platform access
+- Added Portal APIs to support those surfaces:
+  - `POST /api/transfer-workspace-owner`
+  - `/api/platform-users`
+- Updated the Portal sidebar so Super Admin can reach `Provisioning`, `School Ops`, `Platform Users`, and active-workspace shortcuts without dropping back into PhotoVault
+- This replaces the last major PhotoVault-hosted platform-admin screens that were still missing from Portal and moves Portal closer to being the single Super Admin home
+
+### Verification
+- `npm run build` passed in `canopy-platform`
+
+---
+
 ## 2026-04-02 — Portal provisioning visibility tightened for PhotoVault cutover
 
 - Hardened Portal workspace creation with a preflight duplicate-slug check so operators get a clear error before creating a duplicate workspace
