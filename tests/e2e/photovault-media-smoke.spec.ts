@@ -36,7 +36,8 @@ test.describe("PhotoVault media smoke", () => {
     await fileInput.setInputFiles(PHOTOVAULT_UPLOAD_FIXTURE);
 
     await expect(page.locator("body")).not.toContainText("Upload failed:");
-    await expect(page.locator("body")).toContainText("Upload complete: 1 uploaded", { timeout: 60_000 });
+    await expect(page.locator("body")).toContainText("Uploaded.", { timeout: 60_000 });
+    await expect(page.locator("body")).toContainText("Total photos: 1", { timeout: 60_000 });
     await expect(page.locator("body")).not.toContainText("No photos uploaded yet");
   });
 });
