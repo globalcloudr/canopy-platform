@@ -26,21 +26,8 @@ type ProvisioningFormProps = {
   currentUserEmail: string;
 };
 
-type ProvisioningResult = {
+type WorkspaceSetupResult = {
   workspace: PortalWorkspace;
-  invitation: {
-    id?: string;
-    email: string;
-    status: "existing_membership" | "membership_prepared" | "invitation_recorded" | "invitation_sent";
-    role?: WorkspaceRole;
-    invitationStatus?: "pending" | "accepted" | "cancelled";
-    createdAt?: string;
-  };
-  membership: {
-    userId: string;
-    role: WorkspaceRole;
-    created: boolean;
-  } | null;
   entitlements: Array<{
     productKey: string;
     status: string;
@@ -71,12 +58,18 @@ function slugify(value: string) {
     .replace(/^-+|-+$/g, "");
 }
 
-function invitationStatusLabel(status: ProvisioningResult["invitation"]["status"]) {
-  if (status === "existing_membership") return "Existing member";
-  if (status === "membership_prepared") return "Membership prepared";
-  if (status === "invitation_sent") return "Invitation sent";
-  return "Invitation recorded";
-}
+type InvitationActionResult = {
+  workspace?: PortalWorkspace;
+  invitation?: WorkspaceAdminInvitation | null;
+  membership?: {
+    userId: string;
+    role: WorkspaceRole;
+    created: boolean;
+  } | null;
+  email?: string;
+  role?: WorkspaceRole;
+  inviteSent?: boolean;
+};
 
 function storedInvitationStatusLabel(status: WorkspaceAdminInvitation["status"]) {
   if (status === "accepted") return "Accepted";
@@ -232,9 +225,12 @@ export function ProvisioningForm({
   const [creativeRetainerState, setCreativeRetainerState] = useState("ready");
   const [notes, setNotes] = useState("");
   const [busy, setBusy] = useState(false);
+  const [inviteBusy, setInviteBusy] = useState(false);
   const [resendId, setResendId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<ProvisioningResult | null>(null);
+  const [inviteError, setInviteError] = useState<string | null>(null);
+  const [inviteStatus, setInviteStatus] = useState<string | null>(null);
+  const [result, setResult] = useState<WorkspaceSetupResult | null>(null);
   const [invitationRows, setInvitationRows] = useState<WorkspaceAdminInvitation[]>(invitations);
   const [currentEntitlements, setCurrentEntitlements] = useState<WorkspaceEntitlement[]>([]);
   const [currentServices, setCurrentServices] = useState<WorkspaceServiceState[]>([]);
@@ -275,7 +271,7 @@ export function ProvisioningForm({
     setError(null);
     setResult(null);
 
-    const response = await fetch("/api/provision-workspace", {
+    const response = await fetch("/api/save-workspace-provisioning", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -285,8 +281,6 @@ export function ProvisioningForm({
         workspaceId: workspaceMode === "existing" ? workspaceId : undefined,
         workspaceName: workspaceMode === "new" ? workspaceName.trim() : undefined,
         workspaceSlug: workspaceMode === "new" ? slugify(workspaceSlug || workspaceName) : undefined,
-        primaryAdminEmail,
-        initialRole,
         products: [
           ...(enablePhotoVault
             ? [{ productKey: "photovault", status: "active", setupState: photoVaultSetupState }]
@@ -307,21 +301,14 @@ export function ProvisioningForm({
             : []),
         ],
         notes,
-        inviteTemplate: canManageInviteTemplate
-          ? {
-              subject: templateSubject,
-              body: templateBody,
-              signature: templateSignature,
-            }
-          : undefined,
       }),
     });
 
-    const body = (await response.json()) as { result?: ProvisioningResult; error?: string };
+    const body = (await response.json()) as { result?: WorkspaceSetupResult; error?: string };
     setBusy(false);
 
     if (!response.ok || !body.result) {
-      setError(body.error ?? "Provisioning failed.");
+      setError(body.error ?? "Workspace setup failed.");
       return;
     }
 
@@ -354,24 +341,80 @@ export function ProvisioningForm({
     setEnableWebsiteSetup(false);
     setEnableCreativeRetainer(false);
     setNotes("");
-    const invitationId = nextResult.invitation.id;
-    const invitationCreatedAt = nextResult.invitation.createdAt;
-    if ((nextResult.invitation.status === "invitation_recorded" || nextResult.invitation.status === "invitation_sent") && invitationId && invitationCreatedAt) {
-      setInvitationRows((current) => {
-        const next = current.filter((row) => row.id !== invitationId);
-        next.unshift({
-          id: invitationId,
-          workspaceId: nextResult.workspace.id,
-          email: nextResult.invitation.email,
-          role: nextResult.invitation.role ?? initialRole,
-          status: nextResult.invitation.invitationStatus ?? "pending",
-          deliveryStatus: nextResult.invitation.status === "invitation_sent" ? "sent" : "pending_unsent",
-          createdAt: invitationCreatedAt,
-          sentAt: nextResult.invitation.status === "invitation_sent" ? invitationCreatedAt : null,
-          acceptedAt: null,
+  }
+
+  async function submitAdminAssignment() {
+    if (workspaceMode !== "existing" || !workspaceId) {
+      setInviteError("Create or select a workspace first, then invite or assign the admin.");
+      return;
+    }
+
+    if (!primaryAdminEmail.trim()) {
+      setInviteError("School-admin email is required.");
+      return;
+    }
+
+    setInviteBusy(true);
+    setInviteError(null);
+    setInviteStatus(null);
+
+    try {
+      if (canManageInviteTemplate) {
+        const templateResponse = await fetch("/api/invite-template", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            workspaceId,
+            subject: templateSubject,
+            body: templateBody,
+            signature: templateSignature,
+          }),
         });
-        return next;
+
+        const templateBodyResult = (await templateResponse.json()) as { ok?: boolean; error?: string };
+        if (!templateResponse.ok || !templateBodyResult.ok) {
+          setInviteError(templateBodyResult.error ?? "Failed to save invite template.");
+          return;
+        }
+      }
+
+      const response = await fetch("/api/workspace-invitations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          workspaceId,
+          email: primaryAdminEmail.trim(),
+          role: initialRole,
+        }),
       });
+
+      const body = (await response.json()) as { result?: InvitationActionResult; error?: string };
+      if (!response.ok || !body.result) {
+        setInviteError(body.error ?? "Admin invite failed.");
+        return;
+      }
+
+      const invitation = body.result.invitation;
+      if (invitation) {
+        setInvitationRows((current) => {
+          const next = current.filter((row) => row.id !== invitation.id);
+          next.unshift(invitation);
+          return next;
+        });
+        setInviteStatus(body.result.inviteSent ? "Admin invite sent." : "Admin invitation recorded.");
+      } else if (body.result.membership) {
+        setInviteStatus(
+          body.result.membership.created
+            ? `Admin access assigned as ${body.result.membership.role}.`
+            : `Admin already has ${body.result.membership.role} access.`
+        );
+      } else {
+        setInviteStatus("Admin access updated.");
+      }
+    } catch (error) {
+      setInviteError(error instanceof Error ? error.message : "Admin invite failed.");
+    } finally {
+      setInviteBusy(false);
     }
   }
 
@@ -700,7 +743,6 @@ export function ProvisioningForm({
                 onChange={(event) => setPrimaryAdminEmail(event.target.value)}
                 className="text-sm"
                 placeholder="admin@school.org"
-                required
               />
             </label>
             <label className="space-y-2">
@@ -726,6 +768,31 @@ export function ProvisioningForm({
             <p className="mt-3 text-sm text-[var(--text-muted)]">
               Prefilled from the latest saved invitation for this workspace.
             </p>
+          ) : null}
+          {workspaceMode === "new" ? (
+            <p className="mt-3 text-sm text-[var(--text-muted)]">
+              Create the workspace first, then invite or assign the school admin as a separate step.
+            </p>
+          ) : null}
+          <div className="mt-4 flex items-center gap-3">
+            <Button
+              type="button"
+              disabled={inviteBusy || workspaceMode !== "existing" || !workspaceId}
+              variant="primary"
+              onClick={() => void submitAdminAssignment()}
+            >
+              {inviteBusy ? "Saving admin..." : "Invite or assign admin"}
+            </Button>
+          </div>
+          {inviteError ? (
+            <div className="mt-4 rounded-xl border border-[rgba(185,28,28,0.18)] bg-[rgba(254,242,242,0.92)] px-3 py-2 text-sm text-[rgb(153,27,27)]">
+              {inviteError}
+            </div>
+          ) : null}
+          {inviteStatus ? (
+            <div className="mt-4 rounded-xl border border-[rgba(15,31,61,0.1)] bg-white/60 px-4 py-3 text-sm text-ink">
+              {inviteStatus}
+            </div>
           ) : null}
         </AppSurface>
 
@@ -1190,14 +1257,15 @@ export function ProvisioningForm({
 
         <AppSurface variant="fill" padding="md" className="sm:p-6">
           <p className="eyebrow">Review</p>
-          <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Provision this workspace</h3>
+          <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Save workspace products and services</h3>
           <div className="grid gap-3 text-sm text-ink sm:grid-cols-2">
             <p className="m-0"><span className="font-semibold">Workspace:</span> {workspaceMode === "existing" ? (selectedWorkspace?.displayName ?? "Select a workspace") : (workspaceName || "New workspace")}</p>
-            <p className="m-0"><span className="font-semibold">Admin:</span> {primaryAdminEmail || "Enter an email"}</p>
-            <p className="m-0"><span className="font-semibold">Role:</span> {initialRole}</p>
             <p className="m-0"><span className="font-semibold">Products:</span> {[enablePhotoVault ? "PhotoVault" : null, enableStories ? "Canopy Stories" : null, enableReach ? "Canopy Reach" : null].filter(Boolean).join(", ") || "None selected"}</p>
             <p className="m-0"><span className="font-semibold">Services:</span> {[enableWebsiteSetup ? "School Website Setup" : null, enableCreativeRetainer ? "Creative Retainer" : null].filter(Boolean).join(", ") || "None selected"}</p>
           </div>
+          <p className="mt-4 text-sm text-[var(--text-muted)]">
+            Admin invitation and role assignment are handled separately above so product and service changes can be saved independently.
+          </p>
 
           {error ? (
             <div className="mt-4 rounded-xl border border-[rgba(185,28,28,0.18)] bg-[rgba(254,242,242,0.92)] px-3 py-2 text-sm text-[rgb(153,27,27)]">
@@ -1207,30 +1275,16 @@ export function ProvisioningForm({
 
           <div className="mt-5 flex items-center gap-3">
             <Button type="submit" disabled={busy} variant="primary">
-              {busy ? "Provisioning..." : "Provision workspace"}
+              {busy ? "Saving..." : workspaceMode === "new" ? "Create workspace" : "Save products & services"}
             </Button>
           </div>
         </AppSurface>
 
       {result ? (
         <AppSurface variant="clear" padding="md" className="sm:p-6">
-          <p className="eyebrow">Provisioning Result</p>
+          <p className="eyebrow">Workspace Setup</p>
           <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">{result.workspace.displayName}</h3>
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 p-4">
-              <p className="m-0 text-sm font-semibold text-ink">Invitation</p>
-              <p className="m-0 mt-1 text-sm text-[var(--text-muted)]">{result.invitation.email}</p>
-              <p className="m-0 mt-2 text-sm text-ink">{invitationStatusLabel(result.invitation.status)}</p>
-            </div>
-            <div className="rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 p-4">
-              <p className="m-0 text-sm font-semibold text-ink">Membership</p>
-              <p className="m-0 mt-1 text-sm text-[var(--text-muted)]">
-                {result.membership ? `${result.membership.role} • ${result.membership.created ? "Created now" : "Already existed"}` : "No membership row created yet"}
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
             <div className="rounded-xl border border-[rgba(15,31,61,0.1)] p-4">
               <p className="m-0 text-sm font-semibold text-ink">Products</p>
               <div className="mt-3 space-y-2">

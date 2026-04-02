@@ -43,6 +43,17 @@ export type ProvisionWorkspaceInput = {
   inviteTemplate?: InviteTemplate;
 };
 
+export type SaveWorkspaceProvisioningInput = {
+  workspaceMode: "existing" | "new";
+  workspaceId?: string;
+  workspaceName?: string;
+  workspaceSlug?: string;
+  products: ProvisionedProductInput[];
+  services: ProvisionedServiceInput[];
+  notes?: string;
+  provisionedByUserId: string;
+};
+
 export type ProvisionWorkspaceResult = {
   workspace: PortalWorkspace;
   invitation: {
@@ -58,6 +69,21 @@ export type ProvisionWorkspaceResult = {
     role: WorkspaceRole;
     created: boolean;
   } | null;
+  entitlements: Array<{
+    productKey: ProductKey;
+    status: "trial" | "active" | "pilot" | "paused";
+    setupState: SetupState;
+    planKey?: string;
+  }>;
+  services: Array<{
+    serviceKey: string;
+    status: ServiceStatus;
+    setupState: ServiceSetupState;
+  }>;
+};
+
+export type SaveWorkspaceProvisioningResult = {
+  workspace: PortalWorkspace;
   entitlements: Array<{
     productKey: ProductKey;
     status: "trial" | "active" | "pilot" | "paused";
@@ -283,6 +309,25 @@ function assertValidInput(input: ProvisionWorkspaceInput) {
 
   if (input.products.length === 0 && input.services.length === 0) {
     throw new Error("Select at least one product or service.");
+  }
+}
+
+function assertValidWorkspaceSetupInput(input: SaveWorkspaceProvisioningInput) {
+  if (input.workspaceMode !== "existing" && input.workspaceMode !== "new") {
+    throw new Error("Invalid workspace mode.");
+  }
+
+  if (input.workspaceMode === "existing" && !input.workspaceId?.trim()) {
+    throw new Error("Existing workspace setup requires a workspace id.");
+  }
+
+  if (input.workspaceMode === "new") {
+    if (!input.workspaceName?.trim()) {
+      throw new Error("Workspace name is required when creating a workspace.");
+    }
+    if (!normalizeSlug(input.workspaceSlug ?? "")) {
+      throw new Error("Workspace slug is required when creating a workspace.");
+    }
   }
 }
 
@@ -1251,6 +1296,27 @@ export async function resumeServiceState(workspaceId: string, serviceKey: string
 
 export async function removeServiceState(workspaceId: string, serviceKey: string): Promise<void> {
   await mutateServiceState(workspaceId, serviceKey, "DELETE");
+}
+
+export async function saveWorkspaceProvisioning(input: SaveWorkspaceProvisioningInput): Promise<SaveWorkspaceProvisioningResult> {
+  assertValidWorkspaceSetupInput(input);
+
+  const workspace = await resolveWorkspace({
+    ...input,
+    primaryAdminEmail: "placeholder@canopy.invalid",
+    initialRole: "owner",
+  });
+
+  await upsertEntitlements(workspace.id, input.products, input.notes);
+  await upsertServiceStates(workspace.id, input.services, input.notes);
+  const entitlements = await getWorkspaceEntitlements(workspace.id);
+  const services = await getWorkspaceServiceStates(workspace.id);
+
+  return {
+    workspace,
+    entitlements,
+    services,
+  };
 }
 
 export async function provisionWorkspace(input: ProvisionWorkspaceInput): Promise<ProvisionWorkspaceResult> {
