@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import { getPortalE2EConfig, hasPortalCredentials } from "./support/env";
 import {
   launchPortalProduct,
@@ -9,7 +9,7 @@ import {
   waitForReachShellReady,
 } from "./support/portal";
 
-async function expectPortalDashboard(page: Parameters<typeof signInToPortal>[0]) {
+async function expectPortalDashboard(page: Page) {
   const config = getPortalE2EConfig();
 
   await page.waitForURL(
@@ -34,7 +34,7 @@ test.describe("Product return smoke", () => {
     const config = getPortalE2EConfig();
 
     await signInToPortal(page);
-    await launchPortalProduct(page, "View PhotoVault", config.photovaultURL);
+    await launchPortalProduct(page, "View Photos", config.photovaultURL);
     await waitForPhotoVaultReady(page);
 
     await openPhotoVaultReturnControl(page);
@@ -45,7 +45,7 @@ test.describe("Product return smoke", () => {
     const config = getPortalE2EConfig();
 
     await signInToPortal(page);
-    await launchPortalProduct(page, "View Reach", config.reachURL);
+    await launchPortalProduct(page, "New Post", config.reachURL);
     await waitForReachShellReady(page);
 
     await openReachSwitcher(page);
