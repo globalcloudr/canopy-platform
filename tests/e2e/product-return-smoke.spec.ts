@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { test } from "@playwright/test";
 import { getPortalE2EConfig, hasPortalCredentials } from "./support/env";
 import {
   expectPortalDashboard,
