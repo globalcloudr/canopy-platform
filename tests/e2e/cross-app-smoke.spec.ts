@@ -1,6 +1,13 @@
 import { test, expect } from "@playwright/test";
 import { getPortalE2EConfig, hasPortalCredentials } from "./support/env";
-import { clickFirstVisibleMenuItem, launchPortalProduct, openReachSwitcher, openStoriesSwitcher, signInToPortal } from "./support/portal";
+import {
+  clickFirstVisibleMenuItem,
+  launchPortalProduct,
+  openReachSwitcher,
+  openStoriesSwitcher,
+  signInToPortal,
+  waitForStoriesShellReady,
+} from "./support/portal";
 
 test.describe("Cross-app launcher smoke", () => {
   test.skip(!hasPortalCredentials(), "Set E2E_PORTAL_EMAIL and E2E_PORTAL_PASSWORD to run cross-app smoke tests.");
@@ -11,10 +18,10 @@ test.describe("Cross-app launcher smoke", () => {
     await signInToPortal(page);
     await launchPortalProduct(page, "View Stories", config.storiesURL);
 
-    await expect(page.locator("body")).toContainText("Canopy Stories");
+    await waitForStoriesShellReady(page);
 
     await openStoriesSwitcher(page);
-    const selectedProduct = await clickFirstVisibleMenuItem(page, ["Canopy Reach", "PhotoVault"]);
+    const selectedProduct = await clickFirstVisibleMenuItem(page, ["Canopy Reach", "PhotoVault", "Canopy Portal"]);
 
     if (selectedProduct === "Canopy Reach") {
       await page.waitForURL((url) => url.toString().startsWith(config.reachURL), { timeout: 60_000 });
@@ -22,7 +29,7 @@ test.describe("Cross-app launcher smoke", () => {
 
       await openReachSwitcher(page);
       await page.getByRole("menuitem", { name: "Canopy Portal" }).click();
-    } else {
+    } else if (selectedProduct === "PhotoVault") {
       await page.waitForURL((url) => url.hostname.includes("photovault"), { timeout: 60_000 });
       await expect(page.locator("body")).toContainText("PhotoVault");
 
