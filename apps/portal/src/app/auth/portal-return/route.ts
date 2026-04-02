@@ -25,15 +25,15 @@ export async function POST(request: NextRequest) {
     const workspaceSlug = String(formData.get("workspaceSlug") ?? "").trim() || null;
 
     if (!accessToken || !refreshToken) {
-      return NextResponse.redirect(buildRedirect(request));
+      return NextResponse.redirect(buildRedirect(request), 303);
     }
 
     const user = await getUserFromAccessToken(accessToken);
     if (!user?.id || !user.email) {
-      return NextResponse.redirect(buildRedirect(request));
+      return NextResponse.redirect(buildRedirect(request), 303);
     }
 
-    const response = NextResponse.redirect(buildRedirect(request, workspaceSlug));
+    const response = NextResponse.redirect(buildRedirect(request, workspaceSlug), 303);
 
     response.cookies.set({
       name: ACCESS_TOKEN_COOKIE,
@@ -68,6 +68,6 @@ export async function POST(request: NextRequest) {
 
     return response;
   } catch {
-    return NextResponse.redirect(buildRedirect(request));
+    return NextResponse.redirect(buildRedirect(request), 303);
   }
 }

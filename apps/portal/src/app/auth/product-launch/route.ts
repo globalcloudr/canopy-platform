@@ -55,12 +55,12 @@ export async function POST(request: NextRequest) {
     const path = String(formData.get("path") ?? "").trim() || null;
 
     if (!accessToken || !refreshToken || !productKey) {
-      return NextResponse.redirect(buildPortalRedirect(request, workspaceSlug));
+      return NextResponse.redirect(buildPortalRedirect(request, workspaceSlug), 303);
     }
 
     const user = await getUserFromAccessToken(accessToken);
     if (!user?.id || !user.email) {
-      return NextResponse.redirect(buildPortalRedirect(request, workspaceSlug));
+      return NextResponse.redirect(buildPortalRedirect(request, workspaceSlug), 303);
     }
 
     const handoffCode = await createProductLaunchHandoff({
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
       launchUrl.searchParams.set("workspace", workspaceSlug);
     }
 
-    const response = NextResponse.redirect(launchUrl);
+    const response = NextResponse.redirect(launchUrl, 303);
     response.cookies.set({
       name: ACCESS_TOKEN_COOKIE,
       value: accessToken,
@@ -109,6 +109,6 @@ export async function POST(request: NextRequest) {
 
     return response;
   } catch {
-    return NextResponse.redirect(buildPortalRedirect(request));
+    return NextResponse.redirect(buildPortalRedirect(request), 303);
   }
 }
