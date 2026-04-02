@@ -19,6 +19,7 @@ type ProvisioningFormProps = {
   workspaces: PortalWorkspace[];
   invitations: WorkspaceAdminInvitation[];
   activeWorkspaceId?: string | null;
+  canManageProductAccess: boolean;
 };
 
 type ProvisioningResult = {
@@ -197,7 +198,7 @@ function deriveProvisioningSummary(
   };
 }
 
-export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }: ProvisioningFormProps) {
+export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId, canManageProductAccess }: ProvisioningFormProps) {
   const initialWorkspaceId =
     (activeWorkspaceId && workspaces.some((workspace) => workspace.id === activeWorkspaceId) ? activeWorkspaceId : null)
     ?? workspaces[0]?.id
@@ -229,6 +230,7 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
   const [entitlementsLoading, setEntitlementsLoading] = useState(false);
   const [servicesLoading, setServicesLoading] = useState(false);
   const [entitlementActionId, setEntitlementActionId] = useState<string | null>(null);
+  const [serviceActionId, setServiceActionId] = useState<string | null>(null);
 
   const selectedWorkspace = useMemo(
     () => workspaces.find((workspace) => workspace.id === workspaceId) ?? null,
@@ -406,6 +408,10 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
   }, [workspaceId, workspaceMode]);
 
   async function handleEntitlementAction(productKey: ProductKey, action: "pause" | "resume" | "remove") {
+    if (!canManageProductAccess) {
+      setError("Only Super Admin can change products.");
+      return;
+    }
     const id = `${productKey}:${action}`;
     setEntitlementActionId(id);
     setError(null);
@@ -428,6 +434,39 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
         return prev.filter((e) => e.productKey !== productKey);
       }
       return prev.map((e) => e.productKey === productKey ? { ...e, status: action === "pause" ? "paused" : "active" } : e);
+    });
+  }
+
+  async function handleServiceAction(serviceKey: string, action: "pause" | "resume" | "remove") {
+    if (!canManageProductAccess) {
+      setError("Only Super Admin can change services.");
+      return;
+    }
+    const id = `${serviceKey}:${action}`;
+    setServiceActionId(id);
+    setError(null);
+    const response = await fetch("/api/update-service-state", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ workspaceId, serviceKey, action }),
+    });
+    const body = (await response.json()) as { ok?: boolean; error?: string };
+    setServiceActionId(null);
+    if (!response.ok || !body.ok) {
+      setError(body.error ?? "Action failed.");
+      return;
+    }
+    setCurrentServices((prev) => {
+      if (action === "remove") {
+        if (serviceKey === "school-website-setup") setEnableWebsiteSetup(false);
+        if (serviceKey === "creative-retainer") setEnableCreativeRetainer(false);
+        return prev.filter((service) => service.serviceKey !== serviceKey);
+      }
+      return prev.map((service) =>
+        service.serviceKey === serviceKey
+          ? { ...service, status: action === "pause" ? "paused" : "active" }
+          : service
+      );
     });
   }
 
@@ -630,36 +669,42 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
                         <p className="m-0 mt-0.5 text-sm text-muted">{entitlementStatusLabel(ent.status)} · {ent.setupState}</p>
                       </div>
                       <div className="flex shrink-0 items-center gap-2">
-                        {isPaused ? (
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="secondary"
-                            disabled={entitlementActionId === resumeId}
-                            onClick={() => void handleEntitlementAction(ent.productKey, "resume")}
-                          >
-                            {entitlementActionId === resumeId ? "Resuming..." : "Resume"}
-                          </Button>
+                        {canManageProductAccess ? (
+                          <>
+                            {isPaused ? (
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="secondary"
+                                disabled={entitlementActionId === resumeId}
+                                onClick={() => void handleEntitlementAction(ent.productKey, "resume")}
+                              >
+                                {entitlementActionId === resumeId ? "Resuming..." : "Resume"}
+                              </Button>
+                            ) : (
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="secondary"
+                                disabled={entitlementActionId === pauseId}
+                                onClick={() => void handleEntitlementAction(ent.productKey, "pause")}
+                              >
+                                {entitlementActionId === pauseId ? "Pausing..." : "Pause"}
+                              </Button>
+                            )}
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="destructive"
+                              disabled={entitlementActionId === removeId}
+                              onClick={() => void handleEntitlementAction(ent.productKey, "remove")}
+                            >
+                              {entitlementActionId === removeId ? "Removing..." : "Remove"}
+                            </Button>
+                          </>
                         ) : (
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="secondary"
-                            disabled={entitlementActionId === pauseId}
-                            onClick={() => void handleEntitlementAction(ent.productKey, "pause")}
-                          >
-                            {entitlementActionId === pauseId ? "Pausing..." : "Pause"}
-                          </Button>
+                          <p className="m-0 text-sm text-muted">Super Admin only</p>
                         )}
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="destructive"
-                          disabled={entitlementActionId === removeId}
-                          onClick={() => void handleEntitlementAction(ent.productKey, "remove")}
-                        >
-                          {entitlementActionId === removeId ? "Removing..." : "Remove"}
-                        </Button>
                       </div>
                     </div>
                   );
@@ -679,26 +724,71 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
               <p className="text-sm text-muted">No services currently configured for this workspace.</p>
             ) : (
               <div className="space-y-2">
-                {currentServices.map((service) => (
-                  <div
-                    key={service.serviceKey}
-                    className="flex items-center justify-between gap-4 rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 px-4 py-3"
-                  >
-                    <div>
-                      <p className="m-0 text-sm font-semibold text-ink">{serviceLabel(service.serviceKey)}</p>
-                      <p className="m-0 mt-0.5 text-sm text-muted">{serviceStatusLabel(service)}</p>
+                {currentServices.map((service) => {
+                  const isPaused = service.status === "paused" || service.status === "inactive";
+                  const pauseId = `${service.serviceKey}:pause`;
+                  const resumeId = `${service.serviceKey}:resume`;
+                  const removeId = `${service.serviceKey}:remove`;
+                  return (
+                    <div
+                      key={service.serviceKey}
+                      className="flex items-center justify-between gap-4 rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 px-4 py-3"
+                    >
+                      <div>
+                        <p className="m-0 text-sm font-semibold text-ink">{serviceLabel(service.serviceKey)}</p>
+                        <p className="m-0 mt-0.5 text-sm text-muted">{serviceStatusLabel(service)}</p>
+                      </div>
+                      <div className="flex shrink-0 items-center gap-2">
+                        {canManageProductAccess ? (
+                          <>
+                            {isPaused ? (
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="secondary"
+                                disabled={serviceActionId === resumeId}
+                                onClick={() => void handleServiceAction(service.serviceKey, "resume")}
+                              >
+                                {serviceActionId === resumeId ? "Resuming..." : "Resume"}
+                              </Button>
+                            ) : (
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="secondary"
+                                disabled={serviceActionId === pauseId}
+                                onClick={() => void handleServiceAction(service.serviceKey, "pause")}
+                              >
+                                {serviceActionId === pauseId ? "Pausing..." : "Pause"}
+                              </Button>
+                            )}
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="destructive"
+                              disabled={serviceActionId === removeId}
+                              onClick={() => void handleServiceAction(service.serviceKey, "remove")}
+                            >
+                              {serviceActionId === removeId ? "Removing..." : "Remove"}
+                            </Button>
+                          </>
+                        ) : (
+                          <p className="m-0 text-sm text-muted">Super Admin only</p>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </section>
         )}
 
-        <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
-          <p className="eyebrow">Products</p>
-          <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Enable workspace apps</h3>
-          {!enabledProductKeys.has("photovault") && (
+        {canManageProductAccess ? (
+          <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
+            <p className="eyebrow">Products</p>
+            <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Enable workspace apps</h3>
+            {!enabledProductKeys.has("photovault") && (
             <div className="rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 p-4">
               <label className="flex items-start justify-between gap-4">
                 <div>
@@ -734,7 +824,7 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
             </div>
           )}
 
-          {!enabledProductKeys.has("stories_canopy") && (
+            {!enabledProductKeys.has("stories_canopy") && (
             <div className="mt-4 rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 p-4">
               <label className="flex items-start justify-between gap-4">
                 <div>
@@ -770,7 +860,7 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
             </div>
           )}
 
-          {!enabledProductKeys.has("reach_canopy") && (
+            {!enabledProductKeys.has("reach_canopy") && (
             <div className="mt-4 rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 p-4">
               <label className="flex items-start justify-between gap-4">
                 <div>
@@ -806,16 +896,24 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
             </div>
           )}
 
-          {enabledProductKeys.has("photovault") && enabledProductKeys.has("stories_canopy") && enabledProductKeys.has("reach_canopy") && (
-            <p className="text-sm text-muted">All available products are already enabled for this workspace.</p>
-          )}
-        </section>
+            {enabledProductKeys.has("photovault") && enabledProductKeys.has("stories_canopy") && enabledProductKeys.has("reach_canopy") && (
+              <p className="text-sm text-muted">All available products are already enabled for this workspace.</p>
+            )}
+          </section>
+        ) : (
+          <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
+            <p className="eyebrow">Products</p>
+            <h3 className="mb-2 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Enable workspace apps</h3>
+            <p className="text-sm text-muted">Only Super Admin can add, pause, resume, or remove products.</p>
+          </section>
+        )}
 
-        <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
-          <p className="eyebrow">Services</p>
-          <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Set service visibility</h3>
-          <div className="grid gap-4 md:grid-cols-2">
-            {!enabledServiceKeys.has("school-website-setup") && (
+        {canManageProductAccess ? (
+          <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
+            <p className="eyebrow">Services</p>
+            <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Set service visibility</h3>
+            <div className="grid gap-4 md:grid-cols-2">
+              {!enabledServiceKeys.has("school-website-setup") && (
               <div className="rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 p-4">
                 <label className="flex items-start justify-between gap-4">
                   <div>
@@ -850,7 +948,7 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
               </div>
             )}
 
-            {!enabledServiceKeys.has("creative-retainer") && (
+              {!enabledServiceKeys.has("creative-retainer") && (
               <div className="rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 p-4">
                 <label className="flex items-start justify-between gap-4">
                   <div>
@@ -884,11 +982,18 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
                 ) : null}
               </div>
             )}
-          </div>
-          {enabledServiceKeys.has("school-website-setup") && enabledServiceKeys.has("creative-retainer") && (
-            <p className="text-sm text-muted">All available services are already configured for this workspace.</p>
-          )}
-        </section>
+            </div>
+            {enabledServiceKeys.has("school-website-setup") && enabledServiceKeys.has("creative-retainer") && (
+              <p className="text-sm text-muted">All available services are already configured for this workspace.</p>
+            )}
+          </section>
+        ) : (
+          <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
+            <p className="eyebrow">Services</p>
+            <h3 className="mb-2 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Set service visibility</h3>
+            <p className="text-sm text-muted">Only Super Admin can add, pause, resume, or remove services.</p>
+          </section>
+        )}
 
         <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
           <p className="eyebrow">Notes</p>

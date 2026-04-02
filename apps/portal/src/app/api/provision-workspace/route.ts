@@ -74,6 +74,13 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = (await request.json()) as RequestBody;
+    const requestedProducts = (body.products ?? []).filter((item) => Boolean(item?.productKey));
+    const requestedServices = (body.services ?? []).filter((item) => Boolean(item?.serviceKey?.trim()));
+
+    if ((requestedProducts.length > 0 || requestedServices.length > 0) && session.platformRole !== "super_admin") {
+      return NextResponse.json({ error: "Only Super Admin can change products or services." }, { status: 403 });
+    }
+
     const result = await provisionWorkspace({
       ...parseBody(body),
       provisionedByUserId: session.user.id,

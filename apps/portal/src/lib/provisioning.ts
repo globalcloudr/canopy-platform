@@ -1039,6 +1039,56 @@ export async function removeEntitlement(workspaceId: string, productKey: Product
   await mutateEntitlement(workspaceId, productKey, "DELETE");
 }
 
+async function mutateServiceState(
+  workspaceId: string,
+  serviceKey: string,
+  method: "PATCH" | "DELETE",
+  body?: { status: ServiceStatus }
+) {
+  const attempts: Array<{ col: string; params: URLSearchParams }> = [
+    {
+      col: "workspace_id",
+      params: new URLSearchParams({ workspace_id: `eq.${workspaceId}`, service_key: `eq.${serviceKey}` }),
+    },
+    {
+      col: "organization_id",
+      params: new URLSearchParams({ organization_id: `eq.${workspaceId}`, service_key: `eq.${serviceKey}` }),
+    },
+    {
+      col: "org_id",
+      params: new URLSearchParams({ org_id: `eq.${workspaceId}`, service_key: `eq.${serviceKey}` }),
+    },
+  ];
+
+  for (const attempt of attempts) {
+    try {
+      await requestJson<unknown>("/rest/v1/workspace_service_states", {
+        method,
+        searchParams: attempt.params,
+        body,
+      });
+      return;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      if (!message.includes("workspace_service_states") && !message.includes(attempt.col)) {
+        throw error;
+      }
+    }
+  }
+}
+
+export async function pauseServiceState(workspaceId: string, serviceKey: string): Promise<void> {
+  await mutateServiceState(workspaceId, serviceKey, "PATCH", { status: "paused" });
+}
+
+export async function resumeServiceState(workspaceId: string, serviceKey: string): Promise<void> {
+  await mutateServiceState(workspaceId, serviceKey, "PATCH", { status: "active" });
+}
+
+export async function removeServiceState(workspaceId: string, serviceKey: string): Promise<void> {
+  await mutateServiceState(workspaceId, serviceKey, "DELETE");
+}
+
 export async function provisionWorkspace(input: ProvisionWorkspaceInput): Promise<ProvisionWorkspaceResult> {
   assertValidInput(input);
 
