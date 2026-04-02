@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "@/lib/platform";
 import { createProductLaunchHandoff } from "@/lib/launch-handoff";
 
-const DEFAULT_STORIES_URL = "http://localhost:3001";
+const DEFAULT_STORIES_URL = "https://canopy-stories.vercel.app";
 
 function getStoriesAppUrl() {
   return process.env.STORIES_APP_URL?.trim() || DEFAULT_STORIES_URL;

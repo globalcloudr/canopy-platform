@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "@/lib/platform";
 import { createProductLaunchHandoff } from "@/lib/launch-handoff";
 
-const DEFAULT_REACH_URL = "http://localhost:3002";
+const DEFAULT_REACH_URL = "https://canopy-reach.vercel.app";
 
 function getReachAppUrl() {
   return process.env.REACH_APP_URL?.trim() || DEFAULT_REACH_URL;

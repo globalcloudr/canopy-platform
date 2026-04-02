@@ -8,9 +8,9 @@ import {
 import { createProductLaunchHandoff, type LaunchProductKey } from "@/lib/launch-handoff";
 
 const DEFAULT_URLS: Record<LaunchProductKey, string> = {
-  photovault: "http://localhost:3000",
-  stories_canopy: "http://localhost:3001",
-  reach_canopy: "http://localhost:3002",
+  photovault: "https://photovault.school",
+  stories_canopy: "https://canopy-stories.vercel.app",
+  reach_canopy: "https://canopy-reach.vercel.app",
 };
 
 function normalizeLaunchPath(productKey: LaunchProductKey, value: string | null | undefined) {

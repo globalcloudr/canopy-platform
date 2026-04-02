@@ -142,7 +142,7 @@ const catalogDefinitions: ProductDefinition[] = [
     kind: "product",
     iconColor: "#db2777",
     defaultLaunchPath: getReachLaunchPath(),
-    externalUrl: process.env.REACH_APP_URL || "http://localhost:3002",
+    externalUrl: process.env.REACH_APP_URL || "https://canopy-reach.vercel.app",
     showWhenNotEnabled: true,
     sortOrder: 7,
   },
