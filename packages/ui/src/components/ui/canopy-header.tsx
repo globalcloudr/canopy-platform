@@ -33,12 +33,15 @@ export type CanopyHeaderWorkspaceLink = {
 
 export type CanopyHeaderAccountMenuItem = {
   label: string;
-  href: string;
+  href?: string;
+  onSelect?: () => void;
 };
 
 export type CanopyHeaderProps = {
   /** Where the brand logo links to */
   brandHref?: string;
+  /** Optional callback when the brand logo should perform custom navigation */
+  onBrandSelect?: () => void;
   /** Label shown in the workspace switcher button */
   workspaceLabel: string;
   /** Label used for the static school/workspace context chip when switching is not available */
@@ -49,6 +52,8 @@ export type CanopyHeaderProps = {
   isPlatformOperator?: boolean;
   /** Href for the platform overview item */
   platformOverviewHref?: string;
+  /** Optional callback for platform overview navigation */
+  onPlatformOverviewSelect?: () => void;
   /** Initials displayed in the avatar button */
   userInitials: string;
   /** Full name shown at the top of the account dropdown */
@@ -69,11 +74,13 @@ export type CanopyHeaderProps = {
 
 export function CanopyHeader({
   brandHref = "/",
+  onBrandSelect,
   workspaceLabel,
   workspaceContextLabel,
   workspaceLinks,
   isPlatformOperator = false,
   platformOverviewHref = "/",
+  onPlatformOverviewSelect,
   userInitials,
   displayName,
   email,
@@ -92,12 +99,25 @@ export function CanopyHeader({
 
         {/* Left: brand + workspace switcher */}
         <div className="flex min-w-0 items-center gap-3">
-          <a href={brandHref} className="flex shrink-0 items-center gap-2 no-underline text-inherit outline-none">
-            <div className="grid h-8 w-8 place-items-center rounded-[7px] bg-[#0f1f3d] text-[0.95rem] font-extrabold tracking-[-0.02em] text-white" aria-hidden="true">
-              C
-            </div>
-            <span className="text-[0.95rem] font-bold tracking-[-0.01em] text-[var(--foreground)]">Canopy</span>
-          </a>
+          {onBrandSelect ? (
+            <button
+              type="button"
+              onClick={onBrandSelect}
+              className="flex shrink-0 items-center gap-2 border-0 bg-transparent p-0 text-inherit outline-none"
+            >
+              <div className="grid h-8 w-8 place-items-center rounded-[7px] bg-[#0f1f3d] text-[0.95rem] font-extrabold tracking-[-0.02em] text-white" aria-hidden="true">
+                C
+              </div>
+              <span className="text-[0.95rem] font-bold tracking-[-0.01em] text-[var(--foreground)]">Canopy</span>
+            </button>
+          ) : (
+            <a href={brandHref} className="flex shrink-0 items-center gap-2 no-underline text-inherit outline-none">
+              <div className="grid h-8 w-8 place-items-center rounded-[7px] bg-[#0f1f3d] text-[0.95rem] font-extrabold tracking-[-0.02em] text-white" aria-hidden="true">
+                C
+              </div>
+              <span className="text-[0.95rem] font-bold tracking-[-0.01em] text-[var(--foreground)]">Canopy</span>
+            </a>
+          )}
 
           {canSwitchWorkspace ? (
             <DropdownMenu>
@@ -112,7 +132,13 @@ export function CanopyHeader({
                 <DropdownMenuLabel className="text-[#66758a]">Switch workspace</DropdownMenuLabel>
                 <DropdownMenuGroup>
                   {isPlatformOperator && (
-                    <DropdownMenuItem onSelect={() => { window.location.assign(platformOverviewHref); }}>
+                    <DropdownMenuItem onSelect={() => {
+                      if (onPlatformOverviewSelect) {
+                        onPlatformOverviewSelect();
+                        return;
+                      }
+                      window.location.assign(platformOverviewHref);
+                    }}>
                       Platform overview
                     </DropdownMenuItem>
                   )}
@@ -169,11 +195,17 @@ export function CanopyHeader({
                 )}
               </div>
               <div className="p-2">
-                {accountMenuItems.map((item) => (
-                  <DropdownMenuItem key={item.href} asChild>
-                    <a href={item.href}>{item.label}</a>
-                  </DropdownMenuItem>
-                ))}
+                {accountMenuItems.map((item) =>
+                  item.onSelect ? (
+                    <DropdownMenuItem key={`${item.label}-action`} onSelect={item.onSelect}>
+                      {item.label}
+                    </DropdownMenuItem>
+                  ) : (
+                    <DropdownMenuItem key={item.href ?? item.label} asChild>
+                      <a href={item.href ?? "#"}>{item.label}</a>
+                    </DropdownMenuItem>
+                  )
+                )}
               </div>
               <DropdownMenuSeparator />
               <div className="p-2">
