@@ -287,6 +287,22 @@ async function resolveWorkspace(input: ProvisionWorkspaceInput): Promise<PortalW
     return normalizeWorkspace(row);
   }
 
+  const normalizedSlug = normalizeSlug(input.workspaceSlug ?? "");
+  const existingRows = await requestJson<OrganizationRow[]>(
+    "/rest/v1/organizations",
+    {
+      searchParams: new URLSearchParams({
+        select: "id,name,slug",
+        slug: `eq.${normalizedSlug}`,
+        limit: "1",
+      }),
+    }
+  );
+
+  if (existingRows[0]?.id) {
+    throw new Error("A workspace with this slug already exists.");
+  }
+
   const rows = await requestJson<OrganizationRow[]>(
     "/rest/v1/organizations",
     {
@@ -294,7 +310,7 @@ async function resolveWorkspace(input: ProvisionWorkspaceInput): Promise<PortalW
       prefer: "return=representation",
       body: {
         name: input.workspaceName?.trim(),
-        slug: normalizeSlug(input.workspaceSlug ?? ""),
+        slug: normalizedSlug,
       },
     }
   );
@@ -751,6 +767,24 @@ export type WorkspaceServiceState = {
   setupState: ServiceSetupState;
 };
 
+export type WorkspaceProvisioningStatus =
+  | "not_started"
+  | "invited"
+  | "accepted"
+  | "active"
+  | "incomplete";
+
+export type WorkspaceProvisioningSummary = {
+  status: WorkspaceProvisioningStatus;
+  statusLabel: string;
+  detail: string;
+  productCount: number;
+  serviceCount: number;
+  pendingInvitationCount: number;
+  acceptedInvitationCount: number;
+  cancelledInvitationCount: number;
+};
+
 function normalizeEntitlement(row: EntitlementRow, workspaceId: string): WorkspaceEntitlement | null {
   const productKey = row.product_key;
   const validKeys: ProductKey[] = [
@@ -851,6 +885,109 @@ export async function getWorkspaceServiceStates(workspaceId: string): Promise<Wo
   }
 
   return [...serviceStates.values()];
+}
+
+export function deriveWorkspaceProvisioningSummary(args: {
+  invitations: WorkspaceAdminInvitation[];
+  entitlements: WorkspaceEntitlement[];
+  services: WorkspaceServiceState[];
+}): WorkspaceProvisioningSummary {
+  const pendingInvitations = args.invitations.filter((invitation) => invitation.status === "pending");
+  const acceptedInvitations = args.invitations.filter((invitation) => invitation.status === "accepted");
+  const cancelledInvitations = args.invitations.filter((invitation) => invitation.status === "cancelled");
+  const productCount = args.entitlements.length;
+  const serviceCount = args.services.length;
+  const hasProvisionedAccess = productCount > 0 || serviceCount > 0;
+  const hasDeliveryProblem = pendingInvitations.some((invitation) => invitation.deliveryStatus !== "sent");
+
+  if (hasDeliveryProblem) {
+    return {
+      status: "incomplete",
+      statusLabel: "Incomplete",
+      detail: "A pending invitation still needs to be sent or resent before provisioning is complete.",
+      productCount,
+      serviceCount,
+      pendingInvitationCount: pendingInvitations.length,
+      acceptedInvitationCount: acceptedInvitations.length,
+      cancelledInvitationCount: cancelledInvitations.length,
+    };
+  }
+
+  if (pendingInvitations.length > 0) {
+    return {
+      status: "invited",
+      statusLabel: "Invited",
+      detail: "An invitation has been sent and is still awaiting acceptance.",
+      productCount,
+      serviceCount,
+      pendingInvitationCount: pendingInvitations.length,
+      acceptedInvitationCount: acceptedInvitations.length,
+      cancelledInvitationCount: cancelledInvitations.length,
+    };
+  }
+
+  if (acceptedInvitations.length > 0 && hasProvisionedAccess) {
+    return {
+      status: "active",
+      statusLabel: "Active",
+      detail: "Invitation acceptance is complete and the workspace has active products or services.",
+      productCount,
+      serviceCount,
+      pendingInvitationCount: pendingInvitations.length,
+      acceptedInvitationCount: acceptedInvitations.length,
+      cancelledInvitationCount: cancelledInvitations.length,
+    };
+  }
+
+  if (acceptedInvitations.length > 0) {
+    return {
+      status: "accepted",
+      statusLabel: "Accepted",
+      detail: "The invitation has been accepted, but products or services still need review before the workspace is fully active.",
+      productCount,
+      serviceCount,
+      pendingInvitationCount: pendingInvitations.length,
+      acceptedInvitationCount: acceptedInvitations.length,
+      cancelledInvitationCount: cancelledInvitations.length,
+    };
+  }
+
+  if (hasProvisionedAccess) {
+    return {
+      status: "active",
+      statusLabel: "Active",
+      detail: "The workspace already has active products or services and no pending invitation work.",
+      productCount,
+      serviceCount,
+      pendingInvitationCount: pendingInvitations.length,
+      acceptedInvitationCount: acceptedInvitations.length,
+      cancelledInvitationCount: cancelledInvitations.length,
+    };
+  }
+
+  if (cancelledInvitations.length > 0) {
+    return {
+      status: "incomplete",
+      statusLabel: "Incomplete",
+      detail: "Past invitation activity exists, but the workspace does not currently show active provisioning.",
+      productCount,
+      serviceCount,
+      pendingInvitationCount: pendingInvitations.length,
+      acceptedInvitationCount: acceptedInvitations.length,
+      cancelledInvitationCount: cancelledInvitations.length,
+    };
+  }
+
+  return {
+    status: "not_started",
+    statusLabel: "Not started",
+    detail: "No invitation, product, or service setup is visible yet for this workspace.",
+    productCount,
+    serviceCount,
+    pendingInvitationCount: pendingInvitations.length,
+    acceptedInvitationCount: acceptedInvitations.length,
+    cancelledInvitationCount: cancelledInvitations.length,
+  };
 }
 
 async function mutateEntitlement(

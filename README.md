@@ -14,7 +14,8 @@ Platform portal and shared infrastructure for the Canopy product suite.
 - Entitlement-aware product launcher — shows enabled products, pilot products, and service cards per workspace
 - Role-aware navigation — school users see school context, product switching, and a direct path back to portal home; platform users retain true workspace switching
 - Account page — workspace details, user info, active products and services
-- Operator provisioning page (`/app/provisioning`) — create/select workspaces, enable products and services, invite workspace admins, resend invitations
+- Operator provisioning page (`/app/provisioning`) — create/select workspaces, enable products and services, invite workspace admins, resend invitations, and review current provisioning status for the selected workspace
+- Active provisioning transition plan at `docs/workspace-provisioning-transition-plan.md` — defines Portal as the long-term Super Admin provisioning home and PhotoVault as a temporary compatibility path
 - Invite acceptance flow — Supabase invite email → Canopy sign-in → membership creation → workspace redirect
 - Neutral platform overview for operators without an explicit `?workspace=` selection
 - Public homepage with product grid and marketing content
@@ -46,6 +47,7 @@ Components: Button, Badge, Input, Avatar, Card, Dialog, DropdownMenu, IconButton
 - **Dedicated Canopy invite email templates** — invite delivery still uses shared Supabase auth email infrastructure
 - **Billing** — no billing management in the portal yet
 - **`workspaces` table** — platform still uses `organizations` as the workspace bridge; a dedicated `workspaces` table is a planned future migration
+- **Provisioning cutover completion** — Portal is the intended long-term provisioning owner, but PhotoVault remains a compatibility fallback until the cutover checklist in `docs/workspace-provisioning-transition-plan.md` is fully satisfied in production
 
 ## How to Run
 

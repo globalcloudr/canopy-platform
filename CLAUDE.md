@@ -3,6 +3,7 @@
 This repo is the **platform core** for Canopy. It contains the portal app and shared UI components. It is NOT a product implementation repo.
 
 Read `README.md` for current implementation status. Read `docs/PRD.md` for the full product catalog and platform vision.
+For provisioning ownership and PhotoVault retirement criteria, read `docs/workspace-provisioning-transition-plan.md`.
 
 ## Repos
 
@@ -40,10 +41,11 @@ canopy-platform/
 |---|---|
 | `apps/portal/src/lib/platform.ts` | Session layer — resolves user, workspace, memberships, entitlements, operator state |
 | `apps/portal/src/lib/products.ts` | Product catalog — definitions, state derivation, action targets |
-| `apps/portal/src/lib/provisioning.ts` | Provisioning logic — workspace creation, invite send/resend, entitlement upsert |
+| `apps/portal/src/lib/provisioning.ts` | Provisioning logic — workspace creation, invite send/resend, entitlement upsert, service-state reads, provisioning summary helpers |
 | `apps/portal/src/app/(portal)/app/layout.tsx` | Authenticated shell — top bar + sidebar + content area |
 | `apps/portal/src/app/(portal)/app/page.tsx` | Dashboard / product launcher |
 | `apps/portal/src/app/(portal)/app/provisioning/page.tsx` | Operator provisioning UI |
+| `docs/workspace-provisioning-transition-plan.md` | Active cutover plan for making Portal the single Super Admin provisioning workflow |
 | `apps/portal/src/components/portal-header.tsx` | Top bar with brand mark, workspace chip, avatar dropdown |
 | `apps/portal/src/components/portal-sidebar.tsx` | Left nav — contextual per section |
 | `apps/portal/src/components/product-launcher-card.tsx` | Product tile on dashboard |
@@ -77,6 +79,7 @@ canopy-platform/
 - `POST /api/update-entitlement` — operator only: pause/resume/remove entitlements
 - `POST /api/provision-workspace` — operator only: provisioning backend
 - `POST /api/resend-workspace-invitation` — operator only: resend invite
+- `GET /api/get-workspace-services` — operator only: current service visibility/setup state for a workspace
 
 ## Data Model (Shared Supabase Project)
 
@@ -90,6 +93,12 @@ canopy-platform/
 - `product_entitlements` — which products are enabled per workspace (`organization_id`, `product_key`, `status`, `setup_state`, `plan_key`, `source`)
 - `workspace_service_states` — which managed services are visible per workspace
 - `workspace_admin_invitations` — invitation lifecycle (`pending`, `sent`, `accepted`)
+
+## Provisioning Ownership
+
+- Portal is the intended long-term single Super Admin provisioning surface
+- PhotoVault provisioning should be treated as a temporary compatibility path, not a permanent co-equal workflow
+- The active cutover criteria, production smoke checklist, and operator-process shift rules live in `docs/workspace-provisioning-transition-plan.md`
 
 ## Product Keys
 

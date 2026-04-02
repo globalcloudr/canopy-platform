@@ -13,7 +13,7 @@ import {
   Textarea,
 } from "@canopy/ui";
 import type { PortalWorkspace, ProductKey, WorkspaceRole } from "@/lib/platform";
-import type { WorkspaceAdminInvitation, WorkspaceEntitlement } from "@/lib/provisioning";
+import type { WorkspaceAdminInvitation, WorkspaceEntitlement, WorkspaceServiceState } from "@/lib/provisioning";
 
 type ProvisioningFormProps = {
   workspaces: PortalWorkspace[];
@@ -126,6 +126,77 @@ function entitlementStatusLabel(status: WorkspaceEntitlement["status"]) {
   return "Active";
 }
 
+function serviceStatusLabel(service: WorkspaceServiceState) {
+  const status = service.status === "active" ? "Active" : service.status === "paused" ? "Paused" : service.status === "inactive" ? "Inactive" : "Available";
+  return `${status} \u00b7 ${service.setupState}`;
+}
+
+function deriveProvisioningSummary(
+  invitations: WorkspaceAdminInvitation[],
+  entitlements: WorkspaceEntitlement[],
+  services: WorkspaceServiceState[]
+) {
+  const pendingInvitations = invitations.filter((invitation) => invitation.status === "pending");
+  const acceptedInvitations = invitations.filter((invitation) => invitation.status === "accepted");
+  const cancelledInvitations = invitations.filter((invitation) => invitation.status === "cancelled");
+  const hasProvisionedAccess = entitlements.length > 0 || services.length > 0;
+  const hasDeliveryProblem = pendingInvitations.some((invitation) => invitation.deliveryStatus !== "sent");
+
+  if (hasDeliveryProblem) {
+    return {
+      label: "Incomplete",
+      detail: "A pending invitation still needs to be sent or resent before provisioning is complete.",
+      tone: "border-amber-200 bg-amber-50/80 text-amber-900",
+    };
+  }
+
+  if (pendingInvitations.length > 0) {
+    return {
+      label: "Invited",
+      detail: "An invitation has been sent and is still awaiting acceptance.",
+      tone: "border-sky-200 bg-sky-50/80 text-sky-900",
+    };
+  }
+
+  if (acceptedInvitations.length > 0 && hasProvisionedAccess) {
+    return {
+      label: "Active",
+      detail: "Invitation acceptance is complete and the workspace has active products or services.",
+      tone: "border-emerald-200 bg-emerald-50/80 text-emerald-900",
+    };
+  }
+
+  if (acceptedInvitations.length > 0) {
+    return {
+      label: "Accepted",
+      detail: "The invitation has been accepted, but products or services still need review before the workspace is fully active.",
+      tone: "border-indigo-200 bg-indigo-50/80 text-indigo-900",
+    };
+  }
+
+  if (hasProvisionedAccess) {
+    return {
+      label: "Active",
+      detail: "The workspace already has active products or services and no pending invitation work.",
+      tone: "border-emerald-200 bg-emerald-50/80 text-emerald-900",
+    };
+  }
+
+  if (cancelledInvitations.length > 0) {
+    return {
+      label: "Incomplete",
+      detail: "Past invitation activity exists, but the workspace does not currently show active provisioning.",
+      tone: "border-amber-200 bg-amber-50/80 text-amber-900",
+    };
+  }
+
+  return {
+    label: "Not started",
+    detail: "No invitation, product, or service setup is visible yet for this workspace.",
+    tone: "border-slate-200 bg-slate-50/80 text-slate-900",
+  };
+}
+
 export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }: ProvisioningFormProps) {
   const initialWorkspaceId =
     (activeWorkspaceId && workspaces.some((workspace) => workspace.id === activeWorkspaceId) ? activeWorkspaceId : null)
@@ -154,7 +225,9 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
   const [result, setResult] = useState<ProvisioningResult | null>(null);
   const [invitationRows, setInvitationRows] = useState<WorkspaceAdminInvitation[]>(invitations);
   const [currentEntitlements, setCurrentEntitlements] = useState<WorkspaceEntitlement[]>([]);
+  const [currentServices, setCurrentServices] = useState<WorkspaceServiceState[]>([]);
   const [entitlementsLoading, setEntitlementsLoading] = useState(false);
+  const [servicesLoading, setServicesLoading] = useState(false);
   const [entitlementActionId, setEntitlementActionId] = useState<string | null>(null);
 
   const selectedWorkspace = useMemo(
@@ -237,6 +310,13 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
           planKey: item.planKey,
         }))
       );
+      setCurrentServices(
+        nextResult.services.map((item) => ({
+          serviceKey: item.serviceKey,
+          status: item.status as WorkspaceServiceState["status"],
+          setupState: item.setupState as WorkspaceServiceState["setupState"],
+        }))
+      );
     }
     if (workspaceMode === "new") {
       setWorkspaceMode("existing");
@@ -272,6 +352,10 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
   const enabledProductKeys = new Set(currentEntitlements.map((e) => e.productKey));
   const selectedWorkspaceId = workspaceMode === "existing" ? workspaceId : result?.workspace.id ?? null;
   const workspaceInvitations = invitationRows.filter((row) => row.workspaceId === selectedWorkspaceId);
+  const provisioningSummary = useMemo(
+    () => deriveProvisioningSummary(workspaceInvitations, currentEntitlements, currentServices),
+    [currentEntitlements, currentServices, workspaceInvitations]
+  );
   const latestPendingInvitation = useMemo(
     () => workspaceInvitations.find((row) => row.status === "pending") ?? workspaceInvitations[0] ?? null,
     [workspaceInvitations]
@@ -295,11 +379,14 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
   useEffect(() => {
     if (workspaceMode !== "existing" || !workspaceId) {
       setCurrentEntitlements([]);
+      setCurrentServices([]);
       return;
     }
     const controller = new AbortController();
     setEntitlementsLoading(true);
+    setServicesLoading(true);
     setCurrentEntitlements([]);
+    setCurrentServices([]);
     fetch(`/api/get-workspace-entitlements?workspaceId=${encodeURIComponent(workspaceId)}`, { signal: controller.signal })
       .then((res) => res.json())
       .then((body: { entitlements?: WorkspaceEntitlement[]; error?: string }) => {
@@ -307,6 +394,13 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
       })
       .catch(() => { /* aborted or failed — leave empty */ })
       .finally(() => { if (!controller.signal.aborted) setEntitlementsLoading(false); });
+    fetch(`/api/get-workspace-services?workspaceId=${encodeURIComponent(workspaceId)}`, { signal: controller.signal })
+      .then((res) => res.json())
+      .then((body: { services?: WorkspaceServiceState[]; error?: string }) => {
+        if (!controller.signal.aborted) setCurrentServices(body.services ?? []);
+      })
+      .catch(() => { /* aborted or failed — leave empty */ })
+      .finally(() => { if (!controller.signal.aborted) setServicesLoading(false); });
     return () => controller.abort();
   }, [workspaceId, workspaceMode]);
 
@@ -491,6 +585,27 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
 
         {workspaceMode === "existing" && (
           <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
+            <p className="eyebrow">Provisioning Status</p>
+            <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Current workspace readiness</h3>
+            <div className={`rounded-[22px] border px-4 py-4 ${provisioningSummary.tone}`}>
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="m-0 text-sm font-semibold">{provisioningSummary.label}</p>
+                  <p className="m-0 mt-1 text-sm opacity-80">{provisioningSummary.detail}</p>
+                </div>
+              </div>
+              <div className="mt-4 grid gap-3 text-sm sm:grid-cols-4">
+                <p className="m-0"><span className="font-semibold">Products:</span> {currentEntitlements.length}</p>
+                <p className="m-0"><span className="font-semibold">Services:</span> {currentServices.length}</p>
+                <p className="m-0"><span className="font-semibold">Pending invites:</span> {workspaceInvitations.filter((item) => item.status === "pending").length}</p>
+                <p className="m-0"><span className="font-semibold">Accepted invites:</span> {workspaceInvitations.filter((item) => item.status === "accepted").length}</p>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {workspaceMode === "existing" && (
+          <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
             <p className="eyebrow">Currently Enabled</p>
             <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Active products for this workspace</h3>
             {entitlementsLoading ? (
@@ -548,6 +663,32 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
                     </div>
                   );
                 })}
+              </div>
+            )}
+          </section>
+        )}
+
+        {workspaceMode === "existing" && (
+          <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
+            <p className="eyebrow">Current Services</p>
+            <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Service visibility for this workspace</h3>
+            {servicesLoading ? (
+              <p className="text-sm text-muted">Loading...</p>
+            ) : currentServices.length === 0 ? (
+              <p className="text-sm text-muted">No services currently configured for this workspace.</p>
+            ) : (
+              <div className="space-y-2">
+                {currentServices.map((service) => (
+                  <div
+                    key={service.serviceKey}
+                    className="flex items-center justify-between gap-4 rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 px-4 py-3"
+                  >
+                    <div>
+                      <p className="m-0 text-sm font-semibold text-ink">{serviceLabel(service.serviceKey)}</p>
+                      <p className="m-0 mt-0.5 text-sm text-muted">{serviceStatusLabel(service)}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </section>

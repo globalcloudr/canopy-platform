@@ -4,6 +4,41 @@ Append new sessions at the top. Do not overwrite history.
 
 ---
 
+## 2026-04-02 — Portal provisioning visibility tightened for PhotoVault cutover
+
+- Hardened Portal workspace creation with a preflight duplicate-slug check so operators get a clear error before creating a duplicate workspace
+- Added current service-state visibility to `/app/provisioning` alongside the existing current-product entitlement view
+- Added a derived provisioning-status summary for the selected workspace so operators can quickly see whether it is:
+  - not started
+  - invited
+  - accepted
+  - active
+  - incomplete
+- Added `GET /api/get-workspace-services` to support the operator-facing service visibility panel
+- This closes a key cutover gap from the active `docs/workspace-provisioning-transition-plan.md`: operators can now understand current product, service, and invitation state in Portal without dropping back into PhotoVault for basic provisioning context
+
+### Verification
+- `npm run build` passed in `canopy-platform`
+
+---
+
+## 2026-04-02 — Provisioning transition plan promoted into active Portal docs
+
+- Moved the old archived provisioning transition work back into an active document at `docs/workspace-provisioning-transition-plan.md`
+- Tightened the plan around the current product decision:
+  - Portal is the long-term single Super Admin provisioning workflow
+  - PhotoVault remains a temporary compatibility path only until Portal fully replaces the operational flow
+- Added explicit production cutover requirements:
+  - required Portal capabilities before retirement
+  - production smoke checks before operator workflow shifts
+  - cutover stages for docs, operator process, and final cleanup
+- Documented what remains product-local in PhotoVault after the transition so platform and product responsibilities stay separated
+
+### Verification
+- Active transition plan now exists in current docs instead of archive-only form
+
+---
+
 ## 2026-04-02 — Playwright smoke expansion across product switching, permissions, and media
 
 - Expanded the original two-test Playwright scaffold into a broader live runtime smoke suite:
