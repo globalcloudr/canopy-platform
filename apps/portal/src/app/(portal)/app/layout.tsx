@@ -11,7 +11,7 @@ export default async function PortalAppLayout({
   const session = await resolvePortalSession();
 
   return (
-    <main className="min-h-screen bg-[var(--app-shell-bg)] md:h-screen md:overflow-hidden">
+    <main className="min-h-screen bg-[var(--app-shell-bg)] md:h-screen md:overflow-hidden md:overscroll-none">
       <Suspense fallback={null}>
         <PortalHeader />
       </Suspense>
@@ -22,7 +22,7 @@ export default async function PortalAppLayout({
               <PortalSidebar showProvisioning={Boolean(session?.isPlatformOperator)} />
             </Suspense>
           </aside>
-          <section className="min-w-0 overflow-x-hidden bg-[var(--app-content-bg)] md:h-full md:overflow-y-auto">
+          <section className="min-w-0 overflow-x-hidden bg-[var(--app-content-bg)] md:h-full md:overflow-y-auto md:overscroll-y-contain">
             <div className="mx-auto flex min-h-full w-full max-w-[1340px] flex-col gap-5 px-4 py-6 sm:px-6">
               {children}
             </div>
