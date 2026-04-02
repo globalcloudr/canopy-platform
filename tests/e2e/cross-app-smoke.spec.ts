@@ -5,7 +5,7 @@ import { clickFirstVisibleMenuItem, launchPortalProduct, openReachSwitcher, open
 test.describe("Cross-app launcher smoke", () => {
   test.skip(!hasPortalCredentials(), "Set E2E_PORTAL_EMAIL and E2E_PORTAL_PASSWORD to run cross-app smoke tests.");
 
-  test("launches Stories, switches to Reach, then returns to Portal", async ({ page }) => {
+  test("launches Stories, switches to another available app, then returns to Portal", async ({ page }) => {
     const config = getPortalE2EConfig();
 
     await signInToPortal(page);
