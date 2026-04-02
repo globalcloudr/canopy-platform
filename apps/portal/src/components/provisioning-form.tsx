@@ -14,12 +14,15 @@ import {
 } from "@canopy/ui";
 import type { PortalWorkspace, ProductKey, WorkspaceRole } from "@/lib/platform";
 import type { WorkspaceAdminInvitation, WorkspaceEntitlement, WorkspaceServiceState } from "@/lib/provisioning";
+import { DEFAULT_INVITE_TEMPLATE, renderInviteTemplate, type InviteTemplate } from "@/lib/invite-template";
 
 type ProvisioningFormProps = {
   workspaces: PortalWorkspace[];
   invitations: WorkspaceAdminInvitation[];
   activeWorkspaceId?: string | null;
   canManageProductAccess: boolean;
+  canManageInviteTemplate: boolean;
+  currentUserEmail: string;
 };
 
 type ProvisioningResult = {
@@ -198,7 +201,14 @@ function deriveProvisioningSummary(
   };
 }
 
-export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId, canManageProductAccess }: ProvisioningFormProps) {
+export function ProvisioningForm({
+  workspaces,
+  invitations,
+  activeWorkspaceId,
+  canManageProductAccess,
+  canManageInviteTemplate,
+  currentUserEmail,
+}: ProvisioningFormProps) {
   const initialWorkspaceId =
     (activeWorkspaceId && workspaces.some((workspace) => workspace.id === activeWorkspaceId) ? activeWorkspaceId : null)
     ?? workspaces[0]?.id
@@ -231,6 +241,12 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId, c
   const [servicesLoading, setServicesLoading] = useState(false);
   const [entitlementActionId, setEntitlementActionId] = useState<string | null>(null);
   const [serviceActionId, setServiceActionId] = useState<string | null>(null);
+  const [templateSubject, setTemplateSubject] = useState(DEFAULT_INVITE_TEMPLATE.subject);
+  const [templateBody, setTemplateBody] = useState(DEFAULT_INVITE_TEMPLATE.body);
+  const [templateSignature, setTemplateSignature] = useState(DEFAULT_INVITE_TEMPLATE.signature);
+  const [templateLoading, setTemplateLoading] = useState(false);
+  const [templateSaving, setTemplateSaving] = useState(false);
+  const [templateStatus, setTemplateStatus] = useState<string | null>(null);
 
   const selectedWorkspace = useMemo(
     () => workspaces.find((workspace) => workspace.id === workspaceId) ?? null,
@@ -290,6 +306,13 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId, c
             : []),
         ],
         notes,
+        inviteTemplate: canManageInviteTemplate
+          ? {
+              subject: templateSubject,
+              body: templateBody,
+              signature: templateSignature,
+            }
+          : undefined,
       }),
     });
 
@@ -363,6 +386,18 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId, c
     () => workspaceInvitations.find((row) => row.status === "pending") ?? workspaceInvitations[0] ?? null,
     [workspaceInvitations]
   );
+  const invitePreview = renderInviteTemplate(
+    {
+      subject: templateSubject,
+      body: templateBody,
+      signature: templateSignature,
+    },
+    {
+      schoolName: selectedWorkspace?.displayName ?? (workspaceName || "School"),
+      inviteeEmail: primaryAdminEmail || "user@school.edu",
+      senderName: currentUserEmail || "Canopy",
+    }
+  );
 
   useEffect(() => {
     if (workspaceMode !== "existing") {
@@ -406,6 +441,86 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId, c
       .finally(() => { if (!controller.signal.aborted) setServicesLoading(false); });
     return () => controller.abort();
   }, [workspaceId, workspaceMode]);
+
+  useEffect(() => {
+    if (!canManageInviteTemplate) {
+      return;
+    }
+
+    if (workspaceMode === "new") {
+      setTemplateSubject(DEFAULT_INVITE_TEMPLATE.subject);
+      setTemplateBody(DEFAULT_INVITE_TEMPLATE.body);
+      setTemplateSignature(DEFAULT_INVITE_TEMPLATE.signature);
+      setTemplateStatus(null);
+      setTemplateLoading(false);
+      return;
+    }
+
+    if (!workspaceId) {
+      return;
+    }
+
+    const controller = new AbortController();
+    setTemplateLoading(true);
+    setTemplateStatus(null);
+
+    fetch(`/api/invite-template?workspaceId=${encodeURIComponent(workspaceId)}`, { signal: controller.signal })
+      .then((res) => res.json())
+      .then((body: { template?: InviteTemplate; error?: string }) => {
+        if (controller.signal.aborted) {
+          return;
+        }
+        const template = body.template ?? DEFAULT_INVITE_TEMPLATE;
+        setTemplateSubject(template.subject);
+        setTemplateBody(template.body);
+        setTemplateSignature(template.signature);
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) {
+          setTemplateSubject(DEFAULT_INVITE_TEMPLATE.subject);
+          setTemplateBody(DEFAULT_INVITE_TEMPLATE.body);
+          setTemplateSignature(DEFAULT_INVITE_TEMPLATE.signature);
+          setTemplateStatus("Failed to load invite template.");
+        }
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) {
+          setTemplateLoading(false);
+        }
+      });
+
+    return () => controller.abort();
+  }, [canManageInviteTemplate, workspaceId, workspaceMode]);
+
+  async function saveInviteTemplate() {
+    if (!canManageInviteTemplate || workspaceMode !== "existing" || !workspaceId) {
+      return;
+    }
+
+    setTemplateSaving(true);
+    setTemplateStatus(null);
+
+    const response = await fetch("/api/invite-template", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        workspaceId,
+        subject: templateSubject,
+        body: templateBody,
+        signature: templateSignature,
+      }),
+    });
+
+    const body = (await response.json()) as { ok?: boolean; message?: string; error?: string };
+    setTemplateSaving(false);
+
+    if (!response.ok || !body.ok) {
+      setTemplateStatus(body.error ?? "Failed to save invite template.");
+      return;
+    }
+
+    setTemplateStatus(body.message ?? "Invite template saved.");
+  }
 
   async function handleEntitlementAction(productKey: ProductKey, action: "pause" | "resume" | "remove") {
     if (!canManageProductAccess) {
@@ -621,6 +736,81 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId, c
               Prefilled from the latest saved invitation for this workspace.
             </p>
           ) : null}
+        </section>
+
+        <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
+          <p className="eyebrow">Invite Email</p>
+          <div className="mb-4 flex items-start justify-between gap-4">
+            <div>
+              <h3 className="mb-1 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Invite message template</h3>
+              <p className="m-0 text-sm text-muted">
+                Placeholders: {"{{school_name}}"}, {"{{invitee_email}}"}, {"{{sender_name}}"}
+              </p>
+            </div>
+            {workspaceMode === "existing" && canManageInviteTemplate ? (
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                disabled={templateSaving || templateLoading || !workspaceId}
+                onClick={() => void saveInviteTemplate()}
+              >
+                {templateSaving ? "Saving..." : "Save template"}
+              </Button>
+            ) : null}
+          </div>
+
+          {canManageInviteTemplate ? (
+            <>
+              <div className="space-y-4">
+                <label className="space-y-2">
+                  <Label>Subject</Label>
+                  <Input
+                    type="text"
+                    value={templateSubject}
+                    onChange={(event) => setTemplateSubject(event.target.value)}
+                    className="text-sm"
+                    required
+                  />
+                </label>
+                <label className="space-y-2">
+                  <Label>Body</Label>
+                  <Textarea
+                    value={templateBody}
+                    onChange={(event) => setTemplateBody(event.target.value)}
+                    className="min-h-32"
+                    required
+                  />
+                </label>
+                <label className="space-y-2">
+                  <Label>Signature</Label>
+                  <Input
+                    type="text"
+                    value={templateSignature}
+                    onChange={(event) => setTemplateSignature(event.target.value)}
+                    className="text-sm"
+                    required
+                  />
+                </label>
+              </div>
+
+              <div className="mt-4 rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 p-4">
+                <p className="m-0 text-sm font-semibold text-ink">{invitePreview.subject}</p>
+                <p className="m-0 mt-3 whitespace-pre-wrap text-sm text-muted">{invitePreview.body}</p>
+                <p className="m-0 mt-3 text-sm text-muted">{invitePreview.signature}</p>
+              </div>
+
+              <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-muted">
+                {templateLoading ? <p className="m-0">Loading saved template...</p> : null}
+                {!templateLoading && workspaceMode === "new" ? (
+                  <p className="m-0">This draft will be saved to the new workspace when you provision it.</p>
+                ) : null}
+                {templateStatus ? <p className="m-0">{templateStatus}</p> : null}
+              </div>
+            </>
+          ) : (
+            <p className="text-sm text-muted">Only Super Admin can edit invite templates.</p>
+          )}
         </section>
 
         {workspaceMode === "existing" && (

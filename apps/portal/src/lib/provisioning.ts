@@ -7,6 +7,7 @@ import {
   type WorkspaceRole,
 } from "@/lib/platform";
 import { logAuditEvent } from "@/lib/audit";
+import { DEFAULT_INVITE_TEMPLATE, normalizeInviteTemplate, renderInviteTemplate, type InviteTemplate } from "@/lib/invite-template";
 
 type ProvisioningEnv = {
   supabaseUrl: string;
@@ -37,7 +38,9 @@ export type ProvisionWorkspaceInput = {
   services: ProvisionedServiceInput[];
   notes?: string;
   provisionedByUserId: string;
+  actorEmail?: string | null;
   inviteRedirectTo?: string;
+  inviteTemplate?: InviteTemplate;
 };
 
 export type ProvisionWorkspaceResult = {
@@ -131,6 +134,12 @@ type ServiceStateRow = {
   service_key?: string | null;
   status?: string | null;
   setup_state?: string | null;
+};
+
+type InviteTemplateRow = {
+  subject?: string | null;
+  body?: string | null;
+  signature?: string | null;
 };
 
 function getProvisioningEnv(): ProvisioningEnv {
@@ -350,6 +359,12 @@ async function findUserByEmail(email: string) {
 
 async function inviteUserByEmail(email: string, input: ProvisionWorkspaceInput, workspace: PortalWorkspace) {
   const env = getProvisioningEnv();
+  const template = input.inviteTemplate ? normalizeInviteTemplate(input.inviteTemplate) : await getWorkspaceInviteTemplate(workspace.id);
+  const renderedInvite = renderInviteTemplate(template, {
+    schoolName: workspace.displayName,
+    inviteeEmail: email,
+    senderName: input.actorEmail?.trim() || "Canopy",
+  });
   const response = await fetch(new URL("/auth/v1/invite", env.supabaseUrl), {
     method: "POST",
     headers: {
@@ -364,6 +379,9 @@ async function inviteUserByEmail(email: string, input: ProvisionWorkspaceInput, 
         workspace_slug: workspace.slug,
         workspace_name: workspace.displayName,
         platform_role_hint: input.initialRole,
+        invite_message_subject: renderedInvite.subject,
+        invite_message_body: renderedInvite.body,
+        invite_message_signature: renderedInvite.signature,
       },
       redirect_to: input.inviteRedirectTo,
     }),
@@ -376,6 +394,50 @@ async function inviteUserByEmail(email: string, input: ProvisionWorkspaceInput, 
   }
 
   return (await response.json()) as InviteUserResponse;
+}
+
+export async function getWorkspaceInviteTemplate(workspaceId: string): Promise<InviteTemplate> {
+  const rows = await requestJson<InviteTemplateRow[]>(
+    "/rest/v1/org_invite_templates",
+    {
+      searchParams: new URLSearchParams({
+        select: "subject,body,signature",
+        org_id: `eq.${workspaceId}`,
+        limit: "1",
+      }),
+    }
+  );
+
+  return normalizeInviteTemplate(rows[0] ?? DEFAULT_INVITE_TEMPLATE);
+}
+
+export async function saveWorkspaceInviteTemplate(
+  workspaceId: string,
+  templateInput: unknown,
+  updatedByUserId?: string
+): Promise<InviteTemplate> {
+  const template = normalizeInviteTemplate(templateInput);
+
+  await requestJson<InviteTemplateRow[]>(
+    "/rest/v1/org_invite_templates",
+    {
+      method: "POST",
+      prefer: "resolution=merge-duplicates,return=representation",
+      searchParams: new URLSearchParams({
+        on_conflict: "org_id",
+      }),
+      body: {
+        org_id: workspaceId,
+        subject: template.subject,
+        body: template.body,
+        signature: template.signature,
+        updated_by: updatedByUserId ?? null,
+        updated_at: new Date().toISOString(),
+      },
+    }
+  );
+
+  return template;
 }
 
 async function getMembership(userId: string, workspaceId: string) {
@@ -740,6 +802,7 @@ export async function resendWorkspaceAdminInvitation(options: {
     products: [],
     services: [],
     provisionedByUserId: options.provisionedByUserId,
+    actorEmail: options.actorEmail,
     inviteRedirectTo: options.inviteRedirectTo,
   }, workspace);
 
@@ -1194,13 +1257,16 @@ export async function provisionWorkspace(input: ProvisionWorkspaceInput): Promis
   assertValidInput(input);
 
   const workspace = await resolveWorkspace(input);
+  const inviteTemplate = input.inviteTemplate
+    ? await saveWorkspaceInviteTemplate(workspace.id, input.inviteTemplate, input.provisionedByUserId)
+    : await getWorkspaceInviteTemplate(workspace.id);
   const normalizedEmail = normalizeEmail(input.primaryAdminEmail);
   let existingUser = await findUserByEmail(normalizedEmail);
   let inviteSent = false;
   let inviteSentAt: string | null = null;
 
   if (!existingUser) {
-    const invite = await inviteUserByEmail(normalizedEmail, input, workspace);
+    const invite = await inviteUserByEmail(normalizedEmail, { ...input, inviteTemplate }, workspace);
     existingUser = invite.user?.id ? { id: invite.user.id, email: invite.user.email ?? normalizedEmail } : null;
     inviteSent = true;
     inviteSentAt = new Date().toISOString();
@@ -1313,6 +1379,7 @@ export async function createWorkspaceInvitation(input: {
         products: [],
         services: [],
         provisionedByUserId: input.invitedByUserId,
+        actorEmail: input.invitedByEmail,
         inviteRedirectTo: input.inviteRedirectTo,
       },
       workspace

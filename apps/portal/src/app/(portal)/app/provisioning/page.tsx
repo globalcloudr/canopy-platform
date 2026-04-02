@@ -31,6 +31,8 @@ export default async function ProvisioningPage({ searchParams }: ProvisioningPag
       invitations={invitations}
       activeWorkspaceId={session.activeWorkspace?.id ?? null}
       canManageProductAccess={session.platformRole === "super_admin"}
+      canManageInviteTemplate={session.platformRole === "super_admin"}
+      currentUserEmail={session.user.email}
     />
   );
 }

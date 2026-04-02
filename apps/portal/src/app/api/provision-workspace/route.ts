@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { resolvePortalSession, type ProductKey, type ServiceSetupState, type ServiceStatus, type SetupState, type WorkspaceRole } from "@/lib/platform";
 import { provisionWorkspace, type ProvisionWorkspaceInput } from "@/lib/provisioning";
+import { normalizeInviteTemplate, type InviteTemplate } from "@/lib/invite-template";
 
 type RequestBody = {
   workspaceMode?: "existing" | "new";
@@ -21,6 +22,7 @@ type RequestBody = {
     setupState?: ServiceSetupState;
   }>;
   notes?: string;
+  inviteTemplate?: InviteTemplate;
 };
 
 function parseBody(body: RequestBody): Omit<ProvisionWorkspaceInput, "provisionedByUserId"> {
@@ -47,6 +49,7 @@ function parseBody(body: RequestBody): Omit<ProvisionWorkspaceInput, "provisione
         setupState: item.setupState,
       })),
     notes: body.notes?.trim() || undefined,
+    inviteTemplate: body.inviteTemplate ? normalizeInviteTemplate(body.inviteTemplate) : undefined,
   };
 }
 
@@ -84,6 +87,7 @@ export async function POST(request: NextRequest) {
     const result = await provisionWorkspace({
       ...parseBody(body),
       provisionedByUserId: session.user.id,
+      actorEmail: session.user.email,
       inviteRedirectTo: `${normalizeOrigin(request.nextUrl.origin)}/sign-in`,
     });
 
