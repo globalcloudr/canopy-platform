@@ -195,10 +195,10 @@ export function PlatformUsersPanel({ auditWorkspaceId, currentUserId = null }: P
       <header className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
         <p className="eyebrow">Platform Users</p>
         <h2 className="mb-1">Internal team access</h2>
-        <p className="m-0 max-w-[64ch] text-sm text-muted">
+        <p className="m-0 max-w-[64ch] text-sm text-[var(--text-muted)]">
           Invite and manage internal Portal users. Super Admin handles governance-level actions here instead of relying on the old PhotoVault platform console.
         </p>
-        <div className="mt-4 flex flex-wrap gap-3 text-sm text-muted">
+        <div className="mt-4 flex flex-wrap gap-3 text-sm text-[var(--text-muted)]">
           <span>{counts.total} platform users</span>
           <span>{counts.superAdmins} Super Admin</span>
           <span>{counts.platformStaff} Platform Staff</span>
@@ -243,7 +243,7 @@ export function PlatformUsersPanel({ auditWorkspaceId, currentUserId = null }: P
           {ROLE_OPTIONS.map((option) => (
             <div key={option.value} className="rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 p-4">
               <p className="m-0 text-sm font-semibold text-ink">{option.label}</p>
-              <p className="mt-1 text-sm text-muted">{option.description}</p>
+              <p className="mt-1 text-sm text-[var(--text-muted)]">{option.description}</p>
             </div>
           ))}
         </div>
@@ -258,9 +258,9 @@ export function PlatformUsersPanel({ auditWorkspaceId, currentUserId = null }: P
         <p className="eyebrow">Current Access</p>
         <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Active platform users</h3>
         {loading ? (
-          <p className="text-sm text-muted">Loading platform users...</p>
+          <p className="text-sm text-[var(--text-muted)]">Loading platform users...</p>
         ) : users.length === 0 ? (
-          <p className="text-sm text-muted">No platform users yet.</p>
+          <p className="text-sm text-[var(--text-muted)]">No platform users yet.</p>
         ) : (
           <div className="space-y-3">
             {users.map((user) => {
@@ -273,8 +273,8 @@ export function PlatformUsersPanel({ auditWorkspaceId, currentUserId = null }: P
                 >
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold text-ink">{user.fullName || user.email || user.userId}</p>
-                    <p className="mt-1 truncate text-sm text-muted">{user.email ?? "No email"}</p>
-                    <p className="mt-1 text-sm text-muted">
+                    <p className="mt-1 truncate text-sm text-[var(--text-muted)]">{user.email ?? "No email"}</p>
+                    <p className="mt-1 text-sm text-[var(--text-muted)]">
                       {user.roleLabel} {user.invited ? "• Invited" : "• Active"} • {formatLastSeen(user.lastSignInAt)}
                     </p>
                   </div>

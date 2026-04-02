@@ -615,7 +615,7 @@ export function ProvisioningForm({
       <header className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
         <p className="eyebrow">Admin</p>
         <h2 className="mb-1">Workspace Provisioning</h2>
-        <p className="m-0 max-w-[60ch] text-sm text-muted">
+        <p className="m-0 max-w-[60ch] text-sm text-[var(--text-muted)]">
           Create or update a client workspace, assign the initial school admin, and enable the products or services
           they should see in Canopy.
         </p>
@@ -693,7 +693,7 @@ export function ProvisioningForm({
             )}
           </div>
           {workspaceMode === "existing" && selectedWorkspace ? (
-            <p className="mt-3 text-sm text-muted">Provisioning will update access for {selectedWorkspace.displayName}.</p>
+            <p className="mt-3 text-sm text-[var(--text-muted)]">Provisioning will update access for {selectedWorkspace.displayName}.</p>
           ) : null}
         </section>
 
@@ -732,7 +732,7 @@ export function ProvisioningForm({
             </label>
           </div>
           {workspaceMode === "existing" && latestPendingInvitation ? (
-            <p className="mt-3 text-sm text-muted">
+            <p className="mt-3 text-sm text-[var(--text-muted)]">
               Prefilled from the latest saved invitation for this workspace.
             </p>
           ) : null}
@@ -743,7 +743,7 @@ export function ProvisioningForm({
           <div className="mb-4 flex items-start justify-between gap-4">
             <div>
               <h3 className="mb-1 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Invite message template</h3>
-              <p className="m-0 text-sm text-muted">
+              <p className="m-0 text-sm text-[var(--text-muted)]">
                 Placeholders: {"{{school_name}}"}, {"{{invitee_email}}"}, {"{{sender_name}}"}
               </p>
             </div>
@@ -796,11 +796,11 @@ export function ProvisioningForm({
 
               <div className="mt-4 rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 p-4">
                 <p className="m-0 text-sm font-semibold text-ink">{invitePreview.subject}</p>
-                <p className="m-0 mt-3 whitespace-pre-wrap text-sm text-muted">{invitePreview.body}</p>
-                <p className="m-0 mt-3 text-sm text-muted">{invitePreview.signature}</p>
+                <p className="m-0 mt-3 whitespace-pre-wrap text-sm text-[var(--text-muted)]">{invitePreview.body}</p>
+                <p className="m-0 mt-3 text-sm text-[var(--text-muted)]">{invitePreview.signature}</p>
               </div>
 
-              <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-muted">
+              <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-[var(--text-muted)]">
                 {templateLoading ? <p className="m-0">Loading saved template...</p> : null}
                 {!templateLoading && workspaceMode === "new" ? (
                   <p className="m-0">This draft will be saved to the new workspace when you provision it.</p>
@@ -809,7 +809,7 @@ export function ProvisioningForm({
               </div>
             </>
           ) : (
-            <p className="text-sm text-muted">Only Super Admin can edit invite templates.</p>
+            <p className="text-sm text-[var(--text-muted)]">Only Super Admin can edit invite templates.</p>
           )}
         </section>
 
@@ -839,9 +839,9 @@ export function ProvisioningForm({
             <p className="eyebrow">Currently Enabled</p>
             <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Active products for this workspace</h3>
             {entitlementsLoading ? (
-              <p className="text-sm text-muted">Loading...</p>
+              <p className="text-sm text-[var(--text-muted)]">Loading...</p>
             ) : currentEntitlements.length === 0 ? (
-              <p className="text-sm text-muted">No products currently enabled for this workspace.</p>
+              <p className="text-sm text-[var(--text-muted)]">No products currently enabled for this workspace.</p>
             ) : (
               <div className="space-y-2">
                 {currentEntitlements.map((ent) => {
@@ -856,7 +856,7 @@ export function ProvisioningForm({
                     >
                       <div>
                         <p className="m-0 text-sm font-semibold text-ink">{productLabel(ent.productKey)}</p>
-                        <p className="m-0 mt-0.5 text-sm text-muted">{entitlementStatusLabel(ent.status)} · {ent.setupState}</p>
+                        <p className="m-0 mt-0.5 text-sm text-[var(--text-muted)]">{entitlementStatusLabel(ent.status)} · {ent.setupState}</p>
                       </div>
                       <div className="flex shrink-0 items-center gap-2">
                         {canManageProductAccess ? (
@@ -893,7 +893,7 @@ export function ProvisioningForm({
                             </Button>
                           </>
                         ) : (
-                          <p className="m-0 text-sm text-muted">Super Admin only</p>
+                          <p className="m-0 text-sm text-[var(--text-muted)]">Super Admin only</p>
                         )}
                       </div>
                     </div>
@@ -909,9 +909,9 @@ export function ProvisioningForm({
             <p className="eyebrow">Current Services</p>
             <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Service visibility for this workspace</h3>
             {servicesLoading ? (
-              <p className="text-sm text-muted">Loading...</p>
+              <p className="text-sm text-[var(--text-muted)]">Loading...</p>
             ) : currentServices.length === 0 ? (
-              <p className="text-sm text-muted">No services currently configured for this workspace.</p>
+              <p className="text-sm text-[var(--text-muted)]">No services currently configured for this workspace.</p>
             ) : (
               <div className="space-y-2">
                 {currentServices.map((service) => {
@@ -926,7 +926,7 @@ export function ProvisioningForm({
                     >
                       <div>
                         <p className="m-0 text-sm font-semibold text-ink">{serviceLabel(service.serviceKey)}</p>
-                        <p className="m-0 mt-0.5 text-sm text-muted">{serviceStatusLabel(service)}</p>
+                        <p className="m-0 mt-0.5 text-sm text-[var(--text-muted)]">{serviceStatusLabel(service)}</p>
                       </div>
                       <div className="flex shrink-0 items-center gap-2">
                         {canManageProductAccess ? (
@@ -963,7 +963,7 @@ export function ProvisioningForm({
                             </Button>
                           </>
                         ) : (
-                          <p className="m-0 text-sm text-muted">Super Admin only</p>
+                          <p className="m-0 text-sm text-[var(--text-muted)]">Super Admin only</p>
                         )}
                       </div>
                     </div>
@@ -983,7 +983,7 @@ export function ProvisioningForm({
               <label className="flex items-start justify-between gap-4">
                 <div>
                   <p className="m-0 text-sm font-semibold text-ink">PhotoVault</p>
-                  <p className="m-0 mt-1 text-sm text-muted">Media library, albums, and approved brand assets.</p>
+                  <p className="m-0 mt-1 text-sm text-[var(--text-muted)]">Media library, albums, and approved brand assets.</p>
                 </div>
                 <input
                   type="checkbox"
@@ -1019,7 +1019,7 @@ export function ProvisioningForm({
               <label className="flex items-start justify-between gap-4">
                 <div>
                   <p className="m-0 text-sm font-semibold text-ink">Canopy Stories</p>
-                  <p className="m-0 mt-1 text-sm text-muted">Automated success story production — blog, social, and video.</p>
+                  <p className="m-0 mt-1 text-sm text-[var(--text-muted)]">Automated success story production — blog, social, and video.</p>
                 </div>
                 <input
                   type="checkbox"
@@ -1055,7 +1055,7 @@ export function ProvisioningForm({
               <label className="flex items-start justify-between gap-4">
                 <div>
                   <p className="m-0 text-sm font-semibold text-ink">Canopy Reach</p>
-                  <p className="m-0 mt-1 text-sm text-muted">Social media scheduling and publishing.</p>
+                  <p className="m-0 mt-1 text-sm text-[var(--text-muted)]">Social media scheduling and publishing.</p>
                 </div>
                 <input
                   type="checkbox"
@@ -1087,14 +1087,14 @@ export function ProvisioningForm({
           )}
 
             {enabledProductKeys.has("photovault") && enabledProductKeys.has("stories_canopy") && enabledProductKeys.has("reach_canopy") && (
-              <p className="text-sm text-muted">All available products are already enabled for this workspace.</p>
+              <p className="text-sm text-[var(--text-muted)]">All available products are already enabled for this workspace.</p>
             )}
           </section>
         ) : (
           <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
             <p className="eyebrow">Products</p>
             <h3 className="mb-2 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Enable workspace apps</h3>
-            <p className="text-sm text-muted">Only Super Admin can add, pause, resume, or remove products.</p>
+            <p className="text-sm text-[var(--text-muted)]">Only Super Admin can add, pause, resume, or remove products.</p>
           </section>
         )}
 
@@ -1108,7 +1108,7 @@ export function ProvisioningForm({
                 <label className="flex items-start justify-between gap-4">
                   <div>
                     <p className="m-0 text-sm font-semibold text-ink">School Website Setup</p>
-                    <p className="m-0 mt-1 text-sm text-muted">Managed implementation support for a school website.</p>
+                    <p className="m-0 mt-1 text-sm text-[var(--text-muted)]">Managed implementation support for a school website.</p>
                   </div>
                   <input
                     type="checkbox"
@@ -1143,7 +1143,7 @@ export function ProvisioningForm({
                 <label className="flex items-start justify-between gap-4">
                   <div>
                     <p className="m-0 text-sm font-semibold text-ink">Creative Retainer</p>
-                    <p className="m-0 mt-1 text-sm text-muted">Ongoing design and creative support visibility.</p>
+                    <p className="m-0 mt-1 text-sm text-[var(--text-muted)]">Ongoing design and creative support visibility.</p>
                   </div>
                   <input
                     type="checkbox"
@@ -1174,14 +1174,14 @@ export function ProvisioningForm({
             )}
             </div>
             {enabledServiceKeys.has("school-website-setup") && enabledServiceKeys.has("creative-retainer") && (
-              <p className="text-sm text-muted">All available services are already configured for this workspace.</p>
+              <p className="text-sm text-[var(--text-muted)]">All available services are already configured for this workspace.</p>
             )}
           </section>
         ) : (
           <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
             <p className="eyebrow">Services</p>
             <h3 className="mb-2 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Set service visibility</h3>
-            <p className="text-sm text-muted">Only Super Admin can add, pause, resume, or remove services.</p>
+            <p className="text-sm text-[var(--text-muted)]">Only Super Admin can add, pause, resume, or remove services.</p>
           </section>
         )}
 
@@ -1229,12 +1229,12 @@ export function ProvisioningForm({
           <div className="grid gap-4 md:grid-cols-2">
             <div className="rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 p-4">
               <p className="m-0 text-sm font-semibold text-ink">Invitation</p>
-              <p className="m-0 mt-1 text-sm text-muted">{result.invitation.email}</p>
+              <p className="m-0 mt-1 text-sm text-[var(--text-muted)]">{result.invitation.email}</p>
               <p className="m-0 mt-2 text-sm text-ink">{invitationStatusLabel(result.invitation.status)}</p>
             </div>
             <div className="rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 p-4">
               <p className="m-0 text-sm font-semibold text-ink">Membership</p>
-              <p className="m-0 mt-1 text-sm text-muted">
+              <p className="m-0 mt-1 text-sm text-[var(--text-muted)]">
                 {result.membership ? `${result.membership.role} • ${result.membership.created ? "Created now" : "Already existed"}` : "No membership row created yet"}
               </p>
             </div>
@@ -1245,12 +1245,12 @@ export function ProvisioningForm({
               <p className="m-0 text-sm font-semibold text-ink">Products</p>
               <div className="mt-3 space-y-2">
                 {result.entitlements.length === 0 ? (
-                  <p className="m-0 text-sm text-muted">No products enabled.</p>
+                  <p className="m-0 text-sm text-[var(--text-muted)]">No products enabled.</p>
                 ) : (
                   result.entitlements.map((item) => (
                     <div key={item.productKey} className="flex items-center justify-between gap-3 text-sm">
                       <span className="font-medium text-ink">{productLabel(item.productKey as ProductKey)}</span>
-                      <span className="text-muted">{entitlementStatusLabel(item.status as WorkspaceEntitlement["status"])} • {item.setupState}</span>
+                      <span className="text-[var(--text-muted)]">{entitlementStatusLabel(item.status as WorkspaceEntitlement["status"])} • {item.setupState}</span>
                     </div>
                   ))
                 )}
@@ -1261,12 +1261,12 @@ export function ProvisioningForm({
               <p className="m-0 text-sm font-semibold text-ink">Services</p>
               <div className="mt-3 space-y-2">
                 {result.services.length === 0 ? (
-                  <p className="m-0 text-sm text-muted">No services selected.</p>
+                  <p className="m-0 text-sm text-[var(--text-muted)]">No services selected.</p>
                 ) : (
                   result.services.map((item) => (
                     <div key={item.serviceKey} className="flex items-center justify-between gap-3 text-sm">
                       <span className="font-medium text-ink">{serviceLabel(item.serviceKey)}</span>
-                      <span className="text-muted">{item.status} • {item.setupState}</span>
+                      <span className="text-[var(--text-muted)]">{item.status} • {item.setupState}</span>
                     </div>
                   ))
                 )}
@@ -1280,9 +1280,9 @@ export function ProvisioningForm({
         <p className="eyebrow">Invitation Status</p>
         <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Current workspace invitations</h3>
         {workspaceMode !== "existing" && !result ? (
-          <p className="m-0 text-sm text-muted">Select an existing workspace or submit a new one to view invitation status.</p>
+          <p className="m-0 text-sm text-[var(--text-muted)]">Select an existing workspace or submit a new one to view invitation status.</p>
         ) : workspaceInvitations.length === 0 ? (
-          <p className="m-0 text-sm text-muted">No invitation records found for this workspace yet.</p>
+          <p className="m-0 text-sm text-[var(--text-muted)]">No invitation records found for this workspace yet.</p>
         ) : (
           <div className="space-y-3">
             {workspaceInvitations.map((invitation) => (
@@ -1292,7 +1292,7 @@ export function ProvisioningForm({
               >
                 <div>
                   <p className="m-0 text-sm font-semibold text-ink">{invitation.email}</p>
-                  <p className="m-0 mt-1 text-sm text-muted">
+                  <p className="m-0 mt-1 text-sm text-[var(--text-muted)]">
                     {invitation.role} • {new Date(invitation.createdAt).toLocaleDateString()}
                     {invitation.sentAt ? ` • Sent ${new Date(invitation.sentAt).toLocaleDateString()}` : ""}
                   </p>

@@ -84,7 +84,7 @@ export function SchoolOpsPanel({ workspaces, ownerStatuses, activeWorkspaceId }:
       <header className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
         <p className="eyebrow">School Ops</p>
         <h2 className="mb-1">Workspace operations</h2>
-        <p className="m-0 max-w-[68ch] text-sm text-muted">
+        <p className="m-0 max-w-[68ch] text-sm text-[var(--text-muted)]">
           Review workspace ownership at a glance, jump directly into Brand Portal or audit, and transfer ownership when needed. School
           creation and admin invite flow now live in Portal provisioning.
         </p>
@@ -102,7 +102,7 @@ export function SchoolOpsPanel({ workspaces, ownerStatuses, activeWorkspaceId }:
         <p className="eyebrow">Client Workspaces</p>
         <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Active schools</h3>
         {workspaces.length === 0 ? (
-          <p className="text-sm text-muted">No workspaces found.</p>
+          <p className="text-sm text-[var(--text-muted)]">No workspaces found.</p>
         ) : (
           <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
             {workspaces.map((workspace) => {
@@ -121,7 +121,7 @@ export function SchoolOpsPanel({ workspaces, ownerStatuses, activeWorkspaceId }:
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
                       <h4 className="truncate text-[1rem] font-semibold tracking-[-0.02em] text-ink">{workspace.displayName}</h4>
-                      <p className="mt-1 text-sm text-muted">{workspace.slug}</p>
+                      <p className="mt-1 text-sm text-[var(--text-muted)]">{workspace.slug}</p>
                     </div>
                     {workspace.id === activeWorkspaceId ? (
                       <span className="rounded-full bg-sky-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-sky-700">
@@ -146,7 +146,7 @@ export function SchoolOpsPanel({ workspaces, ownerStatuses, activeWorkspaceId }:
                     )}
                   </div>
 
-                  <p className="mt-3 text-sm text-muted">{ownerLabel}</p>
+                  <p className="mt-3 text-sm text-[var(--text-muted)]">{ownerLabel}</p>
 
                   <div className="mt-4 flex flex-wrap gap-2">
                     <a
@@ -229,7 +229,7 @@ export function SchoolOpsPanel({ workspaces, ownerStatuses, activeWorkspaceId }:
             {busy ? "Starting..." : "Transfer ownership"}
           </Button>
         </form>
-        <p className="mt-3 text-sm text-muted">
+        <p className="mt-3 text-sm text-[var(--text-muted)]">
           {transferWorkspace
             ? `The invite will be sent for ${transferWorkspace.displayName}, and previous owner memberships will be handled according to the selected option.`
             : "Choose a workspace to start an ownership transfer."}
