@@ -33,3 +33,15 @@ export async function openReachSwitcher(page: Page) {
   await expect(switcher).toBeVisible();
   await switcher.click();
 }
+
+export async function clickFirstVisibleMenuItem(page: Page, names: string[]) {
+  for (const name of names) {
+    const item = page.getByRole("menuitem", { name });
+    if (await item.count()) {
+      await item.first().click();
+      return name;
+    }
+  }
+
+  throw new Error(`None of the expected menu items were visible: ${names.join(", ")}`);
+}
