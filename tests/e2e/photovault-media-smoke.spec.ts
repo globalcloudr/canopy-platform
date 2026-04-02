@@ -1,9 +1,21 @@
+import { readFileSync } from "node:fs";
 import path from "node:path";
 import { expect, test } from "@playwright/test";
 import { getPortalE2EConfig, hasPortalCredentials } from "./support/env";
 import { launchPortalProduct, signInToPortal, waitForPhotoVaultReady } from "./support/portal";
 
-const PHOTOVAULT_UPLOAD_FIXTURE = path.resolve("/Users/zylstra/Code/photovault/public/images/home/logo_1_bv.png");
+const PHOTOVAULT_UPLOAD_FIXTURE_PATH = path.resolve("/Users/zylstra/Code/photovault/public/images/home/logo_1_bv.png");
+
+function createUniquePhotoVaultUpload() {
+  const baseBuffer = readFileSync(PHOTOVAULT_UPLOAD_FIXTURE_PATH);
+  const uniqueSuffix = Buffer.from(`canopy-playwright-${Date.now()}`, "utf8");
+
+  return {
+    name: `playwright-upload-${Date.now()}.png`,
+    mimeType: "image/png",
+    buffer: Buffer.concat([baseBuffer, uniqueSuffix]),
+  };
+}
 
 test.describe("PhotoVault media smoke", () => {
   test.skip(!hasPortalCredentials(), "Set E2E_PORTAL_EMAIL and E2E_PORTAL_PASSWORD to run PhotoVault media smoke tests.");
@@ -33,7 +45,7 @@ test.describe("PhotoVault media smoke", () => {
     await expect(page.locator("body")).not.toContainText("Loading photos...");
 
     const fileInput = page.locator('input[type="file"][accept="image/*"]').first();
-    await fileInput.setInputFiles(PHOTOVAULT_UPLOAD_FIXTURE);
+    await fileInput.setInputFiles(createUniquePhotoVaultUpload());
 
     await expect(page.locator("body")).not.toContainText("Upload failed:");
     await expect(page.locator("body")).toContainText("Uploaded.", { timeout: 60_000 });
