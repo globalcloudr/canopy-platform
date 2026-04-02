@@ -22,6 +22,7 @@ test.describe("PhotoVault media smoke", () => {
     await page.getByPlaceholder("e.g., Spring Graduation").fill(albumName);
     await page.getByPlaceholder("Event Date").click();
     await page.locator('input[type="date"]').fill("2026-04-02");
+    await expect(page.locator("select").nth(1)).toContainText("AWD", { timeout: 60_000 });
     await page.getByRole("button", { name: "Create album" }).click();
 
     await page.waitForURL((url) => url.hostname.includes("photovault") && url.pathname === "/albums", { timeout: 60_000 });
