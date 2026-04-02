@@ -350,6 +350,7 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
   }
 
   const enabledProductKeys = new Set(currentEntitlements.map((e) => e.productKey));
+  const enabledServiceKeys = new Set(currentServices.map((service) => service.serviceKey));
   const selectedWorkspaceId = workspaceMode === "existing" ? workspaceId : result?.workspace.id ?? null;
   const workspaceInvitations = invitationRows.filter((row) => row.workspaceId === selectedWorkspaceId);
   const provisioningSummary = useMemo(
@@ -814,72 +815,79 @@ export function ProvisioningForm({ workspaces, invitations, activeWorkspaceId }:
           <p className="eyebrow">Services</p>
           <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Set service visibility</h3>
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 p-4">
-              <label className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="m-0 text-sm font-semibold text-ink">School Website Setup</p>
-                  <p className="m-0 mt-1 text-sm text-muted">Managed implementation support for a school website.</p>
-                </div>
-                <input
-                  type="checkbox"
-                  checked={enableWebsiteSetup}
-                  onChange={(event) => setEnableWebsiteSetup(event.target.checked)}
-                  className="mt-1 h-4 w-4"
-                />
-              </label>
-              {enableWebsiteSetup ? (
-                <label className="mt-4 block space-y-2">
-                  <Label>Setup state</Label>
-                  <Select
-                    value={websiteSetupState}
-                    onValueChange={setWebsiteSetupState}
-                  >
-                    <SelectTrigger className="text-sm">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="setup">Setup</SelectItem>
-                      <SelectItem value="ready">Ready</SelectItem>
-                      <SelectItem value="pilot">Pilot</SelectItem>
-                    </SelectContent>
-                  </Select>
+            {!enabledServiceKeys.has("school-website-setup") && (
+              <div className="rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 p-4">
+                <label className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="m-0 text-sm font-semibold text-ink">School Website Setup</p>
+                    <p className="m-0 mt-1 text-sm text-muted">Managed implementation support for a school website.</p>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={enableWebsiteSetup}
+                    onChange={(event) => setEnableWebsiteSetup(event.target.checked)}
+                    className="mt-1 h-4 w-4"
+                  />
                 </label>
-              ) : null}
-            </div>
+                {enableWebsiteSetup ? (
+                  <label className="mt-4 block space-y-2">
+                    <Label>Setup state</Label>
+                    <Select
+                      value={websiteSetupState}
+                      onValueChange={setWebsiteSetupState}
+                    >
+                      <SelectTrigger className="text-sm">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="setup">Setup</SelectItem>
+                        <SelectItem value="ready">Ready</SelectItem>
+                        <SelectItem value="pilot">Pilot</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </label>
+                ) : null}
+              </div>
+            )}
 
-            <div className="rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 p-4">
-              <label className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="m-0 text-sm font-semibold text-ink">Creative Retainer</p>
-                  <p className="m-0 mt-1 text-sm text-muted">Ongoing design and creative support visibility.</p>
-                </div>
-                <input
-                  type="checkbox"
-                  checked={enableCreativeRetainer}
-                  onChange={(event) => setEnableCreativeRetainer(event.target.checked)}
-                  className="mt-1 h-4 w-4"
-                />
-              </label>
-              {enableCreativeRetainer ? (
-                <label className="mt-4 block space-y-2">
-                  <Label>Setup state</Label>
-                  <Select
-                    value={creativeRetainerState}
-                    onValueChange={setCreativeRetainerState}
-                  >
-                    <SelectTrigger className="text-sm">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="ready">Ready</SelectItem>
-                      <SelectItem value="setup">Setup</SelectItem>
-                      <SelectItem value="pilot">Pilot</SelectItem>
-                    </SelectContent>
-                  </Select>
+            {!enabledServiceKeys.has("creative-retainer") && (
+              <div className="rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 p-4">
+                <label className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="m-0 text-sm font-semibold text-ink">Creative Retainer</p>
+                    <p className="m-0 mt-1 text-sm text-muted">Ongoing design and creative support visibility.</p>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={enableCreativeRetainer}
+                    onChange={(event) => setEnableCreativeRetainer(event.target.checked)}
+                    className="mt-1 h-4 w-4"
+                  />
                 </label>
-              ) : null}
-            </div>
+                {enableCreativeRetainer ? (
+                  <label className="mt-4 block space-y-2">
+                    <Label>Setup state</Label>
+                    <Select
+                      value={creativeRetainerState}
+                      onValueChange={setCreativeRetainerState}
+                    >
+                      <SelectTrigger className="text-sm">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="ready">Ready</SelectItem>
+                        <SelectItem value="setup">Setup</SelectItem>
+                        <SelectItem value="pilot">Pilot</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </label>
+                ) : null}
+              </div>
+            )}
           </div>
+          {enabledServiceKeys.has("school-website-setup") && enabledServiceKeys.has("creative-retainer") && (
+            <p className="text-sm text-muted">All available services are already configured for this workspace.</p>
+          )}
         </section>
 
         <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
