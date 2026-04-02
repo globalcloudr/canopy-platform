@@ -29,7 +29,8 @@ test.describe("PhotoVault media smoke", () => {
     await page.getByRole("link", { name: `Open ${albumName}` }).first().click();
 
     await page.waitForURL((url) => url.hostname.includes("photovault") && /^\/albums\/[^/]+$/.test(url.pathname), { timeout: 60_000 });
-    await expect(page.getByRole("heading", { name: "Photos" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Photos", exact: true })).toBeVisible();
+    await expect(page.locator("body")).not.toContainText("Loading photos...");
 
     const fileInput = page.locator('input[type="file"][accept="image/*"]').first();
     await fileInput.setInputFiles(PHOTOVAULT_UPLOAD_FIXTURE);
