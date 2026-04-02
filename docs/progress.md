@@ -4,6 +4,40 @@ Append new sessions at the top. Do not overwrite history.
 
 ---
 
+## 2026-04-02 — Playwright smoke expansion across product switching, permissions, and media
+
+- Expanded the original two-test Playwright scaffold into a broader live runtime smoke suite:
+  - `tests/e2e/cross-product-smoke.spec.ts`
+  - `tests/e2e/product-return-smoke.spec.ts`
+  - `tests/e2e/portal-permissions-smoke.spec.ts`
+  - `tests/e2e/super-admin-smoke.spec.ts`
+  - `tests/e2e/photovault-media-smoke.spec.ts`
+  - `tests/e2e/reach-media-smoke.spec.ts`
+- Added shared helper coverage in `tests/e2e/support/portal.ts` for:
+  - portal dashboard assertions
+  - super-admin sign-in
+  - Reach / Stories / PhotoVault readiness checks
+  - PhotoVault return-control handling
+- Used live Playwright runs to find and fix real runtime bugs:
+  - Stories first-load crash caused by array assumptions after a `401`
+  - Stories and Reach switcher race conditions that fell back to the public portal homepage
+  - PhotoVault launch handoff only working on `/` and not on direct routes like `/albums`
+  - PhotoVault portal-return race condition that could fall back to the public homepage
+- Added one real media smoke through PhotoVault:
+  - create a new album
+  - upload one unique image fixture
+  - assert the upload queue and photo count update
+- Reach media smoke remains conditional by environment:
+  - it should only run when the selected workspace both has Reach enabled and has connected social accounts ready for composer/upload testing
+  - current live `Global Cloudr` workspace switches successfully, but Portal does not presently expose Reach as an enabled launcher there
+
+### Verification
+- `npm run test:e2e` passed live with:
+  - `9 passed`
+  - `1 skipped` (`reach-media-smoke.spec.ts`, skipped because the current live workspace setup does not satisfy its Reach entitlement/account prerequisites)
+
+---
+
 ## 2026-04-02 — Playwright runtime smoke scaffold
 
 - Added a first Playwright runtime testing scaffold at the repo root:

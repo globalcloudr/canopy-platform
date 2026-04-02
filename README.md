@@ -58,12 +58,22 @@ Portal only: `cd apps/portal && npm run dev`
 
 ## Playwright E2E
 
-The repo now includes a minimal Playwright smoke suite for portal runtime testing.
+The repo now includes a live Playwright smoke suite for portal runtime testing.
 
 Current coverage:
 - portal sign-in smoke
 - portal dashboard render smoke
-- cross-app smoke: Portal -> Stories -> Reach -> Portal
+- cross-app smoke: Portal -> Stories -> switch -> Portal
+- cross-product smoke: Stories -> PhotoVault -> Portal
+- cross-product smoke: Reach -> PhotoVault -> Portal
+- product return smoke: Portal -> PhotoVault -> Portal
+- product return smoke: Portal -> Reach -> Portal
+- portal permissions smoke: regular workspace users are redirected away from `/app/provisioning`
+- super-admin smoke: operator can load `/app/provisioning`
+- PhotoVault media smoke: create an album and upload one image
+
+Current conditional coverage:
+- Reach media smoke exists, but it only runs when the chosen workspace actually has Canopy Reach enabled and connected social accounts ready for composer/upload testing
 
 Run it with:
 
@@ -100,9 +110,13 @@ Optional E2E env vars:
 
 ```bash
 PLAYWRIGHT_BASE_URL=http://127.0.0.1:3100
+E2E_EXPECTED_PORTAL_RETURN_URL=
 E2E_WORKSPACE_SLUG=
 E2E_STORIES_URL=https://canopy-stories.vercel.app
 E2E_REACH_URL=https://canopy-reach.vercel.app
+E2E_PHOTOVAULT_URL=https://photovault.school
+E2E_SUPER_ADMIN_EMAIL=
+E2E_SUPER_ADMIN_PASSWORD=
 PLAYWRIGHT_SKIP_WEBSERVER=1
 ```
 
@@ -110,6 +124,9 @@ Notes:
 - the Playwright web server uses `apps/portal` on port `3100`
 - the E2E dev server uses a separate Next dist directory (`.next-e2e`) so it can run alongside normal local dev
 - if the E2E credential env vars are missing, the smoke tests skip cleanly instead of failing
+- live smoke runs usually set `PLAYWRIGHT_SKIP_WEBSERVER=1` and target deployed apps directly
+- the PhotoVault media smoke creates a real album and uploads a real image on each run
+- the Reach media smoke depends on a workspace that actually has Reach enabled and connected accounts; otherwise it should be treated as an environment precondition, not a product failure
 
 ## Environment Variables
 

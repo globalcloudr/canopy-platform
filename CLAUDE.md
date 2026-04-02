@@ -209,12 +209,29 @@ Located at `packages/ui/`. Installed as `"@canopy/ui": "*"`.
 - Required env vars to run authenticated smoke tests:
   - `E2E_PORTAL_EMAIL`
   - `E2E_PORTAL_PASSWORD`
+- Required env vars for operator-only smoke coverage:
+  - `E2E_SUPER_ADMIN_EMAIL`
+  - `E2E_SUPER_ADMIN_PASSWORD`
 - Optional env vars:
+  - `E2E_EXPECTED_PORTAL_RETURN_URL`
   - `E2E_WORKSPACE_SLUG`
   - `E2E_STORIES_URL`
   - `E2E_REACH_URL`
+  - `E2E_PHOTOVAULT_URL`
   - `PLAYWRIGHT_BASE_URL`
   - `PLAYWRIGHT_SKIP_WEBSERVER=1`
+- Current smoke coverage includes:
+  - portal auth and dashboard
+  - Portal -> Stories -> switch -> Portal
+  - Stories -> PhotoVault -> Portal
+  - Reach -> PhotoVault -> Portal
+  - Portal -> PhotoVault -> Portal
+  - Portal -> Reach -> Portal
+  - portal provisioning permissions
+  - super-admin provisioning access
+  - PhotoVault album creation + image upload
+- `tests/e2e/photovault-media-smoke.spec.ts` creates real data in the target workspace, so expect a new album and uploaded image after each live run
+- `tests/e2e/reach-media-smoke.spec.ts` is a conditional smoke and should only be expected to run when the selected workspace has Reach enabled plus connected social accounts for the composer
 
 ## Environment Variables
 
