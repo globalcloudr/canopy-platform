@@ -195,6 +195,22 @@ function deriveProvisioningSummary(
   };
 }
 
+function recommendedProvisioningAction(summaryLabel: string) {
+  if (summaryLabel === "Incomplete") {
+    return "Resend the pending admin invitation, then confirm the school has the right products and services.";
+  }
+  if (summaryLabel === "Invited") {
+    return "Wait for invite acceptance, or resend the invite if the school has not received it yet.";
+  }
+  if (summaryLabel === "Accepted") {
+    return "Review products and services next so the workspace is fully active before launch.";
+  }
+  if (summaryLabel === "Active") {
+    return "Check whether any products, services, or owner details need an update for this workspace.";
+  }
+  return "Create the workspace setup first, then invite or assign the school admin as the next step.";
+}
+
 export function ProvisioningForm({
   workspaces,
   invitations,
@@ -425,6 +441,10 @@ export function ProvisioningForm({
   const provisioningSummary = useMemo(
     () => deriveProvisioningSummary(workspaceInvitations, currentEntitlements, currentServices),
     [currentEntitlements, currentServices, workspaceInvitations]
+  );
+  const provisioningNextAction = useMemo(
+    () => recommendedProvisioningAction(provisioningSummary.label),
+    [provisioningSummary.label]
   );
   const latestPendingInvitation = useMemo(
     () => workspaceInvitations.find((row) => row.status === "pending") ?? workspaceInvitations[0] ?? null,
@@ -887,6 +907,10 @@ export function ProvisioningForm({
                 <p className="m-0"><span className="font-semibold">Services:</span> {currentServices.length}</p>
                 <p className="m-0"><span className="font-semibold">Pending invites:</span> {workspaceInvitations.filter((item) => item.status === "pending").length}</p>
                 <p className="m-0"><span className="font-semibold">Accepted invites:</span> {workspaceInvitations.filter((item) => item.status === "accepted").length}</p>
+              </div>
+              <div className="mt-4 rounded-[18px] border border-current/12 bg-white/55 px-4 py-3">
+                <p className="m-0 text-[11px] font-semibold uppercase tracking-[0.12em] opacity-70">Recommended next step</p>
+                <p className="m-0 mt-1 text-sm font-medium">{provisioningNextAction}</p>
               </div>
             </div>
           </AppSurface>

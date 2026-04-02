@@ -15,8 +15,10 @@ Platform portal and shared infrastructure for the Canopy product suite.
 - Role-aware navigation — school users see school context, product switching, and a direct path back to portal home; platform users retain true workspace switching
 - Account page — workspace details, user info, active products and services
 - Operator provisioning page (`/app/provisioning`) — create/select workspaces, enable products and services, invite workspace admins, resend invitations, and review current provisioning status for the selected workspace
-- Super Admin `School Ops` page (`/app/school-ops`) — review owner status across schools, launch directly into Brand Portal/workspace/audit, and transfer ownership from Portal
+- Super Admin `School Ops` page (`/app/school-ops`) — review owner status across schools, launch directly into Brand Portal/audit, and transfer ownership from Portal
 - Super Admin `Platform Users` page (`/app/platform-users`) — invite and manage internal Portal team access from Portal instead of PhotoVault
+- Connected Super Admin workflow across `Provisioning`, `School Ops`, and `Platform Users` — the sidebar and page-level workflow rail now make workspace context, page scope, and recommended next actions clearer so operators do not have to guess which surface to use next
+- Invite email template editing in Portal provisioning — Super Admins can view, save, preview, and resend workspace invite drafts from Portal instead of relying on the legacy PhotoVault template editor
 - Active provisioning transition plan at `docs/workspace-provisioning-transition-plan.md` — defines Portal as the long-term Super Admin provisioning home and PhotoVault as a temporary compatibility path
 - Invite acceptance flow — Supabase invite email → Canopy sign-in → membership creation → workspace redirect
 - Neutral platform overview for operators without an explicit `?workspace=` selection
@@ -49,7 +51,7 @@ Components: Button, Badge, Input, Avatar, Card, Dialog, DropdownMenu, IconButton
 - **Dedicated Canopy invite email templates** — invite delivery still uses shared Supabase auth email infrastructure
 - **Billing** — no billing management in the portal yet
 - **`workspaces` table** — platform still uses `organizations` as the workspace bridge; a dedicated `workspaces` table is a planned future migration
-- **Provisioning cutover completion** — Portal is the intended long-term provisioning owner, but PhotoVault remains a compatibility fallback until the cutover checklist in `docs/workspace-provisioning-transition-plan.md` is fully satisfied in production
+- **Provisioning cutover completion** — Portal is now the preferred Super Admin provisioning surface, but PhotoVault remains a compatibility fallback until the production cutover checklist in `docs/workspace-provisioning-transition-plan.md` is fully satisfied
 
 ## How to Run
 

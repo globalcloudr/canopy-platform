@@ -38,6 +38,37 @@ export function SchoolOpsPanel({ workspaces, ownerStatuses, activeWorkspaceId }:
     () => new Map(ownerStatuses.map((status) => [status.workspaceId, status])),
     [ownerStatuses]
   );
+  const sortedWorkspaces = useMemo(() => {
+    function priorityFor(workspace: PortalWorkspace) {
+      const ownerStatus = ownerStatusByWorkspaceId.get(workspace.id);
+      const ownerCount = ownerStatus?.ownerCount ?? 0;
+      const acceptedOwnerCount = ownerStatus?.acceptedOwnerCount ?? 0;
+
+      if (acceptedOwnerCount > 0) return workspace.id === activeWorkspaceId ? 2 : 3;
+      if (ownerCount > 0) return 1;
+      return 0;
+    }
+
+    return [...workspaces].sort((a, b) => {
+      const priorityDiff = priorityFor(a) - priorityFor(b);
+      if (priorityDiff !== 0) {
+        return priorityDiff;
+      }
+      return a.displayName.localeCompare(b.displayName);
+    });
+  }, [activeWorkspaceId, ownerStatusByWorkspaceId, workspaces]);
+  const attentionSummary = useMemo(() => {
+    const summary = { needsOwner: 0, invited: 0, active: 0 };
+    for (const workspace of workspaces) {
+      const ownerStatus = ownerStatusByWorkspaceId.get(workspace.id);
+      const ownerCount = ownerStatus?.ownerCount ?? 0;
+      const acceptedOwnerCount = ownerStatus?.acceptedOwnerCount ?? 0;
+      if (acceptedOwnerCount > 0) summary.active += 1;
+      else if (ownerCount > 0) summary.invited += 1;
+      else summary.needsOwner += 1;
+    }
+    return summary;
+  }, [ownerStatusByWorkspaceId, workspaces]);
 
   const transferWorkspace = transferWorkspaceId
     ? workspaces.find((workspace) => workspace.id === transferWorkspaceId) ?? null
@@ -87,6 +118,11 @@ export function SchoolOpsPanel({ workspaces, ownerStatuses, activeWorkspaceId }:
           Review workspace ownership at a glance, jump directly into Brand Portal or audit, and transfer ownership when needed. School
           creation and admin invite flow now live in Portal provisioning.
         </p>
+        <div className="mt-4 flex flex-wrap gap-3 text-sm text-[var(--text-muted)]">
+          <span>{attentionSummary.needsOwner} need owner assignment</span>
+          <span>{attentionSummary.invited} have owner invites pending</span>
+          <span>{attentionSummary.active} have active owners</span>
+        </div>
         <div className="mt-4 flex flex-wrap gap-3">
           <a
             href="/app/provisioning"
@@ -104,7 +140,7 @@ export function SchoolOpsPanel({ workspaces, ownerStatuses, activeWorkspaceId }:
           <p className="text-sm text-[var(--text-muted)]">No workspaces found.</p>
         ) : (
           <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
-            {workspaces.map((workspace) => {
+            {sortedWorkspaces.map((workspace) => {
               const ownerStatus = ownerStatusByWorkspaceId.get(workspace.id);
               const ownerCount = ownerStatus?.ownerCount ?? 0;
               const acceptedOwnerCount = ownerStatus?.acceptedOwnerCount ?? 0;

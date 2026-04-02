@@ -243,7 +243,7 @@ export function PortalSidebar({
       {/* Nav */}
       <nav className="px-4 py-6">
         <div className="rounded-[28px] bg-transparent px-4 py-4 shadow-none">
-          <p className="mb-3 px-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#8ea0b7]">Navigation</p>
+          <p className="mb-3 px-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#8ea0b7]">Workspace</p>
           <div className="space-y-1.5">
             <div>
               <Link href={`/app${suffix}`} className={navClass(pathname === "/app")}>
@@ -275,25 +275,32 @@ export function PortalSidebar({
                 </div>
               ) : null}
             </div>
-            {showProvisioning && (
-              <Link href={`/app/provisioning${suffix}`} className={navClass(pathname.startsWith("/app/provisioning"))}>
-                <IconShield className="h-[18px] w-[18px]" />
-                Provisioning
-              </Link>
-            )}
-            {isSuperAdmin && (
-              <Link href={schoolOpsHref} className={navClass(pathname.startsWith("/app/school-ops"))}>
-                <IconShield className="h-[18px] w-[18px]" />
-                School Ops
-              </Link>
-            )}
-            {isSuperAdmin && (
-              <Link href={platformUsersHref} className={navClass(pathname.startsWith("/app/platform-users"))}>
-                <IconUser className="h-[18px] w-[18px]" />
-                Platform Users
-              </Link>
-            )}
           </div>
+          {(showProvisioning || isSuperAdmin) ? (
+            <>
+              <p className="mb-3 mt-6 px-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#8ea0b7]">Super Admin</p>
+              <div className="space-y-1.5">
+                {showProvisioning && (
+                  <Link href={`/app/provisioning${suffix}`} className={navClass(pathname.startsWith("/app/provisioning"))}>
+                    <IconShield className="h-[18px] w-[18px]" />
+                    Provisioning
+                  </Link>
+                )}
+                {isSuperAdmin && (
+                  <Link href={schoolOpsHref} className={navClass(pathname.startsWith("/app/school-ops"))}>
+                    <IconShield className="h-[18px] w-[18px]" />
+                    School Ops
+                  </Link>
+                )}
+                {isSuperAdmin && (
+                  <Link href={platformUsersHref} className={navClass(pathname.startsWith("/app/platform-users"))}>
+                    <IconUser className="h-[18px] w-[18px]" />
+                    Platform Users
+                  </Link>
+                )}
+              </div>
+            </>
+          ) : null}
         </div>
       </nav>
     </div>
