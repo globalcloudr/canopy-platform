@@ -85,8 +85,8 @@ export function SchoolOpsPanel({ workspaces, ownerStatuses, activeWorkspaceId }:
         <p className="eyebrow">School Ops</p>
         <h2 className="mb-1">Workspace operations</h2>
         <p className="m-0 max-w-[68ch] text-sm text-muted">
-          Review workspace ownership at a glance, jump directly into Brand Portal, workspace, or audit, and transfer ownership when needed.
-          School creation and admin invite flow now live in Portal provisioning.
+          Review workspace ownership at a glance, jump directly into Brand Portal or audit, and transfer ownership when needed. School
+          creation and admin invite flow now live in Portal provisioning.
         </p>
         <div className="mt-4 flex flex-wrap gap-3">
           <a
@@ -154,12 +154,6 @@ export function SchoolOpsPanel({ workspaces, ownerStatuses, activeWorkspaceId }:
                       className="inline-flex items-center rounded-2xl border border-[var(--app-surface-soft-border)] bg-white px-3 py-2 text-sm font-medium text-ink transition hover:bg-slate-50"
                     >
                       Open Brand Portal
-                    </a>
-                    <a
-                      href={buildPhotoVaultLaunchHref(workspace.slug, "/albums")}
-                      className="inline-flex items-center rounded-2xl border border-[var(--app-surface-soft-border)] bg-white px-3 py-2 text-sm font-medium text-ink transition hover:bg-slate-50"
-                    >
-                      Open workspace
                     </a>
                     <a
                       href={buildPhotoVaultLaunchHref(workspace.slug, "/audit")}
