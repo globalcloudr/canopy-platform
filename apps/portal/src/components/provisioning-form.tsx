@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import {
+  AppSurface,
   Button,
   Input,
   Label,
@@ -611,18 +612,8 @@ export function ProvisioningForm({
   }
 
   return (
-    <div className="space-y-6 pb-10">
-      <header className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
-        <p className="eyebrow">Admin</p>
-        <h2 className="mb-1">Workspace Provisioning</h2>
-        <p className="m-0 max-w-[60ch] text-sm text-[var(--text-muted)]">
-          Create or update a client workspace, assign the initial school admin, and enable the products or services
-          they should see in Canopy.
-        </p>
-      </header>
-
-      <form onSubmit={onSubmit} className="space-y-6">
-        <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
+    <form onSubmit={onSubmit} className="space-y-5">
+        <AppSurface variant="clear" padding="md" className="sm:p-6">
           <p className="eyebrow">Workspace</p>
           <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Choose a workspace</h3>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -695,9 +686,9 @@ export function ProvisioningForm({
           {workspaceMode === "existing" && selectedWorkspace ? (
             <p className="mt-3 text-sm text-[var(--text-muted)]">Provisioning will update access for {selectedWorkspace.displayName}.</p>
           ) : null}
-        </section>
+        </AppSurface>
 
-        <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
+        <AppSurface variant="clear" padding="md" className="sm:p-6">
           <p className="eyebrow">Primary Admin</p>
           <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Assign the initial admin</h3>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -736,9 +727,9 @@ export function ProvisioningForm({
               Prefilled from the latest saved invitation for this workspace.
             </p>
           ) : null}
-        </section>
+        </AppSurface>
 
-        <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
+        <AppSurface variant="clear" padding="md" className="sm:p-6">
           <p className="eyebrow">Invite Email</p>
           <div className="mb-4 flex items-start justify-between gap-4">
             <div>
@@ -811,10 +802,10 @@ export function ProvisioningForm({
           ) : (
             <p className="text-sm text-[var(--text-muted)]">Only Super Admin can edit invite templates.</p>
           )}
-        </section>
+        </AppSurface>
 
         {workspaceMode === "existing" && (
-          <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
+          <AppSurface variant="clear" padding="md" className="sm:p-6">
             <p className="eyebrow">Provisioning Status</p>
             <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Current workspace readiness</h3>
             <div className={`rounded-[22px] border px-4 py-4 ${provisioningSummary.tone}`}>
@@ -831,11 +822,11 @@ export function ProvisioningForm({
                 <p className="m-0"><span className="font-semibold">Accepted invites:</span> {workspaceInvitations.filter((item) => item.status === "accepted").length}</p>
               </div>
             </div>
-          </section>
+          </AppSurface>
         )}
 
         {workspaceMode === "existing" && (
-          <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
+          <AppSurface variant="clear" padding="md" className="sm:p-6">
             <p className="eyebrow">Currently Enabled</p>
             <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Active products for this workspace</h3>
             {entitlementsLoading ? (
@@ -901,11 +892,11 @@ export function ProvisioningForm({
                 })}
               </div>
             )}
-          </section>
+          </AppSurface>
         )}
 
         {workspaceMode === "existing" && (
-          <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
+          <AppSurface variant="clear" padding="md" className="sm:p-6">
             <p className="eyebrow">Current Services</p>
             <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Service visibility for this workspace</h3>
             {servicesLoading ? (
@@ -971,11 +962,11 @@ export function ProvisioningForm({
                 })}
               </div>
             )}
-          </section>
+          </AppSurface>
         )}
 
         {canManageProductAccess ? (
-          <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
+          <AppSurface variant="clear" padding="md" className="sm:p-6">
             <p className="eyebrow">Products</p>
             <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Enable workspace apps</h3>
             {!enabledProductKeys.has("photovault") && (
@@ -1089,17 +1080,17 @@ export function ProvisioningForm({
             {enabledProductKeys.has("photovault") && enabledProductKeys.has("stories_canopy") && enabledProductKeys.has("reach_canopy") && (
               <p className="text-sm text-[var(--text-muted)]">All available products are already enabled for this workspace.</p>
             )}
-          </section>
+          </AppSurface>
         ) : (
-          <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
+          <AppSurface variant="clear" padding="md" className="sm:p-6">
             <p className="eyebrow">Products</p>
             <h3 className="mb-2 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Enable workspace apps</h3>
             <p className="text-sm text-[var(--text-muted)]">Only Super Admin can add, pause, resume, or remove products.</p>
-          </section>
+          </AppSurface>
         )}
 
         {canManageProductAccess ? (
-          <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
+          <AppSurface variant="clear" padding="md" className="sm:p-6">
             <p className="eyebrow">Services</p>
             <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Set service visibility</h3>
             <div className="grid gap-4 md:grid-cols-2">
@@ -1176,16 +1167,16 @@ export function ProvisioningForm({
             {enabledServiceKeys.has("school-website-setup") && enabledServiceKeys.has("creative-retainer") && (
               <p className="text-sm text-[var(--text-muted)]">All available services are already configured for this workspace.</p>
             )}
-          </section>
+          </AppSurface>
         ) : (
-          <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
+          <AppSurface variant="clear" padding="md" className="sm:p-6">
             <p className="eyebrow">Services</p>
             <h3 className="mb-2 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Set service visibility</h3>
             <p className="text-sm text-[var(--text-muted)]">Only Super Admin can add, pause, resume, or remove services.</p>
-          </section>
+          </AppSurface>
         )}
 
-        <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
+        <AppSurface variant="clear" padding="md" className="sm:p-6">
           <p className="eyebrow">Notes</p>
           <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Internal context</h3>
           <Label className="sr-only">Internal context notes</Label>
@@ -1195,9 +1186,9 @@ export function ProvisioningForm({
             className="min-h-28"
             placeholder="Optional operator notes for this provisioning action."
           />
-        </section>
+        </AppSurface>
 
-        <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-white/38 p-5">
+        <AppSurface variant="fill" padding="md" className="sm:p-6">
           <p className="eyebrow">Review</p>
           <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Provision this workspace</h3>
           <div className="grid gap-3 text-sm text-ink sm:grid-cols-2">
@@ -1219,11 +1210,10 @@ export function ProvisioningForm({
               {busy ? "Provisioning..." : "Provision workspace"}
             </Button>
           </div>
-        </section>
-      </form>
+        </AppSurface>
 
       {result ? (
-        <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
+        <AppSurface variant="clear" padding="md" className="sm:p-6">
           <p className="eyebrow">Provisioning Result</p>
           <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">{result.workspace.displayName}</h3>
           <div className="grid gap-4 md:grid-cols-2">
@@ -1273,10 +1263,10 @@ export function ProvisioningForm({
               </div>
             </div>
           </div>
-        </section>
+        </AppSurface>
       ) : null}
 
-        <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
+        <AppSurface variant="clear" padding="md" className="sm:p-6">
         <p className="eyebrow">Invitation Status</p>
         <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Current workspace invitations</h3>
         {workspaceMode !== "existing" && !result ? (
@@ -1315,7 +1305,7 @@ export function ProvisioningForm({
             ))}
           </div>
         )}
-      </section>
-    </div>
+      </AppSurface>
+    </form>
   );
 }

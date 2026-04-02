@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import type { PortalWorkspace } from "@/lib/platform";
 import type { WorkspaceOwnerStatus } from "@/lib/provisioning";
-import { Button, Input, Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@canopy/ui";
+import { AppSurface, Button, Input, Label, SectionTitle, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@canopy/ui";
 
 type SchoolOpsPanelProps = {
   workspaces: PortalWorkspace[];
@@ -80,10 +80,9 @@ export function SchoolOpsPanel({ workspaces, ownerStatuses, activeWorkspaceId }:
   }
 
   return (
-    <div className="space-y-6 pb-10">
-      <header className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
-        <p className="eyebrow">School Ops</p>
-        <h2 className="mb-1">Workspace operations</h2>
+    <div className="space-y-5">
+      <AppSurface variant="clear" padding="md" className="sm:p-6">
+        <SectionTitle as="h2" className="mb-2 text-slate-900">Operator shortcuts</SectionTitle>
         <p className="m-0 max-w-[68ch] text-sm text-[var(--text-muted)]">
           Review workspace ownership at a glance, jump directly into Brand Portal or audit, and transfer ownership when needed. School
           creation and admin invite flow now live in Portal provisioning.
@@ -96,9 +95,9 @@ export function SchoolOpsPanel({ workspaces, ownerStatuses, activeWorkspaceId }:
             Open provisioning
           </a>
         </div>
-      </header>
+      </AppSurface>
 
-      <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
+      <AppSurface variant="clear" padding="md" className="sm:p-6">
         <p className="eyebrow">Client Workspaces</p>
         <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Active schools</h3>
         {workspaces.length === 0 ? (
@@ -178,9 +177,9 @@ export function SchoolOpsPanel({ workspaces, ownerStatuses, activeWorkspaceId }:
             })}
           </div>
         )}
-      </section>
+      </AppSurface>
 
-      <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
+      <AppSurface variant="clear" padding="md" className="sm:p-6">
         <p className="eyebrow">Ownership</p>
         <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Transfer workspace ownership</h3>
         <form onSubmit={submitTransferOwnership} className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_260px_auto] lg:items-end">
@@ -239,7 +238,7 @@ export function SchoolOpsPanel({ workspaces, ownerStatuses, activeWorkspaceId }:
             {status}
           </div>
         ) : null}
-      </section>
+      </AppSurface>
     </div>
   );
 }

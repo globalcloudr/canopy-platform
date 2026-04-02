@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Button, Input, Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@canopy/ui";
+import { AppSurface, Button, Input, Label, SectionTitle, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@canopy/ui";
 
 type PlatformRole = "super_admin" | "platform_staff";
 
@@ -191,10 +191,9 @@ export function PlatformUsersPanel({ auditWorkspaceId, currentUserId = null }: P
   }
 
   return (
-    <div className="space-y-6 pb-10">
-      <header className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
-        <p className="eyebrow">Platform Users</p>
-        <h2 className="mb-1">Internal team access</h2>
+    <div className="space-y-5">
+      <AppSurface variant="clear" padding="md" className="sm:p-6">
+        <SectionTitle as="h2" className="mb-2 text-slate-900">Access overview</SectionTitle>
         <p className="m-0 max-w-[64ch] text-sm text-[var(--text-muted)]">
           Invite and manage internal Portal users. Super Admin handles governance-level actions here instead of relying on the old PhotoVault platform console.
         </p>
@@ -203,9 +202,9 @@ export function PlatformUsersPanel({ auditWorkspaceId, currentUserId = null }: P
           <span>{counts.superAdmins} Super Admin</span>
           <span>{counts.platformStaff} Platform Staff</span>
         </div>
-      </header>
+      </AppSurface>
 
-      <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
+      <AppSurface variant="clear" padding="md" className="sm:p-6">
         <p className="eyebrow">Invite</p>
         <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Add platform access</h3>
         <form className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_260px_auto]" onSubmit={invitePlatformUser}>
@@ -252,9 +251,9 @@ export function PlatformUsersPanel({ auditWorkspaceId, currentUserId = null }: P
             {status}
           </div>
         ) : null}
-      </section>
+      </AppSurface>
 
-      <section className="rounded-[30px] border border-[var(--app-surface-border)] bg-transparent p-5 shadow-none">
+      <AppSurface variant="clear" padding="md" className="sm:p-6">
         <p className="eyebrow">Current Access</p>
         <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Active platform users</h3>
         {loading ? (
@@ -309,7 +308,7 @@ export function PlatformUsersPanel({ auditWorkspaceId, currentUserId = null }: P
             })}
           </div>
         )}
-      </section>
+      </AppSurface>
     </div>
   );
 }
