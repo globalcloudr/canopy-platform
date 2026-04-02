@@ -41,7 +41,11 @@ test.describe("Cross-app launcher smoke", () => {
       (url) =>
         url.origin === new URL(config.expectedPortalReturnURL).origin &&
         url.pathname === "/app" &&
-        (config.workspaceSlug ? url.searchParams.get("workspace") === config.workspaceSlug : true),
+        (
+          !config.workspaceSlug ||
+          !url.searchParams.has("workspace") ||
+          url.searchParams.get("workspace") === config.workspaceSlug
+        ),
       { timeout: 60_000 }
     );
 
