@@ -2,8 +2,8 @@
 
 Platform portal and shared infrastructure for the Canopy product suite.
 
-**Live URL**: https://canopy-platform-portal.vercel.app
-**Production domain (pending)**: https://usecanopy.school
+**Live URL**: https://usecanopy.school
+**Fallback deployment URL**: https://canopy-platform-portal.vercel.app
 
 ## What Is Built and Live
 

@@ -4,11 +4,34 @@ Append new sessions at the top. Do not overwrite history.
 
 ---
 
+## 2026-04-02 — Super Admin UX pass across Portal admin surfaces
+
+- Added a shared Super Admin workflow rail to:
+  - `/app/provisioning`
+  - `/app/school-ops`
+  - `/app/platform-users`
+- The workflow rail now makes three things explicit on each page:
+  - current page scope
+  - selected workspace context
+  - recommended next action
+- Reworked the Portal sidebar information architecture so admin navigation is grouped into:
+  - workspace pages
+  - Super Admin pages
+- Split admin invitation from products/services save on the provisioning page so the operator flow is easier to understand and less error-prone
+- Added Portal invite-template editing so subject, body, signature, and preview now live in Portal instead of only in the legacy PhotoVault admin surface
+- Improved School Ops scanning by surfacing schools that need owner attention first and summarizing owner state counts
+- Tightened the Portal shell layout so the lavender shell background no longer peeks through on desktop overscroll at the bottom of long admin pages
+
+### Verification
+- `npm run build` passed in `canopy-platform`
+
+---
+
 ## 2026-04-02 — Moved remaining Super Admin admin surfaces into Portal
 
 - Added `School Ops` to Portal at `/app/school-ops`
   - workspace ownership status across schools
-  - direct launch shortcuts for active Brand Portal, workspace, and audit
+  - direct launch shortcuts for active Brand Portal and audit
   - ownership transfer flow from Portal
 - Added `Platform Users` to Portal at `/app/platform-users`
   - invite internal platform users
@@ -17,7 +40,7 @@ Append new sessions at the top. Do not overwrite history.
 - Added Portal APIs to support those surfaces:
   - `POST /api/transfer-workspace-owner`
   - `/api/platform-users`
-- Updated the Portal sidebar so Super Admin can reach `Provisioning`, `School Ops`, `Platform Users`, and active-workspace shortcuts without dropping back into PhotoVault
+- Updated the Portal sidebar so Super Admin can reach `Provisioning`, `School Ops`, and `Platform Users` without dropping back into PhotoVault
 - This replaces the last major PhotoVault-hosted platform-admin screens that were still missing from Portal and moves Portal closer to being the single Super Admin home
 
 ### Verification

@@ -19,11 +19,16 @@ Implemented already:
 - Portal has a working provisioning surface at `/app/provisioning`
 - Portal already owns invitation initiation, membership acceptance, entitlements, and product launch
 - Portal is the primary entry point for operators and school users
+- Portal now has the preferred Super Admin workflow surfaces for:
+  - provisioning
+  - school operations
+  - platform-user management
+- Portal now exposes operator-facing invite template editing, provisioning status visibility, and service-state visibility without requiring PhotoVault
 - PhotoVault provisioning still exists as a compatibility path
 
 Current limitation:
 
-- operator workflow has not been formally cut over to Portal
+- operator workflow is functionally Portal-first in product/code, but the final production cutover checklist still needs to be validated as an operational process
 - PhotoVault still acts as a fallback provisioning path
 - retirement criteria and cutover checks were not previously active in the current docs
 
@@ -142,6 +147,8 @@ Before shifting operators to Portal as the default provisioning workflow, verify
 - PhotoVault remains available as a compatibility fallback
 - all new provisioning improvements happen in Portal, not PhotoVault
 - operator docs begin pointing to Portal first
+
+Status: substantially complete in product/code. Portal now contains the connected Super Admin workflow across Provisioning, School Ops, and Platform Users. The remaining work is production validation and the operator-process shift, not more primary-surface building in PhotoVault.
 
 ### Stage 2: Production validation
 

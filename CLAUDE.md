@@ -9,7 +9,7 @@ For provisioning ownership and PhotoVault retirement criteria, read `docs/worksp
 
 | Repo | Purpose | Live URL |
 |---|---|---|
-| `canopy-platform` | Portal, identity, entitlements, provisioning, launch | `https://canopy-platform-portal.vercel.app` |
+| `canopy-platform` | Portal, identity, entitlements, provisioning, launch | `https://usecanopy.school` |
 | `photovault` | PhotoVault by Canopy product | `https://photovault.school` |
 | `canopy-stories` | Canopy Stories product | `https://canopy-stories.vercel.app` |
 | `canopy-reach` | Canopy Reach product | `https://canopy-reach.vercel.app` |
@@ -47,9 +47,10 @@ canopy-platform/
 | `apps/portal/src/app/(portal)/app/provisioning/page.tsx` | Operator provisioning UI |
 | `apps/portal/src/app/(portal)/app/school-ops/page.tsx` | Super Admin school operations surface and owner transfer entry point |
 | `apps/portal/src/app/(portal)/app/platform-users/page.tsx` | Super Admin internal platform-user management page |
+| `apps/portal/src/components/portal-admin-workflow.tsx` | Shared Super Admin workflow rail — page scope, selected workspace, recommended next action |
 | `docs/workspace-provisioning-transition-plan.md` | Active cutover plan for making Portal the single Super Admin provisioning workflow |
 | `apps/portal/src/components/portal-header.tsx` | Top bar with brand mark, workspace chip, avatar dropdown |
-| `apps/portal/src/components/portal-sidebar.tsx` | Left nav — contextual per section |
+| `apps/portal/src/components/portal-sidebar.tsx` | Left nav — grouped into workspace and Super Admin sections |
 | `apps/portal/src/components/product-launcher-card.tsx` | Product tile on dashboard |
 | `packages/ui/src/index.ts` | @canopy/ui exports |
 
@@ -72,8 +73,8 @@ canopy-platform/
 ### Authenticated (`/app/*`)
 - `/app` — dashboard
 - `/app/account` — workspace + user details
-- `/app/provisioning` — operator only: create workspaces, enable products, send invites
-- `/app/school-ops` — Super Admin only: workspace ownership/status overview plus active-workspace launch shortcuts
+- `/app/provisioning` — operator only: create workspaces, manage products/services, edit invite templates, send invites, and review provisioning status
+- `/app/school-ops` — Super Admin only: workspace ownership/status overview plus Brand Portal and audit shortcuts
 - `/app/platform-users` — Super Admin only: internal Canopy team access management
 - `/app/products/[slug]` — placeholder pages for not-yet-active products
 - `/app/services/[slug]` — placeholder pages for services
@@ -81,11 +82,14 @@ canopy-platform/
 ### API
 - `GET /api/portal-session` — returns resolved `PortalSession` for client components
 - `POST /api/update-entitlement` — operator only: pause/resume/remove entitlements
+- `POST /api/update-service-state` — Super Admin only: pause/resume/remove service visibility state
 - `POST /api/provision-workspace` — operator only: provisioning backend
+- `POST /api/save-workspace-provisioning` — operator only: save products/services without coupling that action to admin invitation
 - `POST /api/resend-workspace-invitation` — operator only: resend invite
 - `POST /api/transfer-workspace-owner` — Super Admin only: invite a new owner and handle prior owner memberships
 - `/api/platform-users` — Super Admin only: invite, update, and remove internal Portal team access
 - `GET /api/get-workspace-services` — operator only: current service visibility/setup state for a workspace
+- `/api/invite-template` — Super Admin only: read and save workspace invite subject/body/signature drafts
 
 ## Data Model (Shared Supabase Project)
 
@@ -103,6 +107,7 @@ canopy-platform/
 ## Provisioning Ownership
 
 - Portal is the intended long-term single Super Admin provisioning surface
+- Portal is now the preferred day-to-day Super Admin workflow across Provisioning, School Ops, and Platform Users
 - PhotoVault provisioning should be treated as a temporary compatibility path, not a permanent co-equal workflow
 - The active cutover criteria, production smoke checklist, and operator-process shift rules live in `docs/workspace-provisioning-transition-plan.md`
 
