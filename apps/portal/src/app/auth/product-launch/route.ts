@@ -13,9 +13,12 @@ const DEFAULT_URLS: Record<LaunchProductKey, string> = {
   reach_canopy: "http://localhost:3002",
 };
 
-function normalizeLaunchPath(value: string | null | undefined) {
+function normalizeLaunchPath(productKey: LaunchProductKey, value: string | null | undefined) {
   const normalized = value?.trim();
   if (!normalized || normalized === "/") {
+    if (productKey === "photovault") {
+      return "/albums";
+    }
     return "/";
   }
   return normalized.startsWith("/") ? normalized : `/${normalized}`;
@@ -67,7 +70,7 @@ export async function POST(request: NextRequest) {
       workspaceSlug,
     });
 
-    const launchUrl = new URL(normalizeLaunchPath(path), getProductAppUrl(productKey));
+    const launchUrl = new URL(normalizeLaunchPath(productKey, path), getProductAppUrl(productKey));
     launchUrl.searchParams.set("launch", handoffCode);
     if (workspaceSlug) {
       launchUrl.searchParams.set("workspace", workspaceSlug);

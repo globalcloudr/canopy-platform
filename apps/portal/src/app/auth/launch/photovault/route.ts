@@ -11,7 +11,7 @@ function getPhotoVaultAppUrl() {
 function normalizeLaunchPath(value: string | null) {
   const normalized = value?.trim();
   if (!normalized || normalized === "/") {
-    return "/";
+    return "/albums";
   }
 
   return normalized.startsWith("/") ? normalized : `/${normalized}`;

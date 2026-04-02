@@ -35,7 +35,7 @@ type LauncherOptions = {
   workspaceSlug?: string;
 };
 
-function getPhotoVaultLaunchPath(path = "/") {
+function getPhotoVaultLaunchPath(path = "/albums") {
   const params = new URLSearchParams();
   if (path && path !== "/") {
     params.set("path", path);
