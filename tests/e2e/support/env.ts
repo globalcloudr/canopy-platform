@@ -1,5 +1,6 @@
 export type PortalE2EConfig = {
   baseURL: string;
+  expectedPortalReturnURL: string;
   portalEmail: string;
   portalPassword: string;
   workspaceSlug: string | null;
@@ -21,7 +22,11 @@ export function hasPortalCredentials() {
 
 export function getPortalE2EConfig(): PortalE2EConfig {
   return {
-    baseURL: process.env.PLAYWRIGHT_BASE_URL?.trim() || "http://127.0.0.1:3000",
+    baseURL: process.env.PLAYWRIGHT_BASE_URL?.trim() || "http://127.0.0.1:3100",
+    expectedPortalReturnURL:
+      process.env.E2E_EXPECTED_PORTAL_RETURN_URL?.trim() ||
+      process.env.PLAYWRIGHT_BASE_URL?.trim() ||
+      "http://127.0.0.1:3100",
     portalEmail: requiredEnv("E2E_PORTAL_EMAIL"),
     portalPassword: requiredEnv("E2E_PORTAL_PASSWORD"),
     workspaceSlug: process.env.E2E_WORKSPACE_SLUG?.trim() || null,
