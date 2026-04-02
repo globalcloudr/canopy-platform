@@ -15,6 +15,11 @@ test.describe("Reach media smoke", () => {
     await launchPortalProduct(page, "New Post", config.reachURL);
     await waitForReachShellReady(page);
 
+    const noAccountsConnected = page.getByText("No accounts connected");
+    if ((await noAccountsConnected.count()) > 0 && await noAccountsConnected.first().isVisible()) {
+      test.skip(true, "Reach media upload requires a workspace with connected social accounts.");
+    }
+
     await expect(page.getByText("Build one school update, then choose how it goes out.")).toBeVisible();
 
     const fileInput = page.locator('input[type="file"][accept="image/*"]').first();
