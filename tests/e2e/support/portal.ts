@@ -45,3 +45,9 @@ export async function clickFirstVisibleMenuItem(page: Page, names: string[]) {
 
   throw new Error(`None of the expected menu items were visible: ${names.join(", ")}`);
 }
+
+export async function waitForStoriesShellReady(page: Page) {
+  await expect(page.locator("body")).toContainText("Canopy Stories");
+  await expect(page.locator("body")).not.toContainText("Application error:");
+  await expect(page.locator("button").filter({ hasText: /Loading\.\.\./i }).first()).toHaveCount(0, { timeout: 30_000 });
+}
