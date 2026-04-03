@@ -379,12 +379,16 @@ async function getEntitlementsForWorkspace(workspaceId: string) {
     }),
   ];
 
+  const entitlements = new Map<ProductKey, PortalEntitlement>();
+
   for (const params of attempts) {
     try {
       const rows = await requestJson<EntitlementRow[]>("/rest/v1/product_entitlements", params);
-      return rows
+      for (const entitlement of rows
         .map((row) => normalizeEntitlement(row, workspaceId))
-        .filter((value): value is PortalEntitlement => value !== null);
+        .filter((value): value is PortalEntitlement => value !== null)) {
+        entitlements.set(entitlement.productKey, entitlement);
+      }
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       if (
@@ -398,7 +402,7 @@ async function getEntitlementsForWorkspace(workspaceId: string) {
     }
   }
 
-  return [];
+  return [...entitlements.values()];
 }
 
 async function resolveUserFromRequest() {
