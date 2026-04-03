@@ -65,7 +65,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ result }, { status: 200 });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Provisioning update failed.";
+    console.error(error);
+    const message = "Provisioning update failed.";
     return NextResponse.json({ error: message }, { status: 400 });
   }
 }

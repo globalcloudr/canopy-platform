@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     else await removeEntitlement(workspaceId.trim(), productKey);
     return NextResponse.json({ ok: true });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to update entitlement.";
-    return NextResponse.json({ error: message }, { status: 400 });
+    console.error(error);
+    return NextResponse.json({ error: "Failed to update entitlement." }, { status: 400 });
   }
 }

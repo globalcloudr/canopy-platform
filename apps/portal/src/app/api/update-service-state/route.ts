@@ -30,7 +30,8 @@ export async function POST(request: NextRequest) {
     else await removeServiceState(workspaceId.trim(), serviceKey.trim());
     return NextResponse.json({ ok: true });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to update service.";
+    console.error(error);
+    const message = "Failed to update service.";
     return NextResponse.json({ error: message }, { status: 400 });
   }
 }

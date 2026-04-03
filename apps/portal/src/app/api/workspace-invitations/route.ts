@@ -85,7 +85,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ result }, { status: 200 });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Invite failed.";
+    console.error(error);
+    const message = "Invite failed.";
     return NextResponse.json({ error: message }, { status: 400 });
   }
 }

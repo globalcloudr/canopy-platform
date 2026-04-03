@@ -133,8 +133,9 @@ export async function POST(request: NextRequest) {
 
     return response;
   } catch (error) {
+    console.error(error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to launch product." },
+      { error: "Failed to launch product." },
       { status: 500, headers: corsHeaders }
     );
   }

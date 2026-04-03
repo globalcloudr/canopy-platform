@@ -14,7 +14,8 @@ export async function GET(request: NextRequest) {
     const services = await getWorkspaceServiceStates(workspaceId.trim());
     return NextResponse.json({ services });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to load services.";
+    console.error(error);
+    const message = "Failed to load services.";
     return NextResponse.json({ error: message }, { status: 400 });
   }
 }

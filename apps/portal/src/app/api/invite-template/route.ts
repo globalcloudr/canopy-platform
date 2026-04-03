@@ -34,7 +34,8 @@ export async function GET(request: NextRequest) {
     const template = await getWorkspaceInviteTemplate(workspaceId);
     return NextResponse.json({ template }, { status: 200 });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to load invite template.";
+    console.error(error);
+    const message = "Failed to load invite template.";
     return NextResponse.json({ error: message }, { status: 400 });
   }
 }
@@ -73,7 +74,8 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json({ ok: true, template, message: "Invite template saved." }, { status: 200 });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to save invite template.";
+    console.error(error);
+    const message = "Failed to save invite template.";
     return NextResponse.json({ error: message }, { status: 400 });
   }
 }

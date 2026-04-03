@@ -4,6 +4,24 @@ Append new sessions at the top. Do not overwrite history.
 
 ---
 
+## 2026-04-02 — Beta security hardening
+
+Pre-beta security review and hardening pass. Portal changes:
+
+### Auth guard on `/api/portal-session`
+- Added null session check — unauthenticated requests now return `401` instead of `200 { session: null }`
+- Previously a logged-in user's full session (user ID, email, workspace IDs, roles, entitlements) was returned to any caller with valid cookies and no additional guard
+
+### Error message sanitization
+- Removed raw internal error messages from all API route catch blocks
+- All routes now log full errors server-side and return generic messages to the client
+- Files touched: `update-entitlement`, `invite-template`, `workspace-invitations`, `get-workspace-entitlements`, `platform-users`, `provision-workspace`, `update-service-state`, `get-workspace-services`, `resend-workspace-invitation`, `product-launch`, `save-workspace-provisioning`, `transfer-workspace-owner`
+
+### Verification
+- `npx tsc --noEmit` passed
+
+---
+
 ## 2026-04-02 — Super Admin UX pass across Portal admin surfaces
 
 - Added a shared Super Admin workflow rail to:

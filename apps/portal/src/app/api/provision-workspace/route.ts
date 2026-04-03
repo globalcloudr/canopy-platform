@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ result }, { status: 200 });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Provisioning failed.";
-    return NextResponse.json({ error: message }, { status: 400 });
+    console.error(error);
+    return NextResponse.json({ error: "Provisioning failed." }, { status: 400 });
   }
 }

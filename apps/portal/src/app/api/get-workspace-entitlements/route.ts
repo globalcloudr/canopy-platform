@@ -14,7 +14,8 @@ export async function GET(request: NextRequest) {
     const entitlements = await getWorkspaceEntitlements(workspaceId.trim());
     return NextResponse.json({ entitlements });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to load entitlements.";
+    console.error(error);
+    const message = "Failed to load entitlements.";
     return NextResponse.json({ error: message }, { status: 400 });
   }
 }

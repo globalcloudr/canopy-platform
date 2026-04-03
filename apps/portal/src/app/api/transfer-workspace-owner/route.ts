@@ -220,7 +220,7 @@ export async function POST(request: NextRequest) {
       newOwnerUserId,
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Ownership transfer failed.";
-    return NextResponse.json({ error: message }, { status: 400 });
+    console.error(error);
+    return NextResponse.json({ error: "Ownership transfer failed." }, { status: 400 });
   }
 }

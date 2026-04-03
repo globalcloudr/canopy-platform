@@ -224,7 +224,8 @@ export async function GET() {
 
     return NextResponse.json({ users }, { status: 200 });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to load platform users.";
+    console.error(error);
+    const message = "Failed to load platform users.";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
@@ -312,7 +313,8 @@ export async function POST(request: NextRequest) {
         : `${email} updated to ${roleLabel(role)}.`,
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Invite failed.";
+    console.error(error);
+    const message = "Invite failed.";
     return NextResponse.json({ error: message }, { status: 400 });
   }
 }
@@ -394,7 +396,8 @@ export async function PATCH(request: NextRequest) {
 
     return NextResponse.json({ ok: true, message: `${userId} updated to ${roleLabel(role)}.` });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Role update failed.";
+    console.error(error);
+    const message = "Role update failed.";
     return NextResponse.json({ error: message }, { status: 400 });
   }
 }
@@ -475,7 +478,8 @@ export async function DELETE(request: NextRequest) {
 
     return NextResponse.json({ ok: true, message: `${userId} removed from platform access.` });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Remove access failed.";
+    console.error(error);
+    const message = "Remove access failed.";
     return NextResponse.json({ error: message }, { status: 400 });
   }
 }
