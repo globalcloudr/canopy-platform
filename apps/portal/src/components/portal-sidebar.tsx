@@ -17,6 +17,7 @@ import type { PortalSession } from "@/lib/platform";
 import { getAdditionalLauncherProducts, getEnabledLauncherProducts, getLauncherServices } from "@/lib/products";
 
 const ACTIVE_WORKSPACE_COOKIE = "canopy_portal_workspace";
+const PORTAL_SESSION_REFRESH_EVENT = "canopy:portal-session-refresh";
 
 function readCookie(name: string) {
   if (typeof document === "undefined") {
@@ -132,8 +133,16 @@ export function PortalSidebar({
       }
     }
 
+    function handleRefresh() {
+      void loadSession();
+    }
+
     void loadSession();
-    return () => controller.abort();
+    window.addEventListener(PORTAL_SESSION_REFRESH_EVENT, handleRefresh);
+    return () => {
+      controller.abort();
+      window.removeEventListener(PORTAL_SESSION_REFRESH_EVENT, handleRefresh);
+    };
   }, [suffix]);
 
   const activeWorkspace = session?.activeWorkspace ?? null;

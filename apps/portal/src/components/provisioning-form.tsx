@@ -17,6 +17,8 @@ import type { PortalWorkspace, ProductKey, WorkspaceRole } from "@/lib/platform"
 import type { WorkspaceAdminInvitation, WorkspaceEntitlement, WorkspaceServiceState } from "@/lib/provisioning";
 import { DEFAULT_INVITE_TEMPLATE, renderInviteTemplate, type InviteTemplate } from "@/lib/invite-template";
 
+const PORTAL_SESSION_REFRESH_EVENT = "canopy:portal-session-refresh";
+
 type ProvisioningFormProps = {
   workspaces: PortalWorkspace[];
   invitations: WorkspaceAdminInvitation[];
@@ -281,6 +283,14 @@ export function ProvisioningForm({
     }
   }, [activeWorkspaceId, workspaceId, workspaceMode, workspaces]);
 
+  function notifyPortalSessionRefresh() {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    window.dispatchEvent(new CustomEvent(PORTAL_SESSION_REFRESH_EVENT));
+  }
+
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setBusy(true);
@@ -357,6 +367,7 @@ export function ProvisioningForm({
     setEnableWebsiteSetup(false);
     setEnableCreativeRetainer(false);
     setNotes("");
+    notifyPortalSessionRefresh();
   }
 
   async function submitAdminAssignment() {
@@ -614,6 +625,7 @@ export function ProvisioningForm({
       }
       return prev.map((e) => e.productKey === productKey ? { ...e, status: action === "pause" ? "paused" : "active" } : e);
     });
+    notifyPortalSessionRefresh();
   }
 
   async function handleServiceAction(serviceKey: string, action: "pause" | "resume" | "remove") {
@@ -647,6 +659,7 @@ export function ProvisioningForm({
           : service
       );
     });
+    notifyPortalSessionRefresh();
   }
 
   async function resendInvitation(invitationId: string) {

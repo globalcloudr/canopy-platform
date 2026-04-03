@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import type { PortalSession } from "@/lib/platform";
 
 const ACTIVE_WORKSPACE_COOKIE = "canopy_portal_workspace";
+const PORTAL_SESSION_REFRESH_EVENT = "canopy:portal-session-refresh";
 
 export function PortalHeader() {
   const searchParams = useSearchParams();
@@ -25,8 +26,17 @@ export function PortalHeader() {
         if (!controller.signal.aborted) setSession(null);
       }
     }
+
+    function handleRefresh() {
+      void loadSession();
+    }
+
     void loadSession();
-    return () => controller.abort();
+    window.addEventListener(PORTAL_SESSION_REFRESH_EVENT, handleRefresh);
+    return () => {
+      controller.abort();
+      window.removeEventListener(PORTAL_SESSION_REFRESH_EVENT, handleRefresh);
+    };
   }, [suffix]);
 
   const activeWorkspace = session?.activeWorkspace ?? null;
