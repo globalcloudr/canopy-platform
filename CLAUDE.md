@@ -59,11 +59,13 @@ canopy-platform/
 ### Public
 - `/` — marketing homepage
 - `/sign-in` — sign-in page
+- `/password-reset` — password reset request page
 
 ### Auth / Launch
 - `/auth/sign-in` — Supabase sign-in handler
 - `/auth/sign-out` — clears portal cookies
 - `/auth/accept-invite` — invite token acceptance, creates membership
+- `/auth/password-reset` — handles password reset token from Supabase email
 - `/auth/launch/photovault` — one-time handoff exchange launch to PhotoVault
 - `/auth/launch/stories` — one-time handoff exchange launch to Canopy Stories
 - `/auth/launch/reach` — one-time handoff exchange launch to Canopy Reach
@@ -90,6 +92,8 @@ canopy-platform/
 - `/api/platform-users` — Super Admin only: invite, update, and remove internal Portal team access
 - `GET /api/get-workspace-services` — operator only: current service visibility/setup state for a workspace
 - `/api/invite-template` — Super Admin only: read and save workspace invite subject/body/signature drafts
+- `GET /api/get-workspace-entitlements` — operator only: current product entitlement state for a workspace
+- `GET/POST /api/workspace-invitations` — operator only: manage workspace admin invitations
 
 ## Data Model (Shared Supabase Project)
 
@@ -175,7 +179,7 @@ Environment variables controlling product URLs:
 
 Located at `packages/ui/`. Installed as `"@canopy/ui": "*"`.
 
-**Exports**: `Button`, `Badge`, `Input`, `Avatar`, `Card`, `Dialog`, `DropdownMenu`, `IconButton`, `Label`, `MenuSurface`, `SegmentedToggle`, `Select`, `Separator`, `Textarea`, `Typography`, `CanopyHeader`, `cn()`
+**Exports**: `Alert`, `Button`, `Badge`, `Input`, `Avatar`, `Card`, `Dialog`, `DropdownMenu`, `IconButton`, `Label`, `MenuSurface`, `SegmentedToggle`, `Select`, `Separator`, `Textarea`, `Typography`, `CanopyHeader`, `AppSurface`, `AppPill`, `DashboardHero`, `cn()`
 
 **Design tokens** (defined in `globals.css` via `@theme inline`):
 ```
