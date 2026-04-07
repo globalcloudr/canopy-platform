@@ -71,6 +71,8 @@ export { SegmentedToggle, SegmentedToggleItem } from "./components/ui/segmented-
 export type { SegmentedToggleProps, SegmentedToggleItemProps } from "./components/ui/segmented-toggle";
 
 export { CanopyHeader } from "./components/ui/canopy-header";
+export { DashboardHero } from "./components/ui/dashboard-hero";
+export type { DashboardHeroProps } from "./components/ui/dashboard-hero";
 export type { CanopyHeaderProps, CanopyHeaderWorkspaceLink, CanopyHeaderAccountMenuItem } from "./components/ui/canopy-header";
 
 export {
