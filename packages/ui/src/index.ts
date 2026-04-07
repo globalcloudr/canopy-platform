@@ -70,6 +70,9 @@ export { Separator } from "./components/ui/separator";
 export { SegmentedToggle, SegmentedToggleItem } from "./components/ui/segmented-toggle";
 export type { SegmentedToggleProps, SegmentedToggleItemProps } from "./components/ui/segmented-toggle";
 
+export { Alert, AlertDescription, AlertTitle } from "./components/ui/alert";
+export type { AlertProps } from "./components/ui/alert";
+
 export { CanopyHeader } from "./components/ui/canopy-header";
 export { DashboardHero } from "./components/ui/dashboard-hero";
 export type { DashboardHeroProps } from "./components/ui/dashboard-hero";
