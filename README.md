@@ -44,7 +44,7 @@ Reach and Stories also route in-app product switching back through the portal so
 
 Shared component library at `packages/ui/`. Used by Portal, Reach, and Stories for shared shell and surface styling.
 
-Components: Button, Badge, Input, Avatar, Card, Dialog, DropdownMenu, IconButton, Label, MenuSurface, SegmentedToggle, Select, Separator, Textarea, Typography, CanopyHeader, AppSurface, AppPill, cn()
+Components: Alert, Button, Badge, Input, Avatar, Card, Dialog, DropdownMenu, IconButton, Label, MenuSurface, SegmentedToggle, Select, Separator, Textarea, Typography, CanopyHeader, AppSurface, AppPill, DashboardHero, cn()
 
 ## What Is Not Done Yet
 
