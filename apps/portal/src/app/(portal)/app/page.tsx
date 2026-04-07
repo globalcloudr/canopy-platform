@@ -1,4 +1,4 @@
-import { AppPill, AppSurface, BodyText, Eyebrow, SectionTitle } from "@canopy/ui";
+import { AppPill, AppSurface, BodyText, DashboardHero, Eyebrow, SectionTitle } from "@canopy/ui";
 import { redirect } from "next/navigation";
 import { PortalPageHeader } from "@/components/portal-page-header";
 import { ProductLauncherCard } from "@/components/product-launcher-card";
@@ -34,10 +34,18 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
   if (session.isPlatformOperator && !activeWorkspace) {
     return (
       <div className="space-y-5 pb-10">
-        <PortalPageHeader
+        <DashboardHero
           eyebrow="Platform Home"
-          title="Platform Overview"
-          subtitle="Platform operations, workspace visibility, and launcher access across Canopy."
+          headline="Platform Overview"
+          subheading="Platform operations, workspace visibility, and launcher access across Canopy."
+          illustration={
+            <svg width="140" height="120" viewBox="0 0 140 120" fill="none" aria-hidden="true">
+              <rect x="10" y="20" width="48" height="36" rx="8" stroke="currentColor" strokeWidth="2" />
+              <rect x="68" y="20" width="48" height="36" rx="8" stroke="currentColor" strokeWidth="2" opacity="0.7" />
+              <rect x="10" y="68" width="48" height="36" rx="8" stroke="currentColor" strokeWidth="2" opacity="0.7" />
+              <rect x="68" y="68" width="48" height="36" rx="8" stroke="currentColor" strokeWidth="2" opacity="0.4" />
+            </svg>
+          }
         />
 
         <AppSurface id="workspace-context" variant="clear" padding="md" className="sm:p-6">
@@ -53,10 +61,20 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
 
   return (
     <div className="space-y-5 pb-10">
-      <PortalPageHeader
+      <DashboardHero
         eyebrow="Workspace Home"
-        title="Welcome to Canopy by Akkedis Digital"
-        subtitle="Launch products, review active services, and move across your Canopy workspace."
+        headline="Welcome to Canopy"
+        subheading="Launch products, review active services, and manage your workspace."
+        ctaLabel="Your Apps"
+        ctaHref="#products"
+        illustration={
+          <svg width="140" height="120" viewBox="0 0 140 120" fill="none" aria-hidden="true">
+            <rect x="10" y="20" width="48" height="36" rx="8" stroke="currentColor" strokeWidth="2" />
+            <rect x="68" y="20" width="48" height="36" rx="8" stroke="currentColor" strokeWidth="2" opacity="0.7" />
+            <rect x="10" y="68" width="48" height="36" rx="8" stroke="currentColor" strokeWidth="2" opacity="0.7" />
+            <rect x="68" y="68" width="48" height="36" rx="8" stroke="currentColor" strokeWidth="2" opacity="0.4" />
+          </svg>
+        }
       />
 
       {launcherProducts.length > 0 && (
