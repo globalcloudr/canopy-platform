@@ -136,7 +136,7 @@ const catalogDefinitions: ProductDefinition[] = [
   {
     productKey: "community_canopy",
     displayName: "Canopy Community",
-    shortDescription: "Run recurring newsletters and school-to-community communication workflows.",
+    shortDescription: "Keep families and your broader community informed — send school newsletters without the back-and-forth between tools.",
     category: "Community Communication",
     kind: "product",
     iconColor: "#0f766e",

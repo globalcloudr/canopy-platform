@@ -364,27 +364,27 @@ function CommunityDetailPage({ iconColor, displayName }: { iconColor: string; di
   const steps = [
     {
       number: "1",
-      title: "Connect your account",
-      body: "Enter your Campaign Monitor Client ID in Settings. Canopy Community validates the connection and immediately pulls in your campaigns, lists, and templates.",
+      title: "Your audience is already there",
+      body: "Connect your school's newsletter account and your subscriber lists appear instantly — parents, staff, program groups, and alumni, ready to receive your next update.",
     },
     {
       number: "2",
-      title: "Upload and send newsletters",
-      body: "Upload your finished HTML newsletter, choose your subscriber lists, set the subject and sender details, and send — all without leaving Canopy.",
+      title: "Send without switching tools",
+      body: "Upload your newsletter, choose who gets it, and send — all from Canopy. No separate logins, no copy-pasting between platforms, no wondering if it went to the right list.",
     },
     {
       number: "3",
-      title: "Track performance",
-      body: "See recipients, open rates, and click rates for every sent campaign in one clean dashboard — no need to log in to Campaign Monitor separately.",
+      title: "Know your message landed",
+      body: "See who received your newsletter, how many families opened it, and what they clicked. Real answers after every send, so you know your community is actually informed.",
     },
   ];
 
   const highlights = [
-    { icon: "✦", label: "Send newsletters to one or more subscriber lists at once" },
-    { icon: "✦", label: "Upload HTML email files directly — no template builder required" },
-    { icon: "✦", label: "Open rate and click rate reporting for every campaign" },
-    { icon: "✦", label: "Save drafts before sending for team review" },
-    { icon: "✦", label: "Workspace-isolated — each school's data stays separate" },
+    { icon: "✦", label: "Reach parents, staff, and program groups in a single send" },
+    { icon: "✦", label: "Your newsletter history and drafts in one place" },
+    { icon: "✦", label: "Open and click rates so you know what's resonating" },
+    { icon: "✦", label: "Save drafts for review before anything goes out" },
+    { icon: "✦", label: "Every school's information stays private and separate" },
   ];
 
   return (
@@ -403,7 +403,7 @@ function CommunityDetailPage({ iconColor, displayName }: { iconColor: string; di
             <p className="eyebrow">Community Communication</p>
             <h2 className="mb-1">{displayName}</h2>
             <p className="text-muted text-[0.9rem] m-0 max-w-[52ch]">
-              Send school newsletters and track engagement — powered by Campaign Monitor, managed from Canopy.
+              Keep families, staff, and your broader community informed — without the back-and-forth between tools.
             </p>
           </div>
         </div>
@@ -415,7 +415,7 @@ function CommunityDetailPage({ iconColor, displayName }: { iconColor: string; di
         <div className="px-8 pt-8 pb-10">
           <p className="eyebrow mb-2">How it works</p>
           <h3 className="mb-8 text-[1.15rem] font-semibold tracking-[-0.01em]">
-            From HTML file to delivered newsletter in minutes
+            Your school newsletter, simplified from start to send
           </h3>
           <div className="grid gap-6 sm:grid-cols-3">
             {steps.map((step) => (
@@ -455,7 +455,7 @@ function CommunityDetailPage({ iconColor, displayName }: { iconColor: string; di
           <div>
             <p className="eyebrow mb-2">Ready to get started?</p>
             <p className="m-0 text-[0.875rem] leading-relaxed text-[var(--text-muted)]">
-              Contact us to enable Canopy Community for your school or to ask about pricing and onboarding.
+              Talk to us about bringing Canopy Community to your school. We'll get you set up and sending.
             </p>
           </div>
           <div className="flex flex-col gap-2.5">
