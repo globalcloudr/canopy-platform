@@ -358,6 +358,123 @@ function ReachDetailPage({ iconColor, displayName }: { iconColor: string; displa
   );
 }
 
+// ── Canopy Community detail page ─────────────────────────────────────────────
+
+function CommunityDetailPage({ iconColor, displayName }: { iconColor: string; displayName: string }) {
+  const steps = [
+    {
+      number: "1",
+      title: "Connect your account",
+      body: "Enter your Campaign Monitor Client ID in Settings. Canopy Community validates the connection and immediately pulls in your campaigns, lists, and templates.",
+    },
+    {
+      number: "2",
+      title: "Upload and send newsletters",
+      body: "Upload your finished HTML newsletter, choose your subscriber lists, set the subject and sender details, and send — all without leaving Canopy.",
+    },
+    {
+      number: "3",
+      title: "Track performance",
+      body: "See recipients, open rates, and click rates for every sent campaign in one clean dashboard — no need to log in to Campaign Monitor separately.",
+    },
+  ];
+
+  const highlights = [
+    { icon: "✦", label: "Send newsletters to one or more subscriber lists at once" },
+    { icon: "✦", label: "Upload HTML email files directly — no template builder required" },
+    { icon: "✦", label: "Open rate and click rate reporting for every campaign" },
+    { icon: "✦", label: "Save drafts before sending for team review" },
+    { icon: "✦", label: "Workspace-isolated — each school's data stays separate" },
+  ];
+
+  return (
+    <div className="space-y-6 pb-10">
+
+      {/* ── Page header ──────────────────────────────── */}
+      <header className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-6 shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
+        <div className="flex items-start gap-5">
+          <div
+            className="grid place-items-center w-14 h-14 rounded-[12px] text-white text-[1.4rem] font-extrabold tracking-[-0.02em] shrink-0"
+            style={{ background: iconColor }}
+          >
+            C
+          </div>
+          <div>
+            <p className="eyebrow">Community Communication</p>
+            <h2 className="mb-1">{displayName}</h2>
+            <p className="text-muted text-[0.9rem] m-0 max-w-[52ch]">
+              Send school newsletters and track engagement — powered by Campaign Monitor, managed from Canopy.
+            </p>
+          </div>
+        </div>
+      </header>
+
+      {/* ── How it works ─────────────────────────────── */}
+      <div className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white shadow-[0_1px_3px_rgba(15,31,61,0.08)] overflow-hidden">
+        <div className="h-1.5 w-full" style={{ background: iconColor }} aria-hidden="true" />
+        <div className="px-8 pt-8 pb-10">
+          <p className="eyebrow mb-2">How it works</p>
+          <h3 className="mb-8 text-[1.15rem] font-semibold tracking-[-0.01em]">
+            From HTML file to delivered newsletter in minutes
+          </h3>
+          <div className="grid gap-6 sm:grid-cols-3">
+            {steps.map((step) => (
+              <div key={step.number} className="flex flex-col gap-3">
+                <div
+                  className="grid place-items-center h-9 w-9 rounded-full text-white text-[0.85rem] font-bold shrink-0"
+                  style={{ background: iconColor }}
+                >
+                  {step.number}
+                </div>
+                <p className="m-0 text-[0.9rem] font-semibold tracking-[-0.01em] text-[var(--foreground)]">{step.title}</p>
+                <p className="m-0 text-[0.875rem] leading-relaxed text-[var(--text-muted)]">{step.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Key highlights + CTA ──────────────────────── */}
+      <div className="grid gap-6 md:grid-cols-[1fr_auto]">
+
+        {/* Highlights */}
+        <div className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-6 shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
+          <p className="eyebrow mb-4">What you get</p>
+          <ul className="m-0 space-y-3 p-0 list-none">
+            {highlights.map((h) => (
+              <li key={h.label} className="flex items-start gap-3 text-[0.875rem] text-[var(--foreground)]">
+                <span className="mt-0.5 shrink-0 text-[0.7rem]" style={{ color: iconColor }} aria-hidden="true">{h.icon}</span>
+                {h.label}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* CTA card */}
+        <div className="flex flex-col justify-between gap-6 rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-6 shadow-[0_1px_3px_rgba(15,31,61,0.08)] md:min-w-[280px]">
+          <div>
+            <p className="eyebrow mb-2">Ready to get started?</p>
+            <p className="m-0 text-[0.875rem] leading-relaxed text-[var(--text-muted)]">
+              Contact us to enable Canopy Community for your school or to ask about pricing and onboarding.
+            </p>
+          </div>
+          <div className="flex flex-col gap-2.5">
+            <Button asChild variant="primary">
+              <a href={`mailto:info@akkedisdigital.com?subject=${encodeURIComponent("Interest in Canopy Community")}&body=${encodeURIComponent("Hi,\n\nI'd like to learn more about enabling Canopy Community for our school.\n\nThanks")}`}>
+                Request access
+              </a>
+            </Button>
+            <Button asChild variant="secondary">
+              <a href="/app">Back to dashboard</a>
+            </Button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
 // ── Generic coming-soon page ──────────────────────────────────────────────────
 
 function ComingSoonPage({
@@ -446,6 +563,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   if (productKey === "reach_canopy") {
     return <ReachDetailPage iconColor={def.iconColor} displayName={def.displayName} />;
+  }
+
+  if (productKey === "community_canopy") {
+    return <CommunityDetailPage iconColor={def.iconColor} displayName={def.displayName} />;
   }
 
   return (
