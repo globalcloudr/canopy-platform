@@ -65,6 +65,16 @@ function getReachLaunchPath(path = "/") {
   return query ? `/auth/launch/reach?${query}` : "/auth/launch/reach";
 }
 
+function getCommunityLaunchPath(path = "/") {
+  const params = new URLSearchParams();
+  if (path && path !== "/") {
+    params.set("path", path);
+  }
+
+  const query = params.toString();
+  return query ? `/auth/launch/community?${query}` : "/auth/launch/community";
+}
+
 const catalogDefinitions: ProductDefinition[] = [
   {
     productKey: "photovault",
@@ -129,8 +139,9 @@ const catalogDefinitions: ProductDefinition[] = [
     shortDescription: "Run recurring newsletters and school-to-community communication workflows.",
     category: "Community Communication",
     kind: "product",
-    iconColor: "#7c3aed",
-    defaultLaunchPath: "/products/community-canopy",
+    iconColor: "#0f766e",
+    defaultLaunchPath: getCommunityLaunchPath(),
+    externalUrl: process.env.COMMUNITY_APP_URL || "https://canopy-community.vercel.app",
     showWhenNotEnabled: true,
     sortOrder: 6,
   },
@@ -386,6 +397,9 @@ function getPrimaryActionTarget(productKey: ProductKey, state: ProductState): st
     if (productKey === "stories_canopy") {
       return getStoriesLaunchPath();
     }
+    if (productKey === "community_canopy") {
+      return getCommunityLaunchPath();
+    }
     if (productKey === "reach_canopy") {
       return getReachLaunchPath("/posts/new");
     }
@@ -463,8 +477,8 @@ function getSecondaryActionTarget(productKey: ProductKey, state: ProductState) {
       pilot: getStoriesLaunchPath("/stories"),
     },
     community_canopy: {
-      enabled: "/products/community-canopy/campaigns",
-      pilot: "/products/community-canopy/campaigns",
+      enabled: getCommunityLaunchPath("/campaigns"),
+      pilot: getCommunityLaunchPath("/campaigns"),
     },
     reach_canopy: {
       enabled: getReachLaunchPath("/calendar"),

@@ -17,6 +17,7 @@ type LaunchBody = {
 const DEFAULT_URLS: Record<LaunchProductKey, string> = {
   photovault: "http://localhost:3000",
   stories_canopy: "http://localhost:3001",
+  community_canopy: "http://localhost:3003",
   reach_canopy: "http://localhost:3002",
 };
 
@@ -24,6 +25,7 @@ function getAllowedOrigins() {
   return [
     process.env.PHOTOVAULT_APP_URL?.trim(),
     process.env.STORIES_APP_URL?.trim(),
+    process.env.COMMUNITY_APP_URL?.trim(),
     process.env.REACH_APP_URL?.trim(),
     process.env.NEXT_PUBLIC_APP_URL?.trim(),
   ].filter(Boolean) as string[];
@@ -56,6 +58,9 @@ function getProductAppUrl(productKey: LaunchProductKey) {
   }
   if (productKey === "stories_canopy") {
     return process.env.STORIES_APP_URL?.trim() || DEFAULT_URLS.stories_canopy;
+  }
+  if (productKey === "community_canopy") {
+    return process.env.COMMUNITY_APP_URL?.trim() || DEFAULT_URLS.community_canopy;
   }
   return process.env.REACH_APP_URL?.trim() || DEFAULT_URLS.reach_canopy;
 }

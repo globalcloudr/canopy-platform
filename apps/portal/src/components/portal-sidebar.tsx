@@ -155,6 +155,9 @@ export function PortalSidebar({
   const storiesHref = workspace
     ? `/auth/launch/stories?workspace=${encodeURIComponent(workspace)}`
     : "/auth/launch/stories";
+  const communityHref = workspace
+    ? `/auth/launch/community?workspace=${encodeURIComponent(workspace)}`
+    : "/auth/launch/community";
   const reachHref = workspace
     ? `/auth/launch/reach?workspace=${encodeURIComponent(workspace)}`
     : "/auth/launch/reach";
@@ -199,6 +202,7 @@ export function PortalSidebar({
     { key: "portal", label: "Canopy Portal", href: portalHomeHref, current: true },
     ...(launchableProductKeys.has("photovault") ? [{ key: "photovault", label: "PhotoVault", href: photoVaultHref }] : []),
     ...(launchableProductKeys.has("stories_canopy") ? [{ key: "stories", label: "Canopy Stories", href: storiesHref }] : []),
+    ...(launchableProductKeys.has("community_canopy") ? [{ key: "community", label: "Canopy Community", href: communityHref }] : []),
     ...(launchableProductKeys.has("reach_canopy") ? [{ key: "reach", label: "Canopy Reach", href: reachHref }] : []),
   ];
 

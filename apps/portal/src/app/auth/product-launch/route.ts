@@ -10,6 +10,7 @@ import { createProductLaunchHandoff, type LaunchProductKey } from "@/lib/launch-
 const DEFAULT_URLS: Record<LaunchProductKey, string> = {
   photovault: "https://photovault.school",
   stories_canopy: "https://canopy-stories.vercel.app",
+  community_canopy: "https://canopy-community.vercel.app",
   reach_canopy: "https://canopy-reach.vercel.app",
 };
 
@@ -30,6 +31,9 @@ function getProductAppUrl(productKey: LaunchProductKey) {
   }
   if (productKey === "stories_canopy") {
     return process.env.STORIES_APP_URL?.trim() || DEFAULT_URLS.stories_canopy;
+  }
+  if (productKey === "community_canopy") {
+    return process.env.COMMUNITY_APP_URL?.trim() || DEFAULT_URLS.community_canopy;
   }
   return process.env.REACH_APP_URL?.trim() || DEFAULT_URLS.reach_canopy;
 }
