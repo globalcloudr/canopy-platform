@@ -4,6 +4,16 @@ Append new sessions at the top. Do not overwrite history.
 
 ---
 
+## 2026-04-08 — Community launch handoff DB fix
+
+- Added SQL migration `cp-006` to allow `community_canopy` in `product_launch_handoffs`
+- This fixes local and production Community launch failures where the portal tried to create a handoff row but the table check constraint still only allowed PhotoVault, Stories, and Reach
+
+### Verification
+- Portal code already supports `community_canopy`; the remaining unblocker is applying the SQL migration
+
+---
+
 ## 2026-04-02 — Beta security hardening
 
 Pre-beta security review and hardening pass. Portal changes:
