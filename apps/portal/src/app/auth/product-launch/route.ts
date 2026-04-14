@@ -12,6 +12,7 @@ const DEFAULT_URLS: Record<LaunchProductKey, string> = {
   stories_canopy: "https://canopy-stories.vercel.app",
   community_canopy: "https://canopy-community.vercel.app",
   reach_canopy: "https://canopy-reach.vercel.app",
+  create_canopy: "https://canopy-create.vercel.app",
 };
 
 function normalizeLaunchPath(productKey: LaunchProductKey, value: string | null | undefined) {
@@ -34,6 +35,9 @@ function getProductAppUrl(productKey: LaunchProductKey) {
   }
   if (productKey === "community_canopy") {
     return process.env.COMMUNITY_APP_URL?.trim() || DEFAULT_URLS.community_canopy;
+  }
+  if (productKey === "create_canopy") {
+    return process.env.CREATE_APP_URL?.trim() || DEFAULT_URLS.create_canopy;
   }
   return process.env.REACH_APP_URL?.trim() || DEFAULT_URLS.reach_canopy;
 }

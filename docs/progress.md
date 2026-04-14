@@ -4,6 +4,28 @@ Append new sessions at the top. Do not overwrite history.
 
 ---
 
+## 2026-04-14 — Canopy Create portal integration
+
+- Added `create_canopy` to Portal's cross-product launch handoff type and routing
+- Added `/auth/launch/create` so Portal can issue one-time Create handoffs like Stories, Reach, and PhotoVault
+- Added `CREATE_APP_URL` support in both launch handlers and the product-launch API
+- Updated the launcher catalog so enabled Create workspaces now:
+  - primary action: open `Canopy Create` at `/requests/new`
+  - secondary action: open `Canopy Create` requests
+- Updated the Create product description to reflect the real product:
+  - creative and web request intake
+  - production tracking
+  - revisions and final delivery
+- Updated the `Creative Retainer` service description to reference Canopy Create directly
+- Added Canopy Create to the Portal provisioning UI so Super Admin can enable it for a workspace
+- Added a dedicated Portal product detail page for Canopy Create instead of falling through to the generic coming-soon page
+- Added SQL migration `cp-007` so `product_launch_handoffs` accepts `create_canopy`
+
+### Verification
+- Pending build verification after the Portal patch set
+
+---
+
 ## 2026-04-08 — Community launch handoff DB fix
 
 - Added SQL migration `cp-006` to allow `community_canopy` in `product_launch_handoffs`

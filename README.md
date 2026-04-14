@@ -32,6 +32,7 @@ Platform portal and shared infrastructure for the Canopy product suite.
 | PhotoVault by Canopy | Live | `/auth/launch/photovault` | https://photovault.school |
 | Canopy Stories | Live (beta) | `/auth/launch/stories` | https://canopy-stories.vercel.app |
 | Canopy Reach | Active development | `/auth/launch/reach` | https://canopy-reach.vercel.app |
+| Canopy Create | Live | `/auth/launch/create` | `CREATE_APP_URL` |
 
 All products launch through a one-time handoff exchange. The portal creates a short-lived, single-use launch code in `product_launch_handoffs`, each product exchanges it server-side for session tokens, and the active workspace is carried by `?workspace=` plus a product-side server session endpoint.
 
@@ -145,6 +146,7 @@ SUPABASE_SERVICE_ROLE_KEY=
 PHOTOVAULT_APP_URL=https://photovault.school
 STORIES_APP_URL=https://canopy-stories.vercel.app
 REACH_APP_URL=https://canopy-reach.vercel.app
+CREATE_APP_URL=https://canopy-create.vercel.app
 ```
 
 ## Database

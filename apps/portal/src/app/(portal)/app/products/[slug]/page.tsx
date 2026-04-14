@@ -475,6 +475,113 @@ function CommunityDetailPage({ iconColor, displayName }: { iconColor: string; di
   );
 }
 
+function CreateDetailPage({ iconColor, displayName }: { iconColor: string; displayName: string }) {
+  const steps = [
+    {
+      number: "1",
+      title: "Submit a request",
+      body: "Schools send a creative or web request through a structured intake flow instead of loose email threads.",
+    },
+    {
+      number: "2",
+      title: "Track production",
+      body: "Your team manages milestones, revisions, approvals, and project status in one workspace-connected system.",
+    },
+    {
+      number: "3",
+      title: "Review and deliver",
+      body: "Clients review briefs, request changes, and receive final deliverables without leaving the Canopy ecosystem.",
+    },
+  ];
+
+  const highlights = [
+    { icon: "✦", label: "Request intake for creative and web work" },
+    { icon: "✦", label: "Project conversion, milestones, and production tracking" },
+    { icon: "✦", label: "Revision and approval workflow in one place" },
+    { icon: "✦", label: "Designed to pair naturally with PhotoVault brand assets" },
+    { icon: "✦", label: "Built for recurring school production cycles and campaign work" },
+  ];
+
+  return (
+    <div className="space-y-6 pb-10">
+      <header className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-6 shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
+        <div className="flex items-start gap-5">
+          <div
+            className="grid place-items-center w-14 h-14 rounded-[12px] text-white text-[1.4rem] font-extrabold tracking-[-0.02em] shrink-0"
+            style={{ background: iconColor }}
+          >
+            C
+          </div>
+          <div>
+            <p className="eyebrow">Design Publishing</p>
+            <h2 className="mb-1">{displayName}</h2>
+            <p className="text-muted text-[0.9rem] m-0 max-w-[52ch]">
+              Submit creative and web requests, track production, review revisions, and receive final deliverables in one place.
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <div className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white shadow-[0_1px_3px_rgba(15,31,61,0.08)] overflow-hidden">
+        <div className="h-1.5 w-full" style={{ background: iconColor }} aria-hidden="true" />
+        <div className="px-8 pt-8 pb-10">
+          <p className="eyebrow mb-2">How it works</p>
+          <h3 className="mb-8 text-[1.15rem] font-semibold tracking-[-0.01em]">
+            A cleaner client-services workflow for school creative work
+          </h3>
+          <div className="grid gap-6 sm:grid-cols-3">
+            {steps.map((step) => (
+              <div key={step.number} className="flex flex-col gap-3">
+                <div
+                  className="grid place-items-center h-9 w-9 rounded-full text-white text-[0.85rem] font-bold shrink-0"
+                  style={{ background: iconColor }}
+                >
+                  {step.number}
+                </div>
+                <p className="m-0 text-[0.9rem] font-semibold tracking-[-0.01em] text-[var(--foreground)]">{step.title}</p>
+                <p className="m-0 text-[0.875rem] leading-relaxed text-[var(--text-muted)]">{step.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-[1fr_auto]">
+        <div className="rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-6 shadow-[0_1px_3px_rgba(15,31,61,0.08)]">
+          <p className="eyebrow mb-4">What you get</p>
+          <ul className="m-0 space-y-3 p-0 list-none">
+            {highlights.map((h) => (
+              <li key={h.label} className="flex items-start gap-3 text-[0.875rem] text-[var(--foreground)]">
+                <span className="mt-0.5 shrink-0 text-[0.7rem]" style={{ color: iconColor }} aria-hidden="true">{h.icon}</span>
+                {h.label}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="flex flex-col justify-between gap-6 rounded-2xl border border-[rgba(15,31,61,0.1)] bg-white p-6 shadow-[0_1px_3px_rgba(15,31,61,0.08)] md:min-w-[280px]">
+          <div>
+            <p className="eyebrow mb-2">Ready to get started?</p>
+            <p className="m-0 text-[0.875rem] leading-relaxed text-[var(--text-muted)]">
+              Use Canopy Create to manage briefs, revisions, and deliverables for ongoing design and web support.
+            </p>
+          </div>
+          <div className="flex flex-col gap-2.5">
+            <Button asChild variant="primary">
+              <a href="/auth/launch/create?path=/requests/new">
+                Open Create
+              </a>
+            </Button>
+            <Button asChild variant="secondary">
+              <a href="/app">Back to dashboard</a>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Generic coming-soon page ──────────────────────────────────────────────────
 
 function ComingSoonPage({
@@ -567,6 +674,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   if (productKey === "community_canopy") {
     return <CommunityDetailPage iconColor={def.iconColor} displayName={def.displayName} />;
+  }
+
+  if (productKey === "create_canopy") {
+    return <CreateDetailPage iconColor={def.iconColor} displayName={def.displayName} />;
   }
 
   return (

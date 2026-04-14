@@ -13,6 +13,7 @@ For provisioning ownership and PhotoVault retirement criteria, read `docs/worksp
 | `photovault` | PhotoVault by Canopy product | `https://photovault.school` |
 | `canopy-stories` | Canopy Stories product | `https://canopy-stories.vercel.app` |
 | `canopy-reach` | Canopy Reach product | `https://canopy-reach.vercel.app` |
+| `canopy-create` | Canopy Create product | `CREATE_APP_URL` |
 
 All four repos share one Supabase project.
 
@@ -155,7 +156,7 @@ type ProductKey =
 
 ## Product Launch Handoff Protocol
 
-PhotoVault, Canopy Stories, and Canopy Reach launch through a one-time handoff exchange:
+PhotoVault, Canopy Stories, Canopy Reach, and Canopy Create launch through a one-time handoff exchange:
 
 1. Portal verifies the workspace entitlement for the target product
 2. Portal creates a short-lived single-use row in `product_launch_handoffs`
@@ -174,6 +175,7 @@ Environment variables controlling product URLs:
 - `PHOTOVAULT_APP_URL` (default: `https://photovault.school`)
 - `STORIES_APP_URL` (default: `https://canopy-stories.vercel.app`)
 - `REACH_APP_URL` (default: `https://canopy-reach.vercel.app`)
+- `CREATE_APP_URL` (required for the deployed Canopy Create app; fallback: `https://canopy-create.vercel.app`)
 
 ## @canopy/ui Design System
 
@@ -266,4 +268,5 @@ SUPABASE_SERVICE_ROLE_KEY=
 PHOTOVAULT_APP_URL=           # defaults to https://photovault.school
 STORIES_APP_URL=              # defaults to https://canopy-stories.vercel.app
 REACH_APP_URL=                # defaults to https://canopy-reach.vercel.app
+CREATE_APP_URL=               # defaults to https://canopy-create.vercel.app
 ```

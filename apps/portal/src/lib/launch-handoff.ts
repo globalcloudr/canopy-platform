@@ -1,6 +1,11 @@
 import { getServiceEnv, getUserFromAccessToken } from "@/lib/platform";
 
-export type LaunchProductKey = "photovault" | "stories_canopy" | "community_canopy" | "reach_canopy";
+export type LaunchProductKey =
+  | "photovault"
+  | "stories_canopy"
+  | "community_canopy"
+  | "reach_canopy"
+  | "create_canopy";
 
 type LaunchHandoffParams = {
   productKey: LaunchProductKey;

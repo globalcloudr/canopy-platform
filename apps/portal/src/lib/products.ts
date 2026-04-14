@@ -75,6 +75,16 @@ function getCommunityLaunchPath(path = "/") {
   return query ? `/auth/launch/community?${query}` : "/auth/launch/community";
 }
 
+function getCreateLaunchPath(path = "/") {
+  const params = new URLSearchParams();
+  if (path && path !== "/") {
+    params.set("path", path);
+  }
+
+  const query = params.toString();
+  return query ? `/auth/launch/create?${query}` : "/auth/launch/create";
+}
+
 const catalogDefinitions: ProductDefinition[] = [
   {
     productKey: "photovault",
@@ -102,11 +112,13 @@ const catalogDefinitions: ProductDefinition[] = [
   {
     productKey: "create_canopy",
     displayName: "Canopy Create",
-    shortDescription: "Create brochures, class catalogs, flyers, and campaign materials.",
+    shortDescription:
+      "Submit creative and web requests, track production, review revisions, and receive final deliverables in one place.",
     category: "Design Publishing",
     kind: "product",
     iconColor: "#ea580c",
-    defaultLaunchPath: "/products/create-canopy",
+    defaultLaunchPath: getCreateLaunchPath("/requests"),
+    externalUrl: process.env.CREATE_APP_URL || "https://canopy-create.vercel.app",
     showWhenNotEnabled: true,
     sortOrder: 3,
   },
@@ -193,7 +205,7 @@ const catalogDefinitions: ProductDefinition[] = [
   {
     productKey: "design_support",
     displayName: "Creative Retainer",
-    shortDescription: "Ongoing design support — Canopy handles design work on your behalf each month.",
+    shortDescription: "Ongoing creative support from Canopy, delivered and tracked through Canopy Create.",
     category: "Services",
     kind: "service",
     iconColor: "#374151",
@@ -336,7 +348,7 @@ function getPrimaryActionLabel(productKey: ProductKey, state: ProductState) {
       not_enabled: "View Product",
     },
     create_canopy: {
-      enabled: "New Design Request",
+      enabled: "New Request",
       in_setup: "View Setup",
       not_enabled: "View Product",
     },
@@ -399,6 +411,9 @@ function getPrimaryActionTarget(productKey: ProductKey, state: ProductState): st
     }
     if (productKey === "community_canopy") {
       return getCommunityLaunchPath();
+    }
+    if (productKey === "create_canopy") {
+      return getCreateLaunchPath("/requests/new");
     }
     if (productKey === "reach_canopy") {
       return getReachLaunchPath("/posts/new");
@@ -467,7 +482,7 @@ function getSecondaryActionTarget(productKey: ProductKey, state: ProductState) {
       in_setup: "/products/canopy-web",
     },
     create_canopy: {
-      enabled: "/products/create-canopy/requests",
+      enabled: getCreateLaunchPath("/requests"),
     },
     publish_canopy: {
       enabled: "/products/publish-canopy/embed",

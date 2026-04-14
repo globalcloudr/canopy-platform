@@ -235,6 +235,8 @@ export function ProvisioningForm({
   const [photoVaultSetupState, setPhotoVaultSetupState] = useState("ready");
   const [enableStories, setEnableStories] = useState(false);
   const [storiesSetupState, setStoriesSetupState] = useState("ready");
+  const [enableCreate, setEnableCreate] = useState(false);
+  const [createSetupState, setCreateSetupState] = useState("ready");
   const [enableCommunity, setEnableCommunity] = useState(false);
   const [communitySetupState, setCommunitySetupState] = useState("ready");
   const [enableReach, setEnableReach] = useState(false);
@@ -316,6 +318,9 @@ export function ProvisioningForm({
           ...(enableStories
             ? [{ productKey: "stories_canopy", status: "active", setupState: storiesSetupState }]
             : []),
+          ...(enableCreate
+            ? [{ productKey: "create_canopy", status: "active", setupState: createSetupState }]
+            : []),
           ...(enableCommunity
             ? [{ productKey: "community_canopy", status: "active", setupState: communitySetupState }]
             : []),
@@ -368,6 +373,7 @@ export function ProvisioningForm({
     }
     setEnablePhotoVault(false);
     setEnableStories(false);
+    setEnableCreate(false);
     setEnableCommunity(false);
     setEnableReach(false);
     setEnableWebsiteSetup(false);
@@ -626,6 +632,7 @@ export function ProvisioningForm({
       if (action === "remove") {
         if (productKey === "photovault") setEnablePhotoVault(false);
         if (productKey === "stories_canopy") setEnableStories(false);
+        if (productKey === "create_canopy") setEnableCreate(false);
         if (productKey === "community_canopy") setEnableCommunity(false);
         if (productKey === "reach_canopy") setEnableReach(false);
         return prev.filter((e) => e.productKey !== productKey);
@@ -1152,6 +1159,42 @@ export function ProvisioningForm({
             </div>
           )}
 
+            {!enabledProductKeys.has("create_canopy") && (
+            <div className="mt-4 rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 p-4">
+              <label className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="m-0 text-sm font-semibold text-ink">Canopy Create</p>
+                  <p className="m-0 mt-1 text-sm text-[var(--text-muted)]">Creative and web request intake, production tracking, revisions, and delivery.</p>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={enableCreate}
+                  onChange={(event) => setEnableCreate(event.target.checked)}
+                  className="mt-1 h-4 w-4"
+                />
+              </label>
+              {enableCreate ? (
+                <label className="mt-4 block space-y-2">
+                  <Label>Setup state</Label>
+                  <Select
+                    value={createSetupState}
+                    onValueChange={setCreateSetupState}
+                  >
+                    <SelectTrigger className="text-sm">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="ready">Ready</SelectItem>
+                      <SelectItem value="in_setup">In setup</SelectItem>
+                      <SelectItem value="not_started">Not started</SelectItem>
+                      <SelectItem value="blocked">Blocked</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </label>
+              ) : null}
+            </div>
+          )}
+
             {!enabledProductKeys.has("community_canopy") && (
             <div className="mt-4 rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 p-4">
               <label className="flex items-start justify-between gap-4">
@@ -1224,7 +1267,7 @@ export function ProvisioningForm({
             </div>
           )}
 
-            {enabledProductKeys.has("photovault") && enabledProductKeys.has("stories_canopy") && enabledProductKeys.has("community_canopy") && enabledProductKeys.has("reach_canopy") && (
+            {enabledProductKeys.has("photovault") && enabledProductKeys.has("stories_canopy") && enabledProductKeys.has("create_canopy") && enabledProductKeys.has("community_canopy") && enabledProductKeys.has("reach_canopy") && (
               <p className="text-sm text-[var(--text-muted)]">All available products are already enabled for this workspace.</p>
             )}
           </AppSurface>
@@ -1340,7 +1383,7 @@ export function ProvisioningForm({
           <h3 className="mb-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-ink">Save workspace products and services</h3>
           <div className="grid gap-3 text-sm text-ink sm:grid-cols-2">
             <p className="m-0"><span className="font-semibold">Workspace:</span> {workspaceMode === "existing" ? (selectedWorkspace?.displayName ?? "Select a workspace") : (workspaceName || "New workspace")}</p>
-            <p className="m-0"><span className="font-semibold">Products:</span> {[enablePhotoVault ? "PhotoVault" : null, enableStories ? "Canopy Stories" : null, enableCommunity ? "Canopy Community" : null, enableReach ? "Canopy Reach" : null].filter(Boolean).join(", ") || "None selected"}</p>
+            <p className="m-0"><span className="font-semibold">Products:</span> {[enablePhotoVault ? "PhotoVault" : null, enableStories ? "Canopy Stories" : null, enableCreate ? "Canopy Create" : null, enableCommunity ? "Canopy Community" : null, enableReach ? "Canopy Reach" : null].filter(Boolean).join(", ") || "None selected"}</p>
             <p className="m-0"><span className="font-semibold">Services:</span> {[enableWebsiteSetup ? "School Website Setup" : null, enableCreativeRetainer ? "Creative Retainer" : null].filter(Boolean).join(", ") || "None selected"}</p>
           </div>
           <p className="mt-4 text-sm text-[var(--text-muted)]">
