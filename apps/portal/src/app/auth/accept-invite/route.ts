@@ -40,8 +40,8 @@ export async function POST(request: NextRequest) {
   });
 
   const redirectTo = finalized.preferredWorkspaceSlug
-    ? buildRedirect(request, `/app?workspace=${encodeURIComponent(finalized.preferredWorkspaceSlug)}`).toString()
-    : buildRedirect(request, "/app").toString();
+    ? buildRedirect(request, `/?workspace=${encodeURIComponent(finalized.preferredWorkspaceSlug)}`).toString()
+    : buildRedirect(request, "/").toString();
 
   const response = NextResponse.json({ ok: true, redirectTo }, { status: 200 });
 

@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const auth = await signInWithSupabasePassword(email, password);
-    const response = NextResponse.redirect(buildRedirect(request, "/app"));
+    const response = NextResponse.redirect(buildRedirect(request, "/"));
 
     response.cookies.set({
       name: ACCESS_TOKEN_COOKIE,

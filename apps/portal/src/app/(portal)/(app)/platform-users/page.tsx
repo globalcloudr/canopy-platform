@@ -19,7 +19,7 @@ export default async function PlatformUsersPage({ searchParams }: PlatformUsersP
   }
 
   if (!canManagePlatformUsers(session.platformRole)) {
-    redirect("/app");
+    redirect("/");
   }
 
   return (

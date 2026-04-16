@@ -21,7 +21,7 @@ export default async function ProvisioningPage({ searchParams }: ProvisioningPag
   }
 
   if (!session.isPlatformOperator) {
-    redirect("/app");
+    redirect("/");
   }
 
   const workspaces = session.memberships.map((membership) => membership.workspace);

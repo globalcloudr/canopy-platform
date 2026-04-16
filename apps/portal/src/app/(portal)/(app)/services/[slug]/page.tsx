@@ -48,7 +48,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
               <a href="mailto:info@akkedisdigital.com">Contact Canopy</a>
             </Button>
             <Button asChild variant="secondary">
-              <a href="/app">Back to dashboard</a>
+              <a href="/">Back to dashboard</a>
             </Button>
           </div>
         </div>

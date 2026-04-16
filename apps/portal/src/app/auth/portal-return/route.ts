@@ -7,7 +7,7 @@ import {
 } from "@/lib/platform";
 
 function buildRedirect(request: NextRequest, workspaceSlug?: string | null) {
-  const url = new URL("/app", request.url);
+  const url = new URL("/", request.url);
   if (url.hostname === "0.0.0.0") {
     url.hostname = "localhost";
   }

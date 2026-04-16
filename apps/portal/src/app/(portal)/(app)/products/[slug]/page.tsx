@@ -114,7 +114,7 @@ function StoriesDetailPage({ iconColor, displayName }: { iconColor: string; disp
               </a>
             </Button>
             <Button asChild variant="secondary">
-              <a href="/app">Back to dashboard</a>
+              <a href="/">Back to dashboard</a>
             </Button>
           </div>
         </div>
@@ -231,7 +231,7 @@ function PhotoVaultDetailPage({ iconColor, displayName }: { iconColor: string; d
               </a>
             </Button>
             <Button asChild variant="secondary">
-              <a href="/app">Back to dashboard</a>
+              <a href="/">Back to dashboard</a>
             </Button>
           </div>
         </div>
@@ -348,7 +348,7 @@ function ReachDetailPage({ iconColor, displayName }: { iconColor: string; displa
               </a>
             </Button>
             <Button asChild variant="secondary">
-              <a href="/app">Back to dashboard</a>
+              <a href="/">Back to dashboard</a>
             </Button>
           </div>
         </div>
@@ -465,7 +465,7 @@ function CommunityDetailPage({ iconColor, displayName }: { iconColor: string; di
               </a>
             </Button>
             <Button asChild variant="secondary">
-              <a href="/app">Back to dashboard</a>
+              <a href="/">Back to dashboard</a>
             </Button>
           </div>
         </div>
@@ -573,7 +573,7 @@ function CreateDetailPage({ iconColor, displayName }: { iconColor: string; displ
               </a>
             </Button>
             <Button asChild variant="secondary">
-              <a href="/app">Back to dashboard</a>
+              <a href="/">Back to dashboard</a>
             </Button>
           </div>
         </div>
@@ -641,7 +641,7 @@ function ComingSoonPage({
               </a>
             </Button>
             <Button asChild variant="secondary">
-              <a href="/app">Back to dashboard</a>
+              <a href="/">Back to dashboard</a>
             </Button>
           </div>
         </div>

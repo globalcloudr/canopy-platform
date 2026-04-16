@@ -5,6 +5,8 @@ Platform portal and shared infrastructure for the Canopy product suite.
 **Live URL**: https://usecanopy.school
 **Fallback deployment URL**: https://canopy-platform-portal.vercel.app
 
+The public `/` route now redirects to the standalone `canopy-marketing` site. Portal-authenticated application surfaces remain under `/sign-in` and `/app`.
+
 ## What Is Built and Live
 
 ### Portal App
@@ -147,6 +149,7 @@ PHOTOVAULT_APP_URL=https://photovault.school
 STORIES_APP_URL=https://canopy-stories.vercel.app
 REACH_APP_URL=https://canopy-reach.vercel.app
 CREATE_APP_URL=https://canopy-create.vercel.app
+MARKETING_SITE_URL=https://canopy-marketing.vercel.app
 ```
 
 ## Database

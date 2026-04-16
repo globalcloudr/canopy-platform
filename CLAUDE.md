@@ -176,6 +176,7 @@ Environment variables controlling product URLs:
 - `STORIES_APP_URL` (default: `https://canopy-stories.vercel.app`)
 - `REACH_APP_URL` (default: `https://canopy-reach.vercel.app`)
 - `CREATE_APP_URL` (required for the deployed Canopy Create app; fallback: `https://canopy-create.vercel.app`)
+- `MARKETING_SITE_URL` (default: `https://canopy-marketing.vercel.app`; Portal `/` redirects here)
 
 ## @canopy/ui Design System
 
@@ -269,4 +270,5 @@ PHOTOVAULT_APP_URL=           # defaults to https://photovault.school
 STORIES_APP_URL=              # defaults to https://canopy-stories.vercel.app
 REACH_APP_URL=                # defaults to https://canopy-reach.vercel.app
 CREATE_APP_URL=               # defaults to https://canopy-create.vercel.app
+MARKETING_SITE_URL=           # defaults to https://canopy-marketing.vercel.app
 ```

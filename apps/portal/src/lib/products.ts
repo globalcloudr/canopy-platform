@@ -238,7 +238,7 @@ function getDefaultState(definition: ProductDefinition): WorkspaceProductState {
       stateLabel: "Available",
       canLaunch: false,
       primaryActionLabel: "Learn More",
-      primaryActionTarget: `/app/services/${productSlug(definition.productKey)}`,
+      primaryActionTarget: `/services/${productSlug(definition.productKey)}`,
     };
   }
 
@@ -248,7 +248,7 @@ function getDefaultState(definition: ProductDefinition): WorkspaceProductState {
     stateLabel: "Not Enabled",
     canLaunch: false,
     primaryActionLabel: "View Product",
-    primaryActionTarget: `/app/products/${productSlug(definition.productKey)}`,
+    primaryActionTarget: `/products/${productSlug(definition.productKey)}`,
     secondaryActionLabel: "Request Access",
     secondaryActionTarget: "mailto:info@akkedisdigital.com",
   };
@@ -262,7 +262,7 @@ function appendWorkspaceContext(target: string, workspaceSlug?: string) {
   try {
     const url = target.startsWith("http")
       ? new URL(target)
-      : new URL(target, "https://usecanopy.school");
+      : new URL(target, "https://app.usecanopy.school");
     url.searchParams.set("workspace", workspaceSlug);
     return target.startsWith("http")
       ? url.toString()
@@ -424,11 +424,11 @@ function getPrimaryActionTarget(productKey: ProductKey, state: ProductState): st
 
   // Services → service placeholder pages
   if (state === "service") {
-    return `/app/services/${slug}`;
+    return `/services/${slug}`;
   }
 
   // Everything else → product placeholder page within the portal
-  return `/app/products/${slug}`;
+  return `/products/${slug}`;
 }
 
 function getSecondaryActionLabel(productKey: ProductKey, state: ProductState) {

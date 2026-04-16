@@ -42,7 +42,7 @@ export function InviteAcceptanceHandler() {
         }
 
         window.history.replaceState({}, "", window.location.pathname + window.location.search);
-        window.location.assign(body.redirectTo ?? "/app");
+        window.location.assign(body.redirectTo ?? "/");
       })
       .catch((error) => {
         setStatus("error");

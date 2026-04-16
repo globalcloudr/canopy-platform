@@ -47,13 +47,13 @@ export function PortalAdminWorkflow({
       </BodyText>
 
       <div className="mt-5 flex flex-wrap gap-3">
-        <Link href={navHref("/app/provisioning", activeWorkspace)} className={navClass(currentPage === "provisioning")}>
+        <Link href={navHref("/provisioning", activeWorkspace)} className={navClass(currentPage === "provisioning")}>
           Provisioning
         </Link>
-        <Link href={navHref("/app/school-ops", activeWorkspace)} className={navClass(currentPage === "school_ops")}>
+        <Link href={navHref("/school-ops", activeWorkspace)} className={navClass(currentPage === "school_ops")}>
           School Ops
         </Link>
-        <Link href={navHref("/app/platform-users", activeWorkspace)} className={navClass(currentPage === "platform_users")}>
+        <Link href={navHref("/platform-users", activeWorkspace)} className={navClass(currentPage === "platform_users")}>
           Platform Users
         </Link>
       </div>

@@ -20,7 +20,7 @@ export default async function SchoolOpsPage({ searchParams }: SchoolOpsPageProps
   }
 
   if (!canManageSchools(session.platformRole)) {
-    redirect("/app");
+    redirect("/");
   }
 
   const workspaces = session.memberships.map((membership) => membership.workspace);

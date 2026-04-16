@@ -4,6 +4,17 @@ Append new sessions at the top. Do not overwrite history.
 
 ---
 
+## 2026-04-14 — Portal public landing page replaced by Canopy Marketing
+
+- Replaced Portal's hard-coded public marketing homepage with a redirect from `/` to the standalone `canopy-marketing` deployment
+- Added `MARKETING_SITE_URL` env support so the public marketing destination can be changed without editing Portal code
+- Kept Portal auth and application routes intact under `/sign-in` and `/app`
+
+### Verification
+- Pending build verification after the redirect patch
+
+---
+
 ## 2026-04-14 — Canopy Create portal integration
 
 - Added `create_canopy` to Portal's cross-product launch handoff type and routing

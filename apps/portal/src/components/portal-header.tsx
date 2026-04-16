@@ -61,7 +61,7 @@ export function PortalHeader() {
         .map((w) => {
           const params = new URLSearchParams(qs);
           params.set("workspace", w.slug);
-          return { id: w.id, label: w.displayName, href: `/app?${params.toString()}` };
+          return { id: w.id, label: w.displayName, href: `/?${params.toString()}` };
         })
     : [];
 
@@ -74,19 +74,19 @@ export function PortalHeader() {
 
   return (
     <CanopyHeader
-      brandHref={`/app${suffix}`}
+      brandHref={`/${suffix}`}
       workspaceLabel={workspaceLabel}
       workspaceContextLabel="School"
       workspaceLinks={workspaceLinks}
       isPlatformOperator={session?.isPlatformOperator}
-      platformOverviewHref={`/app${suffix}`}
+      platformOverviewHref={`/${suffix}`}
       userInitials={userInitials}
       displayName={displayName}
       email={user?.displayName ? user.email : null}
       roleLabel={roleLabel}
       accountMenuItems={[
-        { label: "Account", href: `/app/account${suffix}` },
-        { label: "Portal overview", href: `/app${suffix}` },
+        { label: "Account", href: `/account${suffix}` },
+        { label: "Portal overview", href: `/${suffix}` },
         { label: "Questions / feedback", href: "mailto:info@akkedisdigital.com?subject=Canopy%20Portal%20Feedback" },
       ]}
       signOutHref="/auth/sign-out"

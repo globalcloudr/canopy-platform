@@ -175,32 +175,32 @@ export function PortalSidebar({
   const launcherServices = getLauncherServices(sessionMatchesWorkspace ? session?.entitlements ?? [] : [], {
     workspaceSlug: workspace ?? undefined,
   });
-  const showHomeSubnav = pathname === "/app";
-  const showAccountSubnav = pathname.startsWith("/app/account");
+  const showHomeSubnav = pathname === "/";
+  const showAccountSubnav = pathname.startsWith("/account");
   const homeSubItems =
     session?.isPlatformOperator && !activeWorkspace
-      ? [{ label: "Workspace Context", href: `/app${suffix}#workspace-context` }]
+      ? [{ label: "Workspace Context", href: `/${suffix}#workspace-context` }]
       : [
-          { label: "Your Apps", href: `/app${suffix}#products` },
-          ...(launcherServices.length > 0 ? [{ label: "Active Services", href: `/app${suffix}#services` }] : []),
-          ...(additionalProducts.length > 0 ? [{ label: "More from Canopy", href: `/app${suffix}#more-products` }] : []),
+          { label: "Your Apps", href: `/${suffix}#products` },
+          ...(launcherServices.length > 0 ? [{ label: "Active Services", href: `/${suffix}#services` }] : []),
+          ...(additionalProducts.length > 0 ? [{ label: "More from Canopy", href: `/${suffix}#more-products` }] : []),
         ];
   const accountSubItems =
     session?.isPlatformOperator && !activeWorkspace
-      ? [{ label: "Platform Context", href: `/app/account${suffix}#platform-context` }]
+      ? [{ label: "Platform Context", href: `/account${suffix}#platform-context` }]
       : [
-          { label: "Organization Details", href: `/app/account${suffix}#organization-details` },
-          { label: "Workspace Access", href: `/app/account${suffix}#workspace-access` },
-          { label: "Products & Services", href: `/app/account${suffix}#products-services` },
+          { label: "Organization Details", href: `/account${suffix}#organization-details` },
+          { label: "Workspace Access", href: `/account${suffix}#workspace-access` },
+          { label: "Products & Services", href: `/account${suffix}#products-services` },
         ];
 
   const displayName = sessionMatchesWorkspace ? activeWorkspace?.displayName ?? formatWorkspaceLabel(workspace) : formatWorkspaceLabel(requestedWorkspace);
   const orgInitials = displayName
     ? displayName.split(" ").map((p: string) => p[0] ?? "").join("").slice(0, 2).toUpperCase()
     : "CP";
-  const portalHomeHref = `/app${suffix}`;
-  const schoolOpsHref = `/app/school-ops${suffix}`;
-  const platformUsersHref = `/app/platform-users${suffix}`;
+  const portalHomeHref = `/${suffix}`;
+  const schoolOpsHref = `/school-ops${suffix}`;
+  const platformUsersHref = `/platform-users${suffix}`;
   const launcherItems = [
     { key: "portal", label: "Canopy Portal", href: portalHomeHref, current: true },
     ...(launchableProductKeys.has("photovault") ? [{ key: "photovault", label: "PhotoVault", href: photoVaultHref }] : []),
@@ -263,7 +263,7 @@ export function PortalSidebar({
           <p className="mb-3 px-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#8ea0b7]">Workspace</p>
           <div className="space-y-1.5">
             <div>
-              <Link href={`/app${suffix}`} className={navClass(pathname === "/app")}>
+              <Link href={`/${suffix}`} className={navClass(pathname === "/")}>
                 <IconHome className="h-[18px] w-[18px]" />
                 Home
               </Link>
@@ -278,7 +278,7 @@ export function PortalSidebar({
               ) : null}
             </div>
             <div>
-              <Link href={`/app/account${suffix}`} className={navClass(pathname.startsWith("/app/account"))}>
+              <Link href={`/account${suffix}`} className={navClass(pathname.startsWith("/account"))}>
                 <IconUser className="h-[18px] w-[18px]" />
                 Account
               </Link>
@@ -298,19 +298,19 @@ export function PortalSidebar({
               <p className="mb-3 mt-6 px-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#8ea0b7]">Super Admin</p>
               <div className="space-y-1.5">
                 {showProvisioning && (
-                  <Link href={`/app/provisioning${suffix}`} className={navClass(pathname.startsWith("/app/provisioning"))}>
+                  <Link href={`/provisioning${suffix}`} className={navClass(pathname.startsWith("/provisioning"))}>
                     <IconShield className="h-[18px] w-[18px]" />
                     Provisioning
                   </Link>
                 )}
                 {isSuperAdmin && (
-                  <Link href={schoolOpsHref} className={navClass(pathname.startsWith("/app/school-ops"))}>
+                  <Link href={schoolOpsHref} className={navClass(pathname.startsWith("/school-ops"))}>
                     <IconShield className="h-[18px] w-[18px]" />
                     School Ops
                   </Link>
                 )}
                 {isSuperAdmin && (
-                  <Link href={platformUsersHref} className={navClass(pathname.startsWith("/app/platform-users"))}>
+                  <Link href={platformUsersHref} className={navClass(pathname.startsWith("/platform-users"))}>
                     <IconUser className="h-[18px] w-[18px]" />
                     Platform Users
                   </Link>
