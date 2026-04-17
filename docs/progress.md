@@ -4,6 +4,29 @@ Append new sessions at the top. Do not overwrite history.
 
 ---
 
+## 2026-04-16 — Domain migration: portal moves to app.usecanopy.school
+
+- Separated the marketing site from the portal at the domain level:
+  - `usecanopy.school` → Astro marketing site (`canopy-marketing` Vercel project)
+  - `app.usecanopy.school` → Canopy Portal (`canopy-platform-portal` Vercel project)
+- Renamed route group `(portal)/app/` → `(portal)/(app)/` so portal routes serve from `/` instead of `/app`
+- Updated all 54 internal `/app` path references across auth routes, sidebar, header, admin workflow, products, and page redirects
+- Added backward-compat redirects in `next.config.ts`: `/app` → `/` and `/app/:path*` → `/:path*`
+- Added `public/robots.txt` with `Disallow: /` to prevent search engines indexing the portal subdomain
+- Deleted the old marketing homepage (`src/app/page.tsx`) — portal `/` now serves the authenticated dashboard directly
+- Updated hardcoded `usecanopy.school` fallback in `products.ts` → `app.usecanopy.school`
+- Updated all 5 product apps (community, stories, reach, photovault, create): `NEXT_PUBLIC_PORTAL_URL` fallback → `https://app.usecanopy.school`, removed `/app` from `portalHomeHref`
+- Updated Supabase auth config: Site URL → `https://app.usecanopy.school`
+- DNS: CNAME `app` → `ff5b5e4bb0bc80ba.vercel-dns-017.com` added at registrar
+
+### Verification
+- `npx tsc --noEmit` passed in all 5 product apps and portal
+- Portal live at `https://app.usecanopy.school` ✅
+- Marketing site live at `https://usecanopy.school` ✅
+- Sign-in, workspace switching, product launch all verified working ✅
+
+---
+
 ## 2026-04-14 — Portal public landing page replaced by Canopy Marketing
 
 - Replaced Portal's hard-coded public marketing homepage with a redirect from `/` to the standalone `canopy-marketing` deployment
@@ -304,32 +327,35 @@ Key accuracy fixes applied during the audit:
 
 ---
 
-## Current Status (as of 2026-03-31)
+## Current Status (as of 2026-04-16)
 
-The portal is live and functional. Three connected products are wired into the platform surface: PhotoVault, Canopy Stories, and Canopy Reach. The platform now handles cookie-backed auth, one-time cross-product launch exchange, server-backed workspace context, entitlements, provisioning, invitations, and shared navigation for all three.
+The portal is live at `https://app.usecanopy.school`. The public marketing site is live at `https://usecanopy.school`. Five connected products are wired into the platform. The platform handles cookie-backed auth, one-time cross-product launch exchange, server-backed workspace context, entitlements, provisioning, invitations, and shared navigation across all products.
 
 ## What Was Recently Completed
 
-- One-time launch exchange implemented across Portal, Reach, Stories, and PhotoVault
-- Server-backed workspace session endpoints added to products to eliminate first-load workspace drift
-- Portal session resolution hardened to rely only on cookie-backed auth
-- Header and sidebar navigation cleanup for platform users and school users
-- Operator provisioning: workspace creation, product/service enablement, invite send/resend, invite acceptance
+- Domain migration: portal moved from `usecanopy.school/app` to `app.usecanopy.school`
+- Marketing site (`canopy-marketing`) launched at `usecanopy.school` with Astro, Campaign Monitor newsletter/contact form, Calendly CTAs
+- Route group restructure: portal routes now at `/` instead of `/app`
+- Canopy Community (`community_canopy`) added as a live product
+- Canopy Create (`create_canopy`) added to platform with launch handoff
+- All product apps updated to point back to `app.usecanopy.school`
 
 ## Open Items
 
 ### Medium priority
-- **`workspaces` table migration** — portal currently uses `organizations` as the workspace bridge; a dedicated `workspaces` table is a future migration (no urgency while shared Supabase works)
+- **Workspace switching in PhotoVault** — super admins must return to portal to switch workspaces; PhotoVault header does not expose workspace switcher
+- **`workspaces` table migration** — portal currently uses `organizations` as the workspace bridge; a dedicated `workspaces` table is a future migration
 
 ### Low priority / future
 - SQL migration files in `docs/sql/` should eventually move to `supabase/migrations/` in each respective repo
-- `references/replit/` folder archived — contains Replit prototypes of future products (Community, Reach, Create, Publish, etc.) that will be rebuilt as Canopy products
 
 ## Active Products
 
 - **PhotoVault** — Live at https://photovault.school
-- **Canopy Stories** — Live (beta) at https://canopy-stories.vercel.app
-- **Canopy Reach** — Active development at https://canopy-reach.vercel.app (portal-connected, school account flow and media foundation in place)
+- **Canopy Stories** — Live at https://canopy-stories.vercel.app
+- **Canopy Reach** — Live at https://canopy-reach.vercel.app
+- **Canopy Community** — Live at https://canopy-community.vercel.app
+- **Canopy Create** — Live (URL via `CREATE_APP_URL` env)
 
 ## Future Products
 

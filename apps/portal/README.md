@@ -2,7 +2,7 @@
 
 Workspace portal app for the Canopy product suite.
 
-- `usecanopy.school`
+- `https://app.usecanopy.school`
 
 ## Purpose
 

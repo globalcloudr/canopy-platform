@@ -9,7 +9,7 @@ For provisioning ownership and PhotoVault retirement criteria, read `docs/worksp
 
 | Repo | Purpose | Live URL |
 |---|---|---|
-| `canopy-platform` | Portal, identity, entitlements, provisioning, launch | `https://usecanopy.school` |
+| `canopy-platform` | Portal, identity, entitlements, provisioning, launch | `https://app.usecanopy.school` |
 | `photovault` | PhotoVault by Canopy product | `https://photovault.school` |
 | `canopy-stories` | Canopy Stories product | `https://canopy-stories.vercel.app` |
 | `canopy-reach` | Canopy Reach product | `https://canopy-reach.vercel.app` |
@@ -43,11 +43,11 @@ canopy-platform/
 | `apps/portal/src/lib/platform.ts` | Session layer — resolves user, workspace, memberships, entitlements, operator state |
 | `apps/portal/src/lib/products.ts` | Product catalog — definitions, state derivation, action targets |
 | `apps/portal/src/lib/provisioning.ts` | Provisioning logic — workspace creation, invite send/resend, entitlement upsert, service-state reads, provisioning summary helpers |
-| `apps/portal/src/app/(portal)/app/layout.tsx` | Authenticated shell — top bar + sidebar + content area |
-| `apps/portal/src/app/(portal)/app/page.tsx` | Dashboard / product launcher |
-| `apps/portal/src/app/(portal)/app/provisioning/page.tsx` | Operator provisioning UI |
-| `apps/portal/src/app/(portal)/app/school-ops/page.tsx` | Super Admin school operations surface and owner transfer entry point |
-| `apps/portal/src/app/(portal)/app/platform-users/page.tsx` | Super Admin internal platform-user management page |
+| `apps/portal/src/app/(portal)/(app)/layout.tsx` | Authenticated shell — top bar + sidebar + content area |
+| `apps/portal/src/app/(portal)/(app)/page.tsx` | Dashboard / product launcher |
+| `apps/portal/src/app/(portal)/(app)/provisioning/page.tsx` | Operator provisioning UI |
+| `apps/portal/src/app/(portal)/(app)/school-ops/page.tsx` | Super Admin school operations surface and owner transfer entry point |
+| `apps/portal/src/app/(portal)/(app)/platform-users/page.tsx` | Super Admin internal platform-user management page |
 | `apps/portal/src/components/portal-admin-workflow.tsx` | Shared Super Admin workflow rail — page scope, selected workspace, recommended next action |
 | `docs/workspace-provisioning-transition-plan.md` | Active cutover plan for making Portal the single Super Admin provisioning workflow |
 | `apps/portal/src/components/portal-header.tsx` | Top bar with brand mark, workspace chip, avatar dropdown |
@@ -58,7 +58,6 @@ canopy-platform/
 ## Routes
 
 ### Public
-- `/` — marketing homepage
 - `/sign-in` — sign-in page
 - `/password-reset` — password reset request page
 
@@ -71,16 +70,16 @@ canopy-platform/
 - `/auth/launch/stories` — one-time handoff exchange launch to Canopy Stories
 - `/auth/launch/reach` — one-time handoff exchange launch to Canopy Reach
 - `POST /auth/product-launch` — internal portal handoff for in-app product switching from Reach/Stories
-- `POST /auth/portal-return` — internal portal cookie-restore path for returning from products to Portal
+- `POST /auth/portal-return` — internal portal cookie-restore path for returning from products to Portal; redirects to `/`
 
-### Authenticated (`/app/*`)
-- `/app` — dashboard
-- `/app/account` — workspace + user details
-- `/app/provisioning` — operator only: create workspaces, manage products/services, edit invite templates, send invites, and review provisioning status
-- `/app/school-ops` — Super Admin only: workspace ownership/status overview plus Brand Portal and audit shortcuts
-- `/app/platform-users` — Super Admin only: internal Canopy team access management
-- `/app/products/[slug]` — placeholder pages for not-yet-active products
-- `/app/services/[slug]` — placeholder pages for services
+### Authenticated (`/*`)
+- `/` — dashboard
+- `/account` — workspace + user details
+- `/provisioning` — operator only: create workspaces, manage products/services, edit invite templates, send invites, and review provisioning status
+- `/school-ops` — Super Admin only: workspace ownership/status overview plus Brand Portal and audit shortcuts
+- `/platform-users` — Super Admin only: internal Canopy team access management
+- `/products/[slug]` — placeholder pages for not-yet-active products
+- `/services/[slug]` — placeholder pages for services
 
 ### API
 - `GET /api/portal-session` — returns resolved `PortalSession` for client components
@@ -176,7 +175,7 @@ Environment variables controlling product URLs:
 - `STORIES_APP_URL` (default: `https://canopy-stories.vercel.app`)
 - `REACH_APP_URL` (default: `https://canopy-reach.vercel.app`)
 - `CREATE_APP_URL` (required for the deployed Canopy Create app; fallback: `https://canopy-create.vercel.app`)
-- `MARKETING_SITE_URL` (default: `https://canopy-marketing.vercel.app`; Portal `/` redirects here)
+- `MARKETING_SITE_URL` — no longer used; marketing site is a separate Vercel project at `usecanopy.school`
 
 ## @canopy/ui Design System
 
