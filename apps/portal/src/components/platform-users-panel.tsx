@@ -193,7 +193,7 @@ export function PlatformUsersPanel({ auditWorkspaceId, currentUserId = null }: P
   return (
     <div className="space-y-5">
       <AppSurface variant="clear" padding="md" className="sm:p-6">
-        <SectionTitle as="h2" className="mb-2 text-slate-900">Access overview</SectionTitle>
+        <SectionTitle as="h2" className="mb-2 text-[var(--foreground)]">Access overview</SectionTitle>
         <p className="m-0 max-w-[64ch] text-sm text-[var(--text-muted)]">
           Invite and manage internal Portal users. Super Admin handles governance-level actions here instead of relying on the old PhotoVault platform console.
         </p>
@@ -240,14 +240,14 @@ export function PlatformUsersPanel({ auditWorkspaceId, currentUserId = null }: P
         </form>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           {ROLE_OPTIONS.map((option) => (
-            <div key={option.value} className="rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 p-4">
-              <p className="m-0 text-sm font-semibold text-ink">{option.label}</p>
+            <div key={option.value} className="rounded-[22px] border border-[var(--app-surface-soft-border)] bg-[var(--surface)] p-4">
+              <p className="m-0 text-sm font-semibold text-[var(--foreground)]">{option.label}</p>
               <p className="mt-1 text-sm text-[var(--text-muted)]">{option.description}</p>
             </div>
           ))}
         </div>
         {status ? (
-          <div className="mt-4 rounded-xl border border-[rgba(15,31,61,0.1)] bg-white/60 px-4 py-3 text-sm text-ink">
+          <div className="mt-4 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-sm text-[var(--foreground)]">
             {status}
           </div>
         ) : null}
@@ -268,10 +268,10 @@ export function PlatformUsersPanel({ auditWorkspaceId, currentUserId = null }: P
               return (
                 <div
                   key={user.userId}
-                  className="flex flex-col gap-4 rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/52 px-4 py-4 lg:flex-row lg:items-center lg:justify-between"
+                  className="flex flex-col gap-4 rounded-[22px] border border-[var(--app-surface-soft-border)] bg-[var(--surface)] px-4 py-4 lg:flex-row lg:items-center lg:justify-between"
                 >
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-ink">{user.fullName || user.email || user.userId}</p>
+                    <p className="truncate text-sm font-semibold text-[var(--foreground)]">{user.fullName || user.email || user.userId}</p>
                     <p className="mt-1 truncate text-sm text-[var(--text-muted)]">{user.email ?? "No email"}</p>
                     <p className="mt-1 text-sm text-[var(--text-muted)]">
                       {user.roleLabel} {user.invited ? "• Invited" : "• Active"} • {formatLastSeen(user.lastSignInAt)}

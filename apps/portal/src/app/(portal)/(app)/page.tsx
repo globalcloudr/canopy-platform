@@ -126,7 +126,7 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
                 <div className="flex items-center gap-3 shrink-0">
                   <AppPill>{service.stateLabel}</AppPill>
                   <a
-                    className="text-[0.845rem] font-semibold text-blue no-underline whitespace-nowrap transition-colors hover:text-blue-hover hover:underline"
+                    className="text-[0.845rem] font-semibold text-[var(--accent)] no-underline whitespace-nowrap transition-colors hover:text-[var(--accent-ink)] hover:underline"
                     href={service.primaryActionTarget}
                   >
                     {service.primaryActionLabel}

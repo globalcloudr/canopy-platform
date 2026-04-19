@@ -174,13 +174,13 @@ export function WorkspaceInvitationsPanel({
   return (
     <AppSurface variant="clear" padding="md" className="sm:p-6">
       <div className="mb-4">
-        <h2 className="text-[1.1rem] font-semibold tracking-[-0.03em] text-slate-900">Workspace access</h2>
+        <h2 className="text-[1.1rem] font-semibold tracking-[-0.03em] text-[var(--foreground)]">Workspace access</h2>
         <BodyText muted className="m-0 max-w-[56ch]">
           Invite staff into {workspace.displayName} from Canopy Portal and assign the role they should use across Reach and the rest of Canopy.
         </BodyText>
       </div>
 
-      <form className="grid gap-4 rounded-[24px] border border-[var(--app-surface-soft-border)] bg-white/54 p-4 sm:grid-cols-[minmax(0,1fr)_220px_auto]" onSubmit={submitInvite}>
+      <form className="grid gap-4 rounded-[24px] border border-[var(--app-surface-soft-border)] bg-[var(--surface)] p-4 sm:grid-cols-[minmax(0,1fr)_220px_auto]" onSubmit={submitInvite}>
         <label className="space-y-2">
           <Label>Email</Label>
           <Input
@@ -205,8 +205,8 @@ export function WorkspaceInvitationsPanel({
               ))}
             </SelectContent>
           </Select>
-          <p className="text-sm leading-6 text-slate-600">
-            <span className="font-semibold text-slate-900">{selectedRoleDescription.title}:</span>{" "}
+          <p className="text-sm leading-6 text-[var(--text-muted)]">
+            <span className="font-semibold text-[var(--foreground)]">{selectedRoleDescription.title}:</span>{" "}
             {selectedRoleDescription.description}
           </p>
         </label>
@@ -218,7 +218,7 @@ export function WorkspaceInvitationsPanel({
       </form>
 
       <BodyText muted className="mt-3 text-[0.85rem]">
-        Recommended: use <span className="font-medium text-slate-700">Social Media</span> for staff who should create and schedule posts. Social Media users can upload photos by default.
+        Recommended: use <span className="font-medium text-[var(--secondary-foreground)]">Social Media</span> for staff who should create and schedule posts. Social Media users can upload photos by default.
       </BodyText>
 
       <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
@@ -227,41 +227,43 @@ export function WorkspaceInvitationsPanel({
             key={item.role}
             className={[
               "rounded-xl border px-4 py-3",
-              role === item.role ? "border-blue-300 bg-blue-50/70" : "border-slate-200 bg-white",
+              role === item.role
+                ? "border-[var(--accent)] bg-[var(--accent-soft)]"
+                : "border-[var(--border)] bg-[var(--surface)]",
               
             ].join(" ")}
           >
-            <p className="m-0 text-sm font-semibold text-slate-900">{item.title}</p>
-            <p className="m-0 mt-1 text-sm leading-6 text-slate-600">{item.description}</p>
+            <p className="m-0 text-sm font-semibold text-[var(--foreground)]">{item.title}</p>
+            <p className="m-0 mt-1 text-sm leading-6 text-[var(--text-muted)]">{item.description}</p>
           </div>
         ))}
       </div>
 
       {message ? (
-        <div className="mt-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-[0.875rem] text-green-700">
+        <div className="mt-4 rounded-xl border border-[var(--app-pill-success-border)] bg-[var(--app-pill-success-bg)] px-4 py-3 text-[0.875rem] text-[var(--app-pill-success-text)]">
           {message}
         </div>
       ) : null}
       {error ? (
-        <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-[0.875rem] text-red-700">
+        <div className="mt-4 rounded-xl border border-[color:color-mix(in_srgb,var(--destructive)_16%,white)] bg-[var(--destructive-surface)] px-4 py-3 text-[0.875rem] text-[var(--destructive)]">
           {error}
         </div>
       ) : null}
 
       <div className="mt-6">
-        <h3 className="mb-3 text-[0.98rem] font-semibold tracking-[-0.02em] text-slate-900">Recent invitations</h3>
+        <h3 className="mb-3 text-[0.98rem] font-semibold tracking-[-0.02em] text-[var(--foreground)]">Recent invitations</h3>
         {sortedInvitations.length === 0 ? (
           <BodyText muted className="m-0">No invitation records yet for this workspace.</BodyText>
         ) : (
-          <div className="overflow-hidden rounded-[24px] border border-[var(--app-surface-soft-border)] bg-white/72">
+          <div className="overflow-hidden rounded-[24px] border border-[var(--app-surface-soft-border)] bg-[var(--surface)]">
             {sortedInvitations.map((invitation, index) => (
               <div
                 key={invitation.id}
-                className={`flex items-center justify-between gap-4 px-5 py-3.5 ${index < sortedInvitations.length - 1 ? "border-b border-slate-200" : ""}`}
+                className={`flex items-center justify-between gap-4 px-5 py-3.5 ${index < sortedInvitations.length - 1 ? "border-b border-[var(--border)]" : ""}`}
               >
                 <div>
-                  <p className="m-0 text-sm font-semibold text-slate-900">{invitation.email}</p>
-                  <p className="m-0 mt-1 text-sm text-slate-500">
+                  <p className="m-0 text-sm font-semibold text-[var(--foreground)]">{invitation.email}</p>
+                  <p className="m-0 mt-1 text-sm text-[var(--text-muted)]">
                     {formatRole(invitation.role)} • {new Date(invitation.createdAt).toLocaleDateString()}
                   </p>
                 </div>

@@ -113,7 +113,7 @@ export function SchoolOpsPanel({ workspaces, ownerStatuses, activeWorkspaceId }:
   return (
     <div className="space-y-5">
       <AppSurface variant="clear" padding="md" className="sm:p-6">
-        <SectionTitle as="h2" className="mb-2 text-slate-900">Operator shortcuts</SectionTitle>
+        <SectionTitle as="h2" className="mb-2 text-[var(--foreground)]">Operator shortcuts</SectionTitle>
         <p className="m-0 max-w-[68ch] text-sm text-[var(--text-muted)]">
           Review workspace ownership at a glance, jump directly into Brand Portal or audit, and transfer ownership when needed. School
           creation and admin invite flow now live in Portal provisioning.
@@ -126,7 +126,7 @@ export function SchoolOpsPanel({ workspaces, ownerStatuses, activeWorkspaceId }:
         <div className="mt-4 flex flex-wrap gap-3">
           <a
             href="/provisioning"
-            className="inline-flex items-center rounded-2xl bg-[#172033] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#0f172a]"
+            className="inline-flex items-center rounded-2xl bg-[var(--foreground)] px-4 py-2 text-sm font-medium text-[var(--paper)] transition hover:bg-[var(--ink-2)]"
           >
             Open provisioning
           </a>
@@ -151,15 +151,15 @@ export function SchoolOpsPanel({ workspaces, ownerStatuses, activeWorkspaceId }:
               return (
                 <article
                   key={workspace.id}
-                  className="rounded-[24px] border border-[var(--app-surface-soft-border)] bg-white/60 p-4"
+                  className="rounded-[24px] border border-[var(--app-surface-soft-border)] bg-[var(--surface)] p-4"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <h4 className="truncate text-[1rem] font-semibold tracking-[-0.02em] text-ink">{workspace.displayName}</h4>
+                      <h4 className="truncate text-[1rem] font-semibold tracking-[-0.02em] text-[var(--foreground)]">{workspace.displayName}</h4>
                       <p className="mt-1 text-sm text-[var(--text-muted)]">{workspace.slug}</p>
                     </div>
                     {workspace.id === activeWorkspaceId ? (
-                      <span className="rounded-full bg-sky-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-sky-700">
+                      <span className="rounded-full border border-[var(--accent-soft)] bg-[var(--accent-soft)] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--accent-ink)]">
                         Active
                       </span>
                     ) : null}
@@ -167,15 +167,15 @@ export function SchoolOpsPanel({ workspaces, ownerStatuses, activeWorkspaceId }:
 
                   <div className="mt-3 flex flex-wrap gap-2">
                     {acceptedOwnerCount > 0 ? (
-                      <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-emerald-700">
+                      <span className="rounded-full border border-[var(--app-pill-success-border)] bg-[var(--app-pill-success-bg)] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--app-pill-success-text)]">
                         Owner active
                       </span>
                     ) : ownerCount > 0 ? (
-                      <span className="rounded-full bg-amber-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-amber-700">
+                      <span className="rounded-full border border-[color:color-mix(in_srgb,var(--warning)_18%,white)] bg-[color:color-mix(in_srgb,var(--warning)_10%,white)] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--warning)]">
                         Owner invited
                       </span>
                     ) : (
-                      <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-700">
+                      <span className="rounded-full border border-[var(--border)] bg-[var(--surface-muted)] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--text-muted)]">
                         Needs owner
                       </span>
                     )}
@@ -186,13 +186,13 @@ export function SchoolOpsPanel({ workspaces, ownerStatuses, activeWorkspaceId }:
                   <div className="mt-4 flex flex-wrap gap-2">
                     <a
                       href={buildPhotoVaultLaunchHref(workspace.slug, "/collections/brand-guidelines")}
-                      className="inline-flex items-center rounded-2xl border border-[var(--app-surface-soft-border)] bg-white px-3 py-2 text-sm font-medium text-ink transition hover:bg-slate-50"
+                      className="inline-flex items-center rounded-2xl border border-[var(--app-surface-soft-border)] bg-[var(--surface)] px-3 py-2 text-sm font-medium text-[var(--foreground)] transition hover:bg-[var(--surface-muted)]"
                     >
                       Open Brand Portal
                     </a>
                     <a
                       href={buildPhotoVaultLaunchHref(workspace.slug, "/audit")}
-                      className="inline-flex items-center rounded-2xl border border-[var(--app-surface-soft-border)] bg-white px-3 py-2 text-sm font-medium text-ink transition hover:bg-slate-50"
+                      className="inline-flex items-center rounded-2xl border border-[var(--app-surface-soft-border)] bg-[var(--surface)] px-3 py-2 text-sm font-medium text-[var(--foreground)] transition hover:bg-[var(--surface-muted)]"
                     >
                       Open audit
                     </a>
@@ -270,7 +270,7 @@ export function SchoolOpsPanel({ workspaces, ownerStatuses, activeWorkspaceId }:
             : "Choose a workspace to start an ownership transfer."}
         </p>
         {status ? (
-          <div className="mt-4 rounded-xl border border-[rgba(15,31,61,0.1)] bg-white/60 px-4 py-3 text-sm text-ink">
+          <div className="mt-4 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-sm text-[var(--foreground)]">
             {status}
           </div>
         ) : null}

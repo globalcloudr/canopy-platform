@@ -22,8 +22,8 @@ function navHref(path: string, activeWorkspace?: PortalWorkspace | null) {
 
 function navClass(active: boolean) {
   return active
-    ? "inline-flex items-center rounded-full bg-[#172033] px-4 py-2 text-sm font-semibold text-white"
-    : "inline-flex items-center rounded-full border border-[var(--app-surface-soft-border)] bg-white/75 px-4 py-2 text-sm font-semibold text-[#425166] transition hover:border-[#c7d5e8] hover:text-[#172033]";
+    ? "inline-flex items-center rounded-full bg-[var(--foreground)] px-4 py-2 text-sm font-semibold text-[var(--paper)]"
+    : "inline-flex items-center rounded-full border border-[var(--app-surface-soft-border)] bg-[var(--surface)] px-4 py-2 text-sm font-semibold text-[var(--text-muted)] transition hover:bg-[var(--surface-muted)] hover:text-[var(--foreground)]";
 }
 
 export function PortalAdminWorkflow({
@@ -41,7 +41,7 @@ export function PortalAdminWorkflow({
   return (
     <AppSurface variant="clear" padding="md" className="sm:p-6">
       <Eyebrow>Super Admin Workflow</Eyebrow>
-      <SectionTitle as="h2" className="mb-2 text-slate-900">Connected operator flow</SectionTitle>
+      <SectionTitle as="h2" className="mb-2 text-[var(--foreground)]">Connected operator flow</SectionTitle>
       <BodyText muted className="m-0 max-w-[60ch]">
         Portal is now the single operator home. Use these admin tools together instead of switching back to legacy PhotoVault platform pages.
       </BodyText>
@@ -59,22 +59,22 @@ export function PortalAdminWorkflow({
       </div>
 
       <div className="mt-5 grid gap-4 lg:grid-cols-3">
-        <div className="rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/72 p-4">
+        <div className="rounded-[22px] border border-[var(--app-surface-soft-border)] bg-[var(--surface)] p-4">
           <Eyebrow className="mb-2">Selected Workspace</Eyebrow>
-          <p className="m-0 text-sm font-semibold text-ink">{selectedWorkspaceLabel}</p>
+          <p className="m-0 text-sm font-semibold text-[var(--foreground)]">{selectedWorkspaceLabel}</p>
           <BodyText muted className="m-0 mt-1 text-[0.84rem]">
             {activeWorkspace ? "Actions on school-level pages affect this workspace context." : "Choose a workspace from the header when you want school-level context."}
           </BodyText>
         </div>
-        <div className="rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/72 p-4">
+        <div className="rounded-[22px] border border-[var(--app-surface-soft-border)] bg-[var(--surface)] p-4">
           <Eyebrow className="mb-2">This Page Controls</Eyebrow>
-          <p className="m-0 text-sm font-semibold text-ink">{scopeLabel}</p>
+          <p className="m-0 text-sm font-semibold text-[var(--foreground)]">{scopeLabel}</p>
           <BodyText muted className="m-0 mt-1 text-[0.84rem]">{scopeDetail}</BodyText>
           <BodyText muted className="m-0 mt-2 text-[0.84rem]">{workspaceCount} workspaces available in your operator scope.</BodyText>
         </div>
-        <div className="rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/72 p-4">
+        <div className="rounded-[22px] border border-[var(--app-surface-soft-border)] bg-[var(--surface)] p-4">
           <Eyebrow className="mb-2">Recommended Next Step</Eyebrow>
-          <p className="m-0 text-sm font-semibold text-ink">{nextStep}</p>
+          <p className="m-0 text-sm font-semibold text-[var(--foreground)]">{nextStep}</p>
         </div>
       </div>
     </AppSurface>
