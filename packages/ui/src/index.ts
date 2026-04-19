@@ -1,5 +1,6 @@
 // Utilities
 export { cn } from "./lib/cn";
+export { sidebarNavItemClass, sidebarSubnavItemClass } from "./lib/app-shell-nav";
 
 // Components
 export { Button, buttonVariants } from "./components/ui/button";
