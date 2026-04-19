@@ -31,7 +31,7 @@ export function ProductLauncherCard({ product, dim }: ProductLauncherCardProps) 
           <Badge variant={product.state as ProductState}>{product.stateLabel}</Badge>
         </div>
 
-        <CardTitle className="mb-1 text-slate-900">{product.displayName}</CardTitle>
+        <CardTitle className="mb-1 text-[var(--foreground)]">{product.displayName}</CardTitle>
         <BodyText muted className="m-0 text-[0.84rem]">{product.category}</BodyText>
         <BodyText muted className="mt-2 min-h-[3.3rem] text-[0.86rem]">{product.shortDescription}</BodyText>
       </div>
@@ -43,7 +43,7 @@ export function ProductLauncherCard({ product, dim }: ProductLauncherCardProps) 
           </Button>
           {product.secondaryActionLabel && product.secondaryActionTarget ? (
             <a
-              className={cn(typography.meta, "inline-flex items-center no-underline transition-colors hover:text-slate-900")}
+              className={cn(typography.meta, "inline-flex items-center no-underline transition-colors hover:text-[var(--foreground)]")}
               href={product.secondaryActionTarget}
             >
               {product.secondaryActionLabel}

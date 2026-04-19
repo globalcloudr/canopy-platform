@@ -47,15 +47,15 @@ function formatWorkspaceLabel(slug: string | null | undefined) {
 
 function navClass(active: boolean) {
   return cn(
-    "flex items-center gap-2.5 rounded-2xl px-3.5 py-3 font-medium text-[15px] tracking-[-0.01em] transition",
+    "flex items-center gap-2.5 rounded-[var(--radius-soft)] px-3.5 py-3 font-medium text-[15px] tracking-[-0.01em] transition-colors duration-150 ease-out",
     active
-      ? "bg-white/82 text-[#172033] shadow-[0_10px_24px_rgba(35,74,144,0.08)]"
-      : "text-[#506176] hover:bg-white/48 hover:text-[#172033]"
+      ? "bg-[var(--ink)] text-[var(--paper)] shadow-[var(--shadow-sm)]"
+      : "text-[var(--ink-2)] hover:bg-[var(--paper-pressed)] hover:text-[var(--foreground)]"
   );
 }
 
 function subnavClass() {
-  return "ml-[30px] flex items-center rounded-xl px-3 py-2 text-[13px] font-medium tracking-[-0.01em] text-[#6d7d90] transition hover:bg-white/32 hover:text-[#172033]";
+  return "ml-[30px] flex items-center rounded-[var(--radius-tight)] px-3 py-2 text-[13px] font-medium tracking-[-0.01em] text-[var(--text-muted)] transition-colors duration-150 ease-out hover:bg-[var(--paper-pressed)] hover:text-[var(--foreground)]";
 }
 
 function IconHome({ className }: { className?: string }) {
@@ -225,16 +225,16 @@ export function PortalSidebar({
                 {orgInitials}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-[15px] font-semibold tracking-[-0.02em] text-[#202020]">
+                <p className="truncate text-[15px] font-semibold tracking-[-0.02em] text-[var(--foreground)]">
                   {displayName ?? "Canopy Platform"}
                 </p>
-                <p className="mt-0.5 text-[13px] text-[#6f7e90]">Canopy Portal</p>
+                <p className="mt-0.5 text-[13px] text-[var(--text-muted)]">Canopy Portal</p>
               </div>
-              <ChevronDown className="h-4 w-4 shrink-0 text-[#94a3b8]" />
+              <ChevronDown className="h-4 w-4 shrink-0 text-[var(--faint)]" />
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-72 bg-white">
-            <DropdownMenuLabel className="text-[#66758a]">{displayName ?? "Workspace"}</DropdownMenuLabel>
+          <DropdownMenuContent align="start" className="w-72 bg-[var(--paper)]">
+            <DropdownMenuLabel className="text-[var(--text-muted)]">{displayName ?? "Workspace"}</DropdownMenuLabel>
             <DropdownMenuGroup>
               {launcherItems.map((item) =>
                 item.current ? (
@@ -260,7 +260,7 @@ export function PortalSidebar({
       {/* Nav */}
       <nav className="px-4 py-6">
         <div className="rounded-[28px] bg-transparent px-4 py-4 shadow-none">
-          <p className="mb-3 px-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#8ea0b7]">Workspace</p>
+          <p className="mb-3 px-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--faint)]">Workspace</p>
           <div className="space-y-1.5">
             <div>
               <Link href={`/${suffix}`} className={navClass(pathname === "/")}>
@@ -295,7 +295,7 @@ export function PortalSidebar({
           </div>
           {(showProvisioning || isSuperAdmin) ? (
             <>
-              <p className="mb-3 mt-6 px-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#8ea0b7]">Super Admin</p>
+              <p className="mb-3 mt-6 px-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--faint)]">Super Admin</p>
               <div className="space-y-1.5">
                 {showProvisioning && (
                   <Link href={`/provisioning${suffix}`} className={navClass(pathname.startsWith("/provisioning"))}>

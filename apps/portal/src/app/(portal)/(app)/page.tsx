@@ -49,7 +49,7 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
         />
 
         <AppSurface id="workspace-context" variant="clear" padding="md" className="sm:p-6">
-          <SectionTitle as="h2" className="mb-1 text-slate-900">Workspace Context</SectionTitle>
+          <SectionTitle as="h2" className="mb-1 text-[var(--foreground)]">Workspace Context</SectionTitle>
           <BodyText muted className="m-0 max-w-[58ch]">
             Use the workspace menu in the header when you want to inspect launcher state, account details, or enter a
             product in client context. Until then, this view stays intentionally neutral.
@@ -82,7 +82,7 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
           <div className="mb-4 flex justify-between gap-6 max-sm:flex-col sm:items-end">
             <div>
               <Eyebrow>Your Apps</Eyebrow>
-              <SectionTitle as="h2" className="text-slate-900">Launch into your products</SectionTitle>
+              <SectionTitle as="h2" className="text-[var(--foreground)]">Launch into your products</SectionTitle>
               <BodyText muted className="m-0 max-w-[54ch]">Products your workspace can access right now.</BodyText>
             </div>
           </div>
@@ -99,17 +99,17 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
           <div className="mb-4 flex justify-between gap-6 max-sm:flex-col sm:items-end">
             <div>
               <Eyebrow>Services</Eyebrow>
-              <SectionTitle as="h2" className="text-slate-900">Active services</SectionTitle>
+              <SectionTitle as="h2" className="text-[var(--foreground)]">Active services</SectionTitle>
               <BodyText muted className="m-0 max-w-[54ch]">
                 Managed services currently running for your workspace.
               </BodyText>
             </div>
           </div>
-          <div className="overflow-hidden rounded-[24px] border border-[var(--app-surface-soft-border)] bg-white/72">
+          <div className="overflow-hidden rounded-[var(--radius-soft)] border border-[var(--rule)] bg-[var(--paper)]">
             {launcherServices.map((service, i) => (
               <div
                 key={service.productKey}
-                className={`flex items-center justify-between gap-4 px-5 py-3.5 ${i < launcherServices.length - 1 ? "border-b border-slate-200" : ""}`}
+                className={`flex items-center justify-between gap-4 px-5 py-3.5 ${i < launcherServices.length - 1 ? "border-b border-[var(--rule)]" : ""}`}
               >
                 <div className="flex items-center gap-3">
                   <div
@@ -119,7 +119,7 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
                     {service.displayName[0]}
                   </div>
                   <div>
-                    <SectionTitle as="h3" className="m-0 text-lg text-slate-900">{service.displayName}</SectionTitle>
+                    <SectionTitle as="h3" className="m-0 text-lg text-[var(--foreground)]">{service.displayName}</SectionTitle>
                     <BodyText muted className="m-0 text-[0.8rem]">{service.shortDescription}</BodyText>
                   </div>
                 </div>
@@ -143,7 +143,7 @@ export default async function PortalDashboardPage({ searchParams }: PortalDashbo
           <div className="mb-4 flex justify-between gap-6 max-sm:flex-col sm:items-end">
             <div>
               <Eyebrow>More from Canopy</Eyebrow>
-              <SectionTitle as="h2" className="text-slate-900">Expand your platform</SectionTitle>
+              <SectionTitle as="h2" className="text-[var(--foreground)]">Expand your platform</SectionTitle>
               <BodyText muted className="m-0 max-w-[54ch]">
                 Additional products that can be added to this workspace when you are ready.
               </BodyText>

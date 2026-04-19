@@ -37,7 +37,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
         />
 
         <AppSurface id="platform-context" variant="clear" padding="md" className="sm:p-6">
-          <SectionTitle as="h2" className="mb-1 text-slate-900">Platform Context</SectionTitle>
+          <SectionTitle as="h2" className="mb-1 text-[var(--foreground)]">Platform Context</SectionTitle>
           <BodyText muted className="m-0 max-w-[58ch]">
             Choose a workspace from the header when you want to review workspace-specific products, services, or
             account details. Until then, this page stays at the platform layer.
@@ -63,7 +63,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
       <AppSurface id="organization-details" variant="clear" padding="md" className="sm:p-6">
         <div className="mb-4">
           <Eyebrow>Workspace</Eyebrow>
-          <SectionTitle as="h2" className="text-slate-900">Organization details</SectionTitle>
+          <SectionTitle as="h2" className="text-[var(--foreground)]">Organization details</SectionTitle>
           <BodyText muted className="m-0 max-w-[54ch]">
             The current workspace context and your role inside it.
           </BodyText>
@@ -74,7 +74,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
             { label: "Your role", value: activeMembership?.role ?? "staff", sub: `Signed in as ${user.displayName}` },
             { label: "Active products", value: String(activeEntitlements.length), sub: "Products and services enabled" },
           ].map((stat) => (
-            <div key={stat.label} className="rounded-[22px] border border-[var(--app-surface-soft-border)] bg-white/54 p-5">
+            <div key={stat.label} className="rounded-[var(--radius-soft)] border border-[var(--rule)] bg-[var(--paper)] p-5">
               <MetaText className="mb-2 uppercase tracking-[0.08em]">{stat.label}</MetaText>
               <strong className="block text-2xl font-bold tracking-[-0.02em] text-ink mb-1">{stat.value}</strong>
               <BodyText muted className="text-[0.825rem]">{stat.sub}</BodyText>
@@ -89,7 +89,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
         </div>
       ) : (
         <AppSurface id="workspace-access" variant="clear" padding="md" className="sm:p-6">
-          <SectionTitle as="h2" className="mb-1 text-slate-900">Workspace access</SectionTitle>
+          <SectionTitle as="h2" className="mb-1 text-[var(--foreground)]">Workspace access</SectionTitle>
           <BodyText muted className="m-0 max-w-[54ch]">
             Owners and admins manage workspace invitations in Canopy Portal. Your current role does not allow changing staff access for this workspace.
           </BodyText>
@@ -100,20 +100,20 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
         <div className="mb-4 flex justify-between gap-6 max-sm:flex-col sm:items-end">
           <div>
             <Eyebrow>Products &amp; Services</Eyebrow>
-            <SectionTitle as="h2" className="text-slate-900">What&apos;s enabled for your workspace</SectionTitle>
+            <SectionTitle as="h2" className="text-[var(--foreground)]">What&apos;s enabled for your workspace</SectionTitle>
             <BodyText muted className="m-0 max-w-[54ch]">
               Contact Canopy when you want to adjust products or service access.
             </BodyText>
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-[24px] border border-[var(--app-surface-soft-border)] bg-white/72">
+        <div className="overflow-hidden rounded-[var(--radius-soft)] border border-[var(--rule)] bg-[var(--paper)]">
           {activeEntitlements.map((entitlement, i) => {
             const def = getProductDefinition(entitlement.productKey);
             return (
               <div
                 key={entitlement.productKey}
-                className={`flex items-center justify-between gap-4 px-5 py-3.5 ${i < activeEntitlements.length - 1 ? "border-b border-slate-200" : ""}`}
+                className={`flex items-center justify-between gap-4 px-5 py-3.5 ${i < activeEntitlements.length - 1 ? "border-b border-[var(--rule)]" : ""}`}
               >
                 <div className="flex items-center gap-3">
                   <div

@@ -105,14 +105,14 @@ export function CanopyHeader({
               onClick={onBrandSelect}
               className="flex shrink-0 items-center gap-2 border-0 bg-transparent p-0 text-inherit outline-none"
             >
-              <div className="grid h-8 w-8 place-items-center rounded-[7px] bg-[#0f1f3d] text-[0.95rem] font-extrabold tracking-[-0.02em] text-white" aria-hidden="true">
+              <div className="grid h-8 w-8 place-items-center rounded-[7px] bg-[var(--primary)] text-[0.95rem] font-extrabold tracking-[-0.02em] text-white" aria-hidden="true">
                 C
               </div>
               <span className="text-[0.95rem] font-bold tracking-[-0.01em] text-[var(--foreground)]">Canopy</span>
             </button>
           ) : (
             <a href={brandHref} className="flex shrink-0 items-center gap-2 no-underline text-inherit outline-none">
-              <div className="grid h-8 w-8 place-items-center rounded-[7px] bg-[#0f1f3d] text-[0.95rem] font-extrabold tracking-[-0.02em] text-white" aria-hidden="true">
+              <div className="grid h-8 w-8 place-items-center rounded-[7px] bg-[var(--primary)] text-[0.95rem] font-extrabold tracking-[-0.02em] text-white" aria-hidden="true">
                 C
               </div>
               <span className="text-[0.95rem] font-bold tracking-[-0.01em] text-[var(--foreground)]">Canopy</span>
@@ -129,7 +129,7 @@ export function CanopyHeader({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-72 bg-white">
-                <DropdownMenuLabel className="text-[#66758a]">Switch workspace</DropdownMenuLabel>
+                <DropdownMenuLabel className="text-[var(--text-muted)]">Switch workspace</DropdownMenuLabel>
                 <DropdownMenuGroup>
                   {isPlatformOperator && (
                     <DropdownMenuItem onSelect={() => {
@@ -189,7 +189,7 @@ export function CanopyHeader({
                   {email && <p className="m-0 truncate text-[0.8rem] text-[var(--text-muted)]">{email}</p>}
                 </div>
                 {roleLabel && (
-                  <span className="shrink-0 rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-xs font-medium text-slate-600">
+                  <span className="shrink-0 rounded-full border border-[var(--rule)] bg-[var(--paper-pressed)] px-2 py-0.5 text-xs font-medium text-[var(--text-muted)]">
                     {roleLabel}
                   </span>
                 )}

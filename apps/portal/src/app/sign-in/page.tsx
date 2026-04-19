@@ -18,11 +18,12 @@ function getErrorMessage(error?: string) {
   return null;
 }
 
+// Akkedis palette — each product carries one zone of the flat lizard.
 const products = [
-  { letter: "S", color: "#d97706", name: "Stories" },
-  { letter: "P", color: "#0f1f3d", name: "PhotoVault" },
-  { letter: "C", color: "#7c3aed", name: "Community" },
-  { letter: "R", color: "#db2777", name: "Reach" },
+  { letter: "S", color: "#158595", name: "Stories" },      // throat — turquoise
+  { letter: "P", color: "#c6531f", name: "PhotoVault" },   // tail base — rust
+  { letter: "C", color: "#9c5168", name: "Community" },    // neck — dusty rose
+  { letter: "R", color: "#c49424", name: "Reach" },        // legs — mustard
 ];
 
 export default async function SignInPage({ searchParams }: SignInPageProps) {
@@ -57,10 +58,10 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
           {/* Product chips */}
           <div className="flex flex-col gap-5">
             {[
-              { letter: "S", color: "#d97706", name: "Canopy Stories", desc: "Turn student successes into blog posts, social content, and video." },
-              { letter: "P", color: "#0f1f3d", name: "PhotoVault", desc: "Organize approved photos, logos, and brand assets." },
-              { letter: "C", color: "#7c3aed", name: "Canopy Community", desc: "Send newsletters and school-to-community communications." },
-              { letter: "R", color: "#db2777", name: "Canopy Reach", desc: "Publish social posts to Facebook, Instagram, LinkedIn, and more." },
+              { letter: "S", color: "#158595", name: "Canopy Stories", desc: "Turn student successes into blog posts, social content, and video." },
+              { letter: "P", color: "#c6531f", name: "PhotoVault", desc: "Organize approved photos, logos, and brand assets." },
+              { letter: "C", color: "#9c5168", name: "Canopy Community", desc: "Send newsletters and school-to-community communications." },
+              { letter: "R", color: "#c49424", name: "Canopy Reach", desc: "Publish social posts to Facebook, Instagram, LinkedIn, and more." },
             ].map((p) => (
               <div key={p.name} className="flex items-center gap-4">
                 <div
