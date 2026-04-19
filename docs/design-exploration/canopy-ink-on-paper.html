@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Canopy — Portal &amp; Reach, ink on paper</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,500&display=swap" rel="stylesheet" />
+<style>
+/* ═══════════════════════════════════════════════════════════════════
+   TOKENS — the entire Canopy design system in one place.
+   Warm ink on warm paper. One accent per surface, inherited from a
+   single editorial-ink family. No green. No gradients. No blobs.
+   ═══════════════════════════════════════════════════════════════════ */
+:root {
+  /* Type */
+  --font-serif: "Source Serif 4", Georgia, "Iowan Old Style", serif;
+  --font-sans: "Inter", -apple-system, "Segoe UI", Helvetica, sans-serif;
+
+  /* Ink scale — near-black to faint, warm-tinted */
+  --ink:   #1a1217;
+  --ink-2: #3a3035;
+  --muted: #6a5f55;
+  --faint: #a39688;
+
+  /* Paper scale — warm, not grey */
+  --paper:      #f7f2e8;
+  --paper-elev: #fdfaf1;
+  --rule:       #e5dcc9;
+  --rule-strong:#d6caa8;
+
+  /* Accent — default is Canopy (oxblood). Products override one line. */
+  --accent:      #7d2935;
+  --accent-soft: #f0d9da;
+  --accent-ink:  #5c1e27;
+
+  /* Motion — one curve, three rhythms */
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --t-quick: 140ms;
+  --t-normal: 220ms;
+  --t-slow: 360ms;
+
+  /* Space — not uniform; intended to break up AI-default rhythms */
+  --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px;
+  --s-5: 24px; --s-6: 36px; --s-7: 56px; --s-8: 88px;
+
+  /* Radii — three tiers, applied deliberately */
+  --r-tight: 4px;
+  --r-soft:  10px;
+  --r-large: 20px;
+
+  /* The one allowed shadow */
+  --shadow: 0 8px 24px rgba(26, 18, 23, 0.08);
+}
+
+/* Per-product accent — one class changes identity, nothing else */
+.product-photovault { --accent: #c45831; --accent-soft: #f7e0d3; --accent-ink: #8f3e21; }
+.product-stories    { --accent: #2a4a6a; --accent-soft: #d5dde8; --accent-ink: #1e3550; }
+.product-reach      { --accent: #6a3256; --accent-soft: #eadae8; --accent-ink: #4c2240; }
+.product-create     { --accent: #b38040; --accent-soft: #f0e2c8; --accent-ink: #85612c; }
+.product-community  { --accent: #9c5168; --accent-soft: #f2d9df; --accent-ink: #733a4c; }
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--font-sans);
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "ss01", "cv11";
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* ─── Switcher ─────────────────────────────────────────────────── */
+.switcher {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 24px;
+  background: rgba(247, 242, 232, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--rule);
+}
+.switcher .lock {
+  font-family: var(--font-serif); font-weight: 500; font-size: 17px;
+  letter-spacing: -0.01em; color: var(--ink); margin-right: 14px;
+}
+.switcher .lock em { font-style: italic; color: var(--accent); font-weight: 500; }
+.switcher button {
+  appearance: none; border: none; background: transparent; color: var(--muted);
+  padding: 6px 14px; border-radius: var(--r-tight);
+  font: inherit; font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: color var(--t-quick) var(--ease),
+                            background var(--t-quick) var(--ease);
+}
+.switcher button:hover { color: var(--ink); background: var(--paper-elev); }
+.switcher button.active { color: var(--paper); background: var(--ink); }
+.switcher .meta { margin-left: auto; font-size: 12px; color: var(--faint); font-style: italic; font-family: var(--font-serif); }
+
+.view { display: none; }
+.view.active { display: block; animation: fade var(--t-normal) var(--ease); }
+@keyframes fade { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+
+/* ═══════════════════════════════════════════════════════════════════
+   SHELL — same chrome across every Canopy surface
+   ═══════════════════════════════════════════════════════════════════ */
+.shell {
+  display: grid;
+  grid-template-columns: 248px minmax(0, 1fr);
+  grid-template-rows: 56px 1fr;
+  min-height: calc(100vh - 49px);
+  background: var(--paper);
+}
+.topbar {
+  grid-column: 1 / -1;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--rule);
+  background: transparent;
+}
+.topbar .left { display: flex; align-items: center; gap: 16px; }
+.topbar .crumbs {
+  font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-serif);
+}
+.topbar .crumbs .slash { color: var(--faint); }
+.topbar .crumbs strong { color: var(--ink); font-weight: 500; font-style: italic; }
+.topbar .right { display: flex; align-items: center; gap: 14px; }
+.topbar .search {
+  background: transparent; border: 1px solid var(--rule); border-radius: var(--r-tight);
+  padding: 6px 12px; font: inherit; font-size: 13px; color: var(--muted); width: 240px;
+  transition: border-color var(--t-quick) var(--ease);
+}
+.topbar .search:focus { outline: none; border-color: var(--rule-strong); color: var(--ink); }
+.topbar .avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--accent-soft); color: var(--accent-ink);
+  display: grid; place-items: center; font-size: 11px; font-weight: 600;
+  border: 1px solid var(--rule);
+}
+
+/* Sidebar */
+.sidebar { grid-column: 1; padding: 20px 14px; border-right: 1px solid var(--rule); }
+.sb-ws { padding: 2px 10px 18px; border-bottom: 1px solid var(--rule); margin-bottom: 16px; }
+.sb-ws .name {
+  font-family: var(--font-serif); font-size: 18px; font-weight: 500;
+  color: var(--ink); letter-spacing: -0.01em; line-height: 1.2;
+}
+.sb-ws .sub { font-size: 12px; color: var(--muted); margin-top: 4px; font-style: italic; font-family: var(--font-serif); }
+.sb-label {
+  font-size: 10.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--faint); padding: 0 10px; margin: 20px 0 6px;
+}
+.sb-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 6px 10px; font-size: 14px; color: var(--ink-2); font-weight: 500;
+  border-left: 2px solid transparent; margin-left: -2px;
+  cursor: pointer; transition: color var(--t-quick) var(--ease);
+  font-family: var(--font-sans);
+}
+.sb-item .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.sb-item:hover { color: var(--ink); }
+.sb-item.active { color: var(--ink); border-left-color: var(--accent); font-weight: 600; }
+.sb-sub {
+  padding: 4px 10px 4px 20px; font-size: 12.5px; color: var(--muted);
+  cursor: pointer; transition: color var(--t-quick) var(--ease);
+}
+.sb-sub:hover { color: var(--ink); }
+
+.content { grid-column: 2; padding: 28px 40px 64px; min-width: 0; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   PORTAL (staff view)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.v-portal .desc { background: var(--paper-elev); border-bottom: 1px solid var(--rule); padding: 14px 24px; font-size: 13px; color: var(--ink-2); font-family: var(--font-serif); font-style: italic; }
+.v-portal .desc strong { color: var(--accent-ink); font-style: normal; font-weight: 600; }
+
+.hdr {
+  display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: end;
+  padding: 8px 0 22px; border-bottom: 1px solid var(--rule); margin-bottom: 32px;
+}
+.hdr h1 {
+  font-family: var(--font-serif); font-size: 38px; font-weight: 400;
+  letter-spacing: -0.02em; line-height: 1.05; color: var(--ink); margin: 0;
+  font-variation-settings: "opsz" 60;
+}
+.hdr h1 em { font-style: italic; color: var(--accent); font-weight: 400; }
+.hdr .meta {
+  font-family: var(--font-serif); font-style: italic; font-size: 13px;
+  color: var(--muted); margin-top: 8px;
+}
+.hdr .stats { display: flex; gap: 28px; text-align: right; }
+.hdr .stats .stat .n {
+  font-family: var(--font-serif); font-size: 28px; font-weight: 500;
+  color: var(--ink); letter-spacing: -0.02em; line-height: 1;
+}
+.hdr .stats .stat .l {
+  font-size: 10.5px; color: var(--faint); letter-spacing: 0.1em;
+  text-transform: uppercase; font-weight: 600; margin-top: 6px;
+}
+
+/* Section head — editorial marker */
+.sec { margin-bottom: 44px; }
+.sec .khead {
+  display: grid; grid-template-columns: 1fr auto; align-items: baseline;
+  padding-bottom: 10px; border-bottom: 1px solid var(--rule); margin-bottom: 10px;
+}
+.sec .khead h2 {
+  font-family: var(--font-serif); font-size: 20px; font-weight: 500;
+  letter-spacing: -0.01em; color: var(--ink); margin: 0; line-height: 1.2;
+}
+.sec .khead .num {
+  font-family: var(--font-serif); font-style: italic; font-size: 13px;
+  color: var(--faint); font-weight: 400;
+}
+.sec .khead .action { font-size: 12.5px; color: var(--accent); text-decoration: none; font-weight: 500; }
+.sec .khead .action:hover { color: var(--accent-ink); }
+
+/* Work-in-progress list */
+.work-list { list-style: none; margin: 0; padding: 0; }
+.work-list li {
+  display: grid; grid-template-columns: 12px 1fr 240px 100px 80px;
+  gap: 16px; align-items: center;
+  padding: 14px 0; border-bottom: 1px solid var(--rule);
+  transition: background var(--t-quick) var(--ease);
+  cursor: pointer;
+}
+.work-list li:hover { background: var(--paper-elev); }
+.work-list li:last-child { border-bottom: none; }
+.work-list .product-dot { width: 8px; height: 8px; border-radius: 50%; }
+.work-list .title {
+  font-family: var(--font-serif); font-size: 16px; font-weight: 500; color: var(--ink);
+  letter-spacing: -0.005em; line-height: 1.3;
+}
+.work-list .title small {
+  font-family: var(--font-sans); font-weight: 500; font-size: 11px; color: var(--faint);
+  letter-spacing: 0.06em; text-transform: uppercase; margin-left: 10px;
+}
+.work-list .note {
+  font-size: 13px; color: var(--muted); font-family: var(--font-serif); font-style: italic;
+}
+.work-list .status {
+  font-size: 11.5px; font-weight: 500; color: var(--ink-2); letter-spacing: 0.02em;
+}
+.work-list .status.on { color: var(--accent); font-weight: 600; }
+.work-list .go { color: var(--accent); font-size: 13px; font-weight: 500; text-decoration: none; text-align: right; }
+.work-list .go::after { content: " →"; transition: transform var(--t-quick) var(--ease); display: inline-block; }
+.work-list li:hover .go::after { transform: translateX(3px); }
+
+/* Scheduled — slightly different rhythm (less items, more emphasis on when) */
+.sched-list { list-style: none; margin: 0; padding: 0; }
+.sched-list li {
+  display: grid; grid-template-columns: 110px 12px 1fr 140px 80px;
+  gap: 20px; align-items: center;
+  padding: 12px 0; border-bottom: 1px solid var(--rule);
+}
+.sched-list li:last-child { border-bottom: none; }
+.sched-list .when {
+  font-family: var(--font-serif); font-size: 14px; color: var(--ink);
+  font-style: italic; font-weight: 500;
+}
+.sched-list .when .day { font-style: normal; font-weight: 500; color: var(--ink); }
+.sched-list .when .time { font-style: italic; color: var(--muted); margin-left: 4px; font-size: 13px; }
+.sched-list .title { font-family: var(--font-serif); font-size: 15px; font-weight: 500; color: var(--ink); letter-spacing: -0.005em; }
+.sched-list .venue { font-size: 12.5px; color: var(--muted); font-family: var(--font-sans); }
+.sched-list .go { color: var(--muted); font-size: 12.5px; text-decoration: none; font-weight: 500; text-align: right; }
+.sched-list .go:hover { color: var(--accent); }
+
+/* Activity — dense, marginalia-style */
+.activity-list { list-style: none; margin: 0; padding: 0; }
+.activity-list li {
+  display: grid; grid-template-columns: 110px 1fr;
+  gap: 20px; align-items: baseline;
+  padding: 10px 0; border-bottom: 1px solid var(--rule);
+}
+.activity-list li:last-child { border-bottom: none; }
+.activity-list .when {
+  font-family: var(--font-serif); font-style: italic; font-size: 13px; color: var(--faint);
+}
+.activity-list .text {
+  font-size: 14px; color: var(--ink-2); line-height: 1.5;
+}
+.activity-list .text strong {
+  font-family: var(--font-serif); font-weight: 500; color: var(--ink); font-size: 14.5px;
+  letter-spacing: -0.005em;
+}
+.activity-list .text .pdot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+
+.footnote {
+  margin-top: 72px; padding-top: 18px; border-top: 1px solid var(--rule);
+  font-family: var(--font-serif); font-style: italic; font-size: 12.5px;
+  color: var(--faint); letter-spacing: 0.01em;
+  display: flex; justify-content: space-between;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   REACH — composer with live multi-platform preview
+   ═══════════════════════════════════════════════════════════════════ */
+
+.v-reach .desc { background: var(--paper-elev); border-bottom: 1px solid var(--rule); padding: 14px 24px; font-size: 13px; color: var(--ink-2); font-family: var(--font-serif); font-style: italic; }
+.v-reach .desc strong { color: var(--accent-ink); font-style: normal; font-weight: 600; }
+
+.v-reach .content { padding: 0; } /* composer manages its own padding */
+
+.composer {
+  display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  height: calc(100vh - 49px - 56px); /* viewport - switcher - topbar */
+  overflow: hidden;
+}
+
+.composer .pane-editor {
+  padding: 28px 36px 36px; overflow-y: auto; border-right: 1px solid var(--rule);
+}
+.composer .pane-preview {
+  background: var(--paper-elev); padding: 28px 32px 36px;
+  overflow-y: auto;
+}
+
+/* Editor head */
+.composer-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; margin-bottom: 24px; }
+.composer-title {
+  font-family: var(--font-serif); font-size: 28px; font-weight: 500;
+  letter-spacing: -0.015em; color: var(--ink); margin: 0 0 4px; line-height: 1.2;
+}
+.composer-title em { font-style: italic; color: var(--accent); font-weight: 500; }
+.composer-subtitle {
+  font-family: var(--font-serif); font-style: italic; font-size: 13px; color: var(--muted); margin: 0;
+}
+.composer-actions { display: flex; gap: 10px; flex-shrink: 0; }
+.btn {
+  padding: 7px 14px; border-radius: var(--r-tight); font: inherit; font-size: 13px; font-weight: 500;
+  cursor: pointer; border: 1px solid transparent; transition: all var(--t-quick) var(--ease);
+  font-family: var(--font-sans);
+}
+.btn-ghost {
+  background: transparent; border-color: var(--rule-strong); color: var(--ink-2);
+}
+.btn-ghost:hover { color: var(--ink); border-color: var(--muted); }
+.btn-primary {
+  background: var(--accent); color: white; border-color: var(--accent);
+}
+.btn-primary:hover { background: var(--accent-ink); border-color: var(--accent-ink); }
+
+/* Editor — account + channels */
+.field { margin-bottom: 22px; }
+.field-label {
+  font-family: var(--font-sans); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint);
+  margin-bottom: 8px;
+}
+
+.account-pick {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px; border: 1px solid var(--rule); border-radius: var(--r-tight);
+  background: transparent; width: fit-content; cursor: pointer;
+  transition: border-color var(--t-quick) var(--ease);
+}
+.account-pick:hover { border-color: var(--rule-strong); }
+.account-pick .mono {
+  width: 24px; height: 24px; border-radius: var(--r-tight); background: var(--accent-soft); color: var(--accent-ink);
+  display: grid; place-items: center; font-weight: 700; font-size: 11px;
+}
+.account-pick .name { font-family: var(--font-serif); font-size: 14px; font-weight: 500; color: var(--ink); }
+.account-pick .chev { color: var(--faint); font-size: 11px; margin-left: 4px; }
+
+.channels { display: flex; gap: 8px; flex-wrap: wrap; }
+.channel {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 12px; border: 1px solid var(--rule); border-radius: var(--r-tight);
+  font-size: 13px; color: var(--muted); font-weight: 500;
+  cursor: pointer; transition: all var(--t-quick) var(--ease);
+  background: transparent;
+}
+.channel:hover { border-color: var(--rule-strong); color: var(--ink-2); }
+.channel.on {
+  color: var(--ink); border-color: var(--ink); background: transparent;
+  font-weight: 600;
+}
+.channel .ch-ic {
+  width: 16px; height: 16px; border-radius: 3px; display: grid; place-items: center;
+  font-size: 9px; font-weight: 700; color: white;
+}
+.channel.on .ch-ic { outline: 1px solid var(--rule); }
+
+/* Editor — text */
+.editor-box {
+  border: 1px solid var(--rule); border-radius: var(--r-soft);
+  background: var(--paper-elev);
+  padding: 18px 18px 14px;
+}
+.editor-box:focus-within { border-color: var(--rule-strong); }
+.editor-area {
+  font-family: var(--font-sans); font-size: 15px; color: var(--ink); line-height: 1.55;
+  min-height: 160px; outline: none;
+}
+.editor-area p { margin: 0 0 12px; }
+.editor-area p:last-child { margin-bottom: 0; }
+.editor-toolbar {
+  margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--rule);
+  display: flex; align-items: center; gap: 6px; color: var(--muted);
+}
+.editor-toolbar .tb-btn {
+  width: 28px; height: 28px; border: none; background: transparent;
+  color: var(--muted); display: grid; place-items: center;
+  cursor: pointer; border-radius: var(--r-tight); font: inherit;
+  transition: all var(--t-quick) var(--ease);
+  font-family: var(--font-serif); font-size: 15px;
+}
+.editor-toolbar .tb-btn:hover { background: var(--paper); color: var(--ink); }
+.editor-toolbar .tb-spacer { flex: 1; }
+.editor-toolbar .counter { font-size: 12px; color: var(--muted); font-family: var(--font-serif); font-style: italic; }
+
+/* Media */
+.media-row { display: flex; gap: 12px; }
+.media-thumb {
+  width: 112px; height: 112px; border-radius: var(--r-soft); border: 1px solid var(--rule);
+  position: relative; overflow: hidden; cursor: pointer;
+  background: linear-gradient(155deg, #c9a788 0%, #8b6a4f 50%, #5a4030 100%);
+  transition: transform var(--t-normal) var(--ease);
+}
+.media-thumb:hover { transform: translateY(-1px); }
+.media-thumb .caption {
+  position: absolute; bottom: 6px; left: 8px; right: 8px; color: white;
+  font-size: 10px; font-family: var(--font-serif); font-style: italic;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+.media-add {
+  width: 112px; height: 112px; border-radius: var(--r-soft); border: 1px dashed var(--rule-strong);
+  display: grid; place-items: center; color: var(--muted); font-size: 12px; font-family: var(--font-serif); font-style: italic;
+  cursor: pointer; transition: border-color var(--t-quick) var(--ease), color var(--t-quick) var(--ease);
+}
+.media-add:hover { border-color: var(--muted); color: var(--ink-2); }
+
+/* Schedule — "signals" row */
+.signals {
+  margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--rule);
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+}
+.signal {
+  padding: 14px 16px;
+  background: var(--paper-elev); border: 1px solid var(--rule); border-radius: var(--r-soft);
+}
+.signal .l {
+  font-size: 10.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--faint); margin-bottom: 6px;
+}
+.signal .v {
+  font-family: var(--font-serif); font-size: 16px; font-weight: 500; color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.signal .hint { font-size: 12px; color: var(--muted); margin-top: 4px; font-family: var(--font-serif); font-style: italic; }
+.signal.warn { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 22%, var(--rule-strong)); }
+.signal.warn .v { color: var(--accent-ink); }
+
+/* Preview pane */
+.preview-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--rule); }
+.preview-head h3 { font-family: var(--font-serif); font-size: 17px; font-weight: 500; color: var(--ink); margin: 0; letter-spacing: -0.01em; }
+.preview-head em { font-style: italic; color: var(--accent); }
+.preview-head .num { font-family: var(--font-serif); font-style: italic; font-size: 12px; color: var(--faint); }
+
+.preview-list { display: flex; flex-direction: column; gap: 22px; }
+.preview-card {
+  background: white; border: 1px solid var(--rule); border-radius: var(--r-soft);
+  overflow: hidden;
+}
+.preview-card .pc-head {
+  padding: 10px 14px; display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid var(--rule);
+  font-size: 11px; color: var(--faint); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.preview-card .pc-head .platform-mark {
+  width: 18px; height: 18px; border-radius: 4px; display: grid; place-items: center;
+  font-size: 10px; font-weight: 700; color: white;
+}
+.preview-card .pc-head .status { margin-left: auto; font-size: 11px; color: var(--accent); font-style: italic; font-family: var(--font-serif); text-transform: none; letter-spacing: 0; font-weight: 400; }
+
+/* Facebook-style post preview */
+.fb-preview { padding: 14px; font-family: -apple-system, "Segoe UI", sans-serif; font-size: 14px; color: #050505; background: white; }
+.fb-preview .fb-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.fb-preview .fb-avatar { width: 40px; height: 40px; border-radius: 50%; background: #c45831; color: white; display: grid; place-items: center; font-weight: 700; font-size: 16px; }
+.fb-preview .fb-name { font-weight: 600; font-size: 14px; color: #050505; }
+.fb-preview .fb-when { font-size: 12px; color: #65676b; }
+.fb-preview .fb-text { font-size: 14px; line-height: 1.4; color: #050505; margin: 0 0 10px; white-space: pre-wrap; }
+.fb-preview .fb-image { width: 100%; aspect-ratio: 2 / 1; border-radius: 4px; background: linear-gradient(150deg, #d9b894 0%, #a3825a 45%, #5a4030 100%); }
+.fb-preview .fb-actions { display: flex; gap: 20px; margin-top: 10px; padding-top: 10px; border-top: 1px solid #ced0d4; font-size: 13px; color: #65676b; font-weight: 600; }
+
+/* LinkedIn-style preview */
+.li-preview { padding: 14px; font-family: -apple-system, "Segoe UI", sans-serif; font-size: 14px; color: #000; background: white; }
+.li-preview .li-head { display: flex; gap: 10px; margin-bottom: 10px; }
+.li-preview .li-avatar { width: 48px; height: 48px; border-radius: 50%; background: #c45831; color: white; display: grid; place-items: center; font-weight: 700; font-size: 18px; }
+.li-preview .li-name { font-size: 14px; font-weight: 600; color: rgba(0,0,0,0.9); line-height: 1.2; }
+.li-preview .li-meta { font-size: 12px; color: rgba(0,0,0,0.6); line-height: 1.3; }
+.li-preview .li-when { font-size: 12px; color: rgba(0,0,0,0.6); margin-top: 2px; }
+.li-preview .li-text { font-size: 14px; line-height: 1.5; color: rgba(0,0,0,0.9); margin: 0 0 10px; white-space: pre-wrap; }
+.li-preview .li-image { width: 100%; aspect-ratio: 2 / 1; background: linear-gradient(150deg, #d9b894 0%, #a3825a 45%, #5a4030 100%); }
+.li-preview .li-actions { display: flex; gap: 16px; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(0,0,0,0.08); font-size: 12px; color: rgba(0,0,0,0.6); font-weight: 600; }
+
+/* Instagram-style preview */
+.ig-preview { padding: 0; font-family: -apple-system, "Segoe UI", sans-serif; font-size: 14px; color: #262626; background: white; }
+.ig-preview .ig-head { padding: 12px 14px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #dbdbdb; }
+.ig-preview .ig-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(45deg, #c45831 0%, #9c5168 100%); padding: 2px; }
+.ig-preview .ig-avatar::before { content: ""; display: block; width: 100%; height: 100%; border-radius: 50%; background: #c45831; }
+.ig-preview .ig-name { font-size: 13px; font-weight: 600; color: #262626; }
+.ig-preview .ig-image { width: 100%; aspect-ratio: 1 / 1; background: linear-gradient(150deg, #d9b894 0%, #a3825a 45%, #5a4030 100%); }
+.ig-preview .ig-caption { padding: 12px 14px; }
+.ig-preview .ig-caption .ct { font-size: 13px; line-height: 1.45; color: #262626; white-space: pre-wrap; }
+.ig-preview .ig-caption .ct strong { font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="switcher">
+  <span class="lock">Canopy <em>·</em></span>
+  <button data-target="portal" class="active">Portal</button>
+  <button data-target="reach">Reach</button>
+  <span class="meta">Ink on paper, warm, restrained.</span>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     PORTAL — staff view, ink-on-paper, oxblood accent
+     ═══════════════════════════════════════════════════════════════════ -->
+<div class="view active v-portal product-canopy" data-variant="portal">
+  <div class="desc">
+    <strong>Portal · staff view.</strong> Same UI every role sees (scoped by permissions). Warm ink on warm paper. Oxblood accent. Work-first: no "welcome" banner, no three-decker section headers, no green. Cross-product items sit together, colored by their product's ink, so the day's work lives in one place.
+  </div>
+  <div class="shell">
+    <div class="topbar">
+      <div class="left">
+        <div class="crumbs">Canopy <span class="slash">/</span> <strong>Home</strong></div>
+      </div>
+      <div class="right">
+        <input class="search" type="text" placeholder="Search — posts, drafts, people, classes" />
+        <div class="avatar">RZ</div>
+      </div>
+    </div>
+    <div class="sidebar">
+      <div class="sb-ws">
+        <div class="name">Riverside Adult Education</div>
+        <div class="sub">Adult school · 840 on the list</div>
+      </div>
+      <div class="sb-label">Workspace</div>
+      <div class="sb-item active">Home</div>
+      <div class="sb-item">Account</div>
+      <div class="sb-label">Products</div>
+      <div class="sb-item"><span class="dot" style="background:#c45831"></span> PhotoVault</div>
+      <div class="sb-item"><span class="dot" style="background:#2a4a6a"></span> Stories</div>
+      <div class="sb-item"><span class="dot" style="background:#6a3256"></span> Reach</div>
+      <div class="sb-item"><span class="dot" style="background:#b38040"></span> Create</div>
+      <div class="sb-item"><span class="dot" style="background:#9c5168"></span> Community</div>
+      <div class="sb-label">Services</div>
+      <div class="sb-sub">Website setup</div>
+      <div class="sb-sub">Design support</div>
+    </div>
+    <div class="content">
+
+      <div class="hdr">
+        <div>
+          <h1>Afternoon, <em>Rob</em>.</h1>
+          <div class="meta">Thursday · April 18 · Spring term, week six.</div>
+        </div>
+        <div class="stats">
+          <div class="stat"><div class="n">4</div><div class="l">In progress</div></div>
+          <div class="stat"><div class="n">3</div><div class="l">Going out</div></div>
+          <div class="stat"><div class="n">847</div><div class="l">Subscribers</div></div>
+        </div>
+      </div>
+
+      <!-- ═══ In progress ═══ -->
+      <section class="sec">
+        <div class="khead">
+          <h2>In progress</h2>
+          <span class="num">i — four items</span>
+        </div>
+        <ul class="work-list">
+          <li>
+            <span class="product-dot" style="background:#b38040"></span>
+            <div class="title">Spring Term Catalog 2026 <small>Create</small></div>
+            <div class="note">Awaiting final review. 10 classes remain to photograph.</div>
+            <div class="status on">62% done</div>
+            <a href="#" class="go">Open</a>
+          </li>
+          <li>
+            <span class="product-dot" style="background:#2a4a6a"></span>
+            <div class="title">Maria's citizenship journey <small>Stories</small></div>
+            <div class="note">Draft, 380 words. Needs an opening photograph.</div>
+            <div class="status">Draft</div>
+            <a href="#" class="go">Open</a>
+          </li>
+          <li>
+            <span class="product-dot" style="background:#6a3256"></span>
+            <div class="title">Enrollment open — Spring term <small>Reach</small></div>
+            <div class="note">Facebook, LinkedIn, Instagram. Not yet scheduled.</div>
+            <div class="status">Draft</div>
+            <a href="#" class="go">Open</a>
+          </li>
+          <li>
+            <span class="product-dot" style="background:#9c5168"></span>
+            <div class="title">April newsletter <small>Community</small></div>
+            <div class="note">Ready to send. 847 subscribers on the Spring list.</div>
+            <div class="status on">Ready</div>
+            <a href="#" class="go">Open</a>
+          </li>
+        </ul>
+      </section>
+
+      <!-- ═══ Going out ═══ -->
+      <section class="sec">
+        <div class="khead">
+          <h2>Going out this week</h2>
+          <span class="num">ii — three scheduled</span>
+        </div>
+        <ul class="sched-list">
+          <li>
+            <div class="when"><span class="day">Wed</span> <span class="time">10:00 am</span></div>
+            <span class="product-dot" style="background:#6a3256"></span>
+            <div>
+              <div class="title">Enrollment closes Friday</div>
+              <div class="venue">Facebook &amp; LinkedIn · @riverside.adult</div>
+            </div>
+            <div class="status">Reviewed · queued</div>
+            <a href="#" class="go">Details →</a>
+          </li>
+          <li>
+            <div class="when"><span class="day">Thu</span> <span class="time">8:00 am</span></div>
+            <span class="product-dot" style="background:#b38040"></span>
+            <div>
+              <div class="title">Spring Term Catalog</div>
+              <div class="venue">Publish · riverside.edu/catalog</div>
+            </div>
+            <div class="status">Released to site</div>
+            <a href="#" class="go">Details →</a>
+          </li>
+          <li>
+            <div class="when"><span class="day">Fri</span> <span class="time">7:00 am</span></div>
+            <span class="product-dot" style="background:#9c5168"></span>
+            <div>
+              <div class="title">April newsletter</div>
+              <div class="venue">Community · 847 recipients</div>
+            </div>
+            <div class="status">Proof approved</div>
+            <a href="#" class="go">Details →</a>
+          </li>
+        </ul>
+      </section>
+
+      <!-- ═══ Recent ═══ -->
+      <section class="sec">
+        <div class="khead">
+          <h2>Recent</h2>
+          <span class="num">iii — this week</span>
+        </div>
+        <ul class="activity-list">
+          <li>
+            <div class="when">2 hours ago</div>
+            <div class="text"><span class="pdot" style="background:#c45831"></span><strong>18 photos</strong> added to <em>Graduation Night 2026</em> in PhotoVault, sorted by photographer.</div>
+          </li>
+          <li>
+            <div class="when">Yesterday</div>
+            <div class="text"><span class="pdot" style="background:#2a4a6a"></span>Story <strong>"From night shifts to a GED"</strong> was published and added to the homepage rotation.</div>
+          </li>
+          <li>
+            <div class="when">Monday</div>
+            <div class="text"><span class="pdot" style="background:#b38040"></span><strong>Winter Term Catalog</strong> downloaded 42 times over the weekend, mostly from the enrollment page.</div>
+          </li>
+          <li>
+            <div class="when">Last week</div>
+            <div class="text"><span class="pdot" style="background:#9c5168"></span><strong>March newsletter</strong> sent to 836 subscribers — 38% open rate, 11% click-through, two unsubscribes.</div>
+          </li>
+          <li>
+            <div class="when">Last week</div>
+            <div class="text"><span class="pdot" style="background:#6a3256"></span>Three Facebook posts ran on the <em>Adult Workforce track</em> campaign; combined reach was 4,210.</div>
+          </li>
+        </ul>
+      </section>
+
+      <div class="footnote">
+        <span>Canopy · Portal · Riverside Adult Education</span>
+        <span>Spring term 2026</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     REACH — composer, aubergine accent
+     ═══════════════════════════════════════════════════════════════════ -->
+<div class="view v-reach product-reach" data-variant="reach">
+  <div class="desc">
+    <strong>Canopy Reach · composer.</strong> Same shell, same type, same motion — only the accent changes, to aubergine. The composer earns its density: everything a staff person needs to ship a post sits on one screen. Live previews on the right show the post as it will actually render on each platform. Guardrails surface as warm signals, not red errors. Same primitive will power Publish, Stories, and Community later.
+  </div>
+  <div class="shell">
+    <div class="topbar">
+      <div class="left">
+        <div class="crumbs">Reach <span class="slash">/</span> Drafts <span class="slash">/</span> <strong>Enrollment open — Spring term</strong></div>
+      </div>
+      <div class="right">
+        <input class="search" type="text" placeholder="Search drafts, scheduled, past posts" />
+        <div class="avatar">RZ</div>
+      </div>
+    </div>
+    <div class="sidebar">
+      <div class="sb-ws">
+        <div class="name">Riverside Adult Education</div>
+        <div class="sub">Reach · 3 accounts connected</div>
+      </div>
+      <div class="sb-label">Compose</div>
+      <div class="sb-item active">Drafts <span style="margin-left:auto; color: var(--faint); font-size: 12px; font-family: var(--font-serif); font-style: italic;">4</span></div>
+      <div class="sb-item">Scheduled <span style="margin-left:auto; color: var(--faint); font-size: 12px; font-family: var(--font-serif); font-style: italic;">3</span></div>
+      <div class="sb-item">Published</div>
+      <div class="sb-item">Calendar</div>
+      <div class="sb-label">Campaigns</div>
+      <div class="sb-sub">Spring Enrollment 2026</div>
+      <div class="sb-sub">Adult Workforce Track</div>
+      <div class="sb-sub">Citizenship Cohort</div>
+      <div class="sb-label">Accounts</div>
+      <div class="sb-sub">Facebook · @riverside.adult</div>
+      <div class="sb-sub">LinkedIn · Riverside AE</div>
+      <div class="sb-sub">Instagram · @riversideadult</div>
+    </div>
+
+    <div class="content">
+      <div class="composer">
+
+        <!-- ═══ Editor pane ═══ -->
+        <div class="pane-editor">
+          <div class="composer-head">
+            <div>
+              <h2 class="composer-title">Enrollment open — <em>Spring term</em></h2>
+              <p class="composer-subtitle">Draft · last edited eleven minutes ago</p>
+            </div>
+            <div class="composer-actions">
+              <button class="btn btn-ghost">Save draft</button>
+              <button class="btn btn-primary">Schedule post</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="field-label">Post as</div>
+            <div class="account-pick">
+              <div class="mono">R</div>
+              <div class="name">Riverside Adult Education</div>
+              <div class="chev">▾</div>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="field-label">Publish to</div>
+            <div class="channels">
+              <button class="channel on"><span class="ch-ic" style="background:#1877f2">f</span> Facebook</button>
+              <button class="channel on"><span class="ch-ic" style="background:#0a66c2">in</span> LinkedIn</button>
+              <button class="channel on"><span class="ch-ic" style="background:#c13584">IG</span> Instagram</button>
+              <button class="channel"><span class="ch-ic" style="background:#000">X</span> X / Twitter</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="field-label">Message</div>
+            <div class="editor-box">
+              <div class="editor-area" contenteditable="true" spellcheck="false">
+                <p>Spring term enrollment is now open.</p>
+                <p>ESL, GED, Citizenship, CNA, and Computer Skills classes begin <strong>April 28</strong>. Evening and Saturday sections available.</p>
+                <p>Orientation is Tuesday, April 21 at 6:00 pm, or enroll online at <strong>riverside.edu/enroll</strong>.</p>
+              </div>
+              <div class="editor-toolbar">
+                <button class="tb-btn" title="Bold"><strong>B</strong></button>
+                <button class="tb-btn" title="Italic"><em>I</em></button>
+                <button class="tb-btn" title="Link">⎋</button>
+                <button class="tb-btn" title="Hashtag">#</button>
+                <button class="tb-btn" title="Mention">@</button>
+                <div class="tb-spacer"></div>
+                <div class="counter">212 characters · one paragraph break</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="field-label">Media</div>
+            <div class="media-row">
+              <div class="media-thumb">
+                <div class="caption">Classroom, spring term, 2025</div>
+              </div>
+              <div class="media-add">+ Add from PhotoVault</div>
+              <div class="media-add">+ Upload</div>
+            </div>
+          </div>
+
+          <!-- Signals — guardrails shown warmly, not as red errors -->
+          <div class="signals">
+            <div class="signal">
+              <div class="l">Post length</div>
+              <div class="v">Within limits</div>
+              <div class="hint">Safe on Facebook, LinkedIn, Instagram. Too long for X.</div>
+            </div>
+            <div class="signal">
+              <div class="l">Image aspect</div>
+              <div class="v">2:1 landscape</div>
+              <div class="hint">Will render well on Facebook and LinkedIn. Instagram will crop to square.</div>
+            </div>
+            <div class="signal warn">
+              <div class="l">Link in post</div>
+              <div class="v">Not clickable on Instagram</div>
+              <div class="hint">Instagram caption links aren't active. Consider "link in bio" for this platform.</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ═══ Preview pane ═══ -->
+        <div class="pane-preview">
+          <div class="preview-head">
+            <h3>Live <em>preview</em></h3>
+            <span class="num">as your audience will see it</span>
+          </div>
+
+          <div class="preview-list">
+
+            <!-- Facebook preview -->
+            <div class="preview-card">
+              <div class="pc-head">
+                <span class="platform-mark" style="background:#1877f2">f</span>
+                Facebook
+                <span class="status">Looks good</span>
+              </div>
+              <div class="fb-preview">
+                <div class="fb-head">
+                  <div class="fb-avatar">R</div>
+                  <div>
+                    <div class="fb-name">Riverside Adult Education</div>
+                    <div class="fb-when">Wed 10:00 am · <span style="color:#65676b">Public</span></div>
+                  </div>
+                </div>
+                <p class="fb-text">Spring term enrollment is now open.
+
+ESL, GED, Citizenship, CNA, and Computer Skills classes begin <strong>April 28</strong>. Evening and Saturday sections available.
+
+Orientation is Tuesday, April 21 at 6:00 pm, or enroll online at <strong>riverside.edu/enroll</strong>.</p>
+                <div class="fb-image"></div>
+                <div class="fb-actions"><span>👍 Like</span><span>💬 Comment</span><span>↗ Share</span></div>
+              </div>
+            </div>
+
+            <!-- LinkedIn preview -->
+            <div class="preview-card">
+              <div class="pc-head">
+                <span class="platform-mark" style="background:#0a66c2">in</span>
+                LinkedIn
+                <span class="status">Looks good</span>
+              </div>
+              <div class="li-preview">
+                <div class="li-head">
+                  <div class="li-avatar">R</div>
+                  <div>
+                    <div class="li-name">Riverside Adult Education</div>
+                    <div class="li-meta">Adult education · Community college system</div>
+                    <div class="li-when">Wed · 10:00 am</div>
+                  </div>
+                </div>
+                <p class="li-text">Spring term enrollment is now open.
+
+ESL, GED, Citizenship, CNA, and Computer Skills classes begin April 28. Evening and Saturday sections available.
+
+Orientation is Tuesday, April 21 at 6:00 pm, or enroll online at riverside.edu/enroll.</p>
+                <div class="li-image"></div>
+                <div class="li-actions"><span>👍 Like</span><span>💬 Comment</span><span>↻ Repost</span><span>↗ Send</span></div>
+              </div>
+            </div>
+
+            <!-- Instagram preview -->
+            <div class="preview-card">
+              <div class="pc-head">
+                <span class="platform-mark" style="background:#c13584">IG</span>
+                Instagram
+                <span class="status" style="color: var(--accent-ink)">Link won't be clickable</span>
+              </div>
+              <div class="ig-preview">
+                <div class="ig-head">
+                  <div class="ig-avatar"></div>
+                  <div>
+                    <div class="ig-name">riversideadult</div>
+                  </div>
+                </div>
+                <div class="ig-image"></div>
+                <div class="ig-caption">
+                  <p class="ct"><strong>riversideadult</strong> Spring term enrollment is now open. ESL, GED, Citizenship, CNA, and Computer Skills classes begin April 28. Evening and Saturday sections available. Orientation Tuesday, April 21 at 6:00 pm. Link in bio.</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const buttons = document.querySelectorAll('.switcher button');
+  const views = document.querySelectorAll('.view');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.target;
+      buttons.forEach(b => b.classList.toggle('active', b === btn));
+      views.forEach(v => v.classList.toggle('active', v.dataset.variant === target));
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    });
+  });
+</script>
+
+</body>
+</html>

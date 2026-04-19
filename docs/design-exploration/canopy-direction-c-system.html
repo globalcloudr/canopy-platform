@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Canopy — Direction C, the System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&display=swap" rel="stylesheet" />
+<style>
+/* ═══════════════════════════════════════════════════════════════════
+   SHARED TOKENS — the spine of the Canopy system
+   Every product inherits these. Each product overrides ONE thing:
+   --accent (and optionally --accent-soft for its pill backgrounds).
+   ═══════════════════════════════════════════════════════════════════ */
+:root {
+  /* Type */
+  --font-display: "Fraunces", Georgia, serif;
+  --font-display-italic: "Instrument Serif", "Fraunces", Georgia, serif;
+  --font-ui: "Inter", -apple-system, "Segoe UI", Helvetica, sans-serif;
+
+  /* Canopy base palette — warm, natural, quiet */
+  --canvas: #fbf8f2;           /* warm off-white */
+  --canvas-elev: #ffffff;       /* elevated surfaces */
+  --ink: #1a1a22;               /* near-black, warm */
+  --ink-2: #3a3740;             /* secondary */
+  --muted: #6d6971;             /* tertiary */
+  --faint: #a29a8f;             /* quaternary */
+  --line: #ece3d0;              /* default rule */
+  --line-strong: #d9cdb8;       /* emphasized rule */
+
+  /* Canopy base accent — the olive-sage that signals "Canopy" across all products */
+  --canopy: #5a6a3e;            /* signature */
+  --canopy-soft: #e8ebdc;       /* accent pill background */
+
+  /* Default accent = Canopy itself (Portal, sign-in, marketing) */
+  --accent: var(--canopy);
+  --accent-soft: var(--canopy-soft);
+
+  /* Motion — one easing, one rhythm, applied everywhere */
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --t-quick: 140ms;
+  --t-normal: 220ms;
+  --t-slow: 360ms;
+
+  /* Spacing scale — Fibonacci-ish, not uniform */
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px;
+  --s-5: 24px; --s-6: 36px; --s-7: 56px; --s-8: 88px;
+
+  /* Radii — three tiers, not applied uniformly */
+  --r-tight: 4px;    /* inputs, pills, badges */
+  --r-soft: 10px;    /* cards, tiles */
+  --r-large: 20px;   /* marquee moments only */
+
+  /* The one allowed shadow */
+  --shadow: 0 8px 28px rgba(26, 26, 34, 0.06);
+  --shadow-up: 0 18px 52px rgba(26, 26, 34, 0.12);
+}
+
+/* Per-product accent overrides — one line changes identity */
+.product-photovault { --accent: #b44e42; --accent-soft: #f4e3df; }
+.product-stories    { --accent: #2a7a6a; --accent-soft: #dde9e6; }
+.product-reach      { --accent: #6845d6; --accent-soft: #e6dff8; }
+.product-create     { --accent: #c47121; --accent-soft: #f6e4ce; }
+/* product-canopy uses the default — the Portal / marketing / sign-in surface */
+
+/* ═══════════════════════════════════════════════════════════════════ */
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--font-ui);
+  color: var(--ink);
+  background: #f3f0e8;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "ss01", "cv11";
+}
+
+/* Tab switcher */
+.switcher {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; gap: 8px; align-items: center;
+  padding: 10px 16px;
+  background: rgba(255, 253, 247, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.switcher .lock {
+  font-family: var(--font-display);
+  font-size: 15px; font-weight: 500; letter-spacing: -0.01em;
+  color: var(--ink); margin-right: 10px;
+}
+.switcher .lock em {
+  font-family: var(--font-display-italic); font-style: italic; color: var(--canopy);
+}
+.switcher button {
+  appearance: none; border: 1px solid transparent; background: transparent;
+  color: var(--muted);
+  padding: 6px 12px; border-radius: var(--r-tight);
+  font: inherit; font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: all var(--t-quick) var(--ease);
+}
+.switcher button:hover { color: var(--ink); background: var(--canopy-soft); }
+.switcher button.active { background: var(--ink); color: var(--canvas); }
+.switcher .note { margin-left: auto; font-size: 12px; color: var(--faint); }
+
+.view { display: none; }
+.view.active { display: block; animation: fade var(--t-normal) var(--ease); }
+@keyframes fade { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+
+.description {
+  padding: 14px 24px;
+  background: #fdfaf0;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px; line-height: 1.55; color: var(--ink-2);
+}
+.description strong { color: var(--ink); }
+.description code {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px;
+  background: var(--canopy-soft); padding: 1px 6px; border-radius: 3px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SHARED CHROME — sidebar + topbar — identical logic across products
+   ═══════════════════════════════════════════════════════════════════ */
+.shell { display: grid; grid-template-columns: 260px minmax(0, 1fr); grid-template-rows: 60px 1fr; min-height: 100vh; background: var(--canvas); }
+.topbar {
+  grid-column: 1 / -1; grid-row: 1;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 28px; border-bottom: 1px solid var(--line);
+  background: transparent;
+}
+.brand-lock { font-family: var(--font-display); font-size: 18px; font-weight: 500; color: var(--ink); letter-spacing: -0.01em; }
+.brand-lock em { font-family: var(--font-display-italic); font-style: italic; color: var(--accent); font-weight: 400; }
+.topbar .avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--accent-soft); color: var(--accent);
+  display: grid; place-items: center; font-size: 12px; font-weight: 600;
+  border: 1px solid var(--line);
+}
+.sidebar { grid-column: 1; grid-row: 2; padding: 24px 16px; border-right: 1px solid var(--line); }
+.sb-ws { padding: 4px 10px 18px; border-bottom: 1px solid var(--line); margin-bottom: 16px; }
+.sb-ws .name { font-family: var(--font-display); font-size: 19px; font-weight: 500; color: var(--ink); letter-spacing: -0.01em; }
+.sb-ws .sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.sb-label {
+  font-size: 10.5px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--faint); padding: 0 10px; margin: 22px 0 8px;
+}
+.sb-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 10px; font-size: 14px; color: var(--ink-2); font-weight: 500;
+  border-left: 2px solid transparent; margin-left: -2px;
+  transition: color var(--t-quick) var(--ease);
+  cursor: pointer;
+}
+.sb-item:hover { color: var(--ink); }
+.sb-item.active { color: var(--ink); border-left-color: var(--accent); font-weight: 600; }
+.sb-sub { padding: 5px 10px 5px 24px; font-size: 12.5px; color: var(--muted); cursor: pointer; }
+.sb-sub:hover { color: var(--ink); }
+
+.content { grid-column: 2; grid-row: 2; padding: 40px 48px 64px; }
+
+/* Shared editorial greeting pattern — used across products */
+.greet {
+  padding: 20px 0 28px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 44px;
+  display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: end;
+}
+.greet .meta {
+  font-size: 11.5px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--faint); margin-bottom: 12px;
+}
+.greet h1 {
+  font-family: var(--font-display);
+  margin: 0; font-size: 52px; font-weight: 400; letter-spacing: -0.025em;
+  line-height: 1.04; color: var(--ink);
+  font-variation-settings: "opsz" 144;
+}
+.greet h1 em { font-family: var(--font-display-italic); font-style: italic; color: var(--accent); font-weight: 400; }
+.greet .aside { text-align: right; max-width: 260px; }
+.greet .aside .num { font-family: var(--font-display); font-size: 40px; font-weight: 500; line-height: 1; color: var(--ink); letter-spacing: -0.02em; }
+.greet .aside p { font-size: 13px; color: var(--muted); margin: 6px 0 0; line-height: 1.5; }
+
+/* Section pattern — left kicker + right content */
+.sec {
+  display: grid; grid-template-columns: 200px 1fr; gap: 40px; margin-bottom: 52px;
+  align-items: start;
+}
+.kicker { font-family: var(--font-display); font-size: 22px; font-weight: 500; letter-spacing: -0.01em; color: var(--ink); line-height: 1.15; }
+.kicker .small { font-family: var(--font-ui); display: block; font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); margin-bottom: 8px; }
+.kicker .hint { font-family: var(--font-ui); display: block; font-size: 13px; font-weight: 400; color: var(--muted); margin-top: 10px; line-height: 1.5; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   PORTAL VIEW
+   ═══════════════════════════════════════════════════════════════════ */
+.v-portal .prods { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; }
+.v-portal .prod {
+  padding: 0 0 20px; border-bottom: 1px solid var(--line);
+  display: grid; grid-template-columns: 44px 1fr auto; gap: 16px; align-items: start;
+  transition: transform var(--t-normal) var(--ease);
+}
+.v-portal .prod:nth-last-child(-n+2) { border-bottom: none; padding-bottom: 0; }
+.v-portal .prod:hover { transform: translateX(2px); }
+.v-portal .prod .icon { width: 44px; height: 44px; border-radius: var(--r-soft); color: white; display: grid; place-items: center; font-weight: 600; font-size: 16px; letter-spacing: -0.02em; font-family: var(--font-display); }
+.v-portal .prod .text { min-width: 0; }
+.v-portal .prod .title { font-family: var(--font-display); font-size: 20px; font-weight: 500; letter-spacing: -0.01em; color: var(--ink); margin: 0 0 4px; line-height: 1.2; }
+.v-portal .prod .desc { font-size: 13.5px; color: var(--muted); line-height: 1.55; margin: 0; max-width: 42ch; }
+.v-portal .prod .meta { font-size: 11.5px; color: var(--faint); margin: 6px 0 0; font-weight: 500; letter-spacing: 0.02em; }
+.v-portal .prod .cta { font-size: 13px; color: var(--accent); text-decoration: none; font-weight: 600; white-space: nowrap; padding-top: 3px; }
+.v-portal .prod .cta::after { content: " →"; transition: transform var(--t-quick) var(--ease); display: inline-block; }
+.v-portal .prod:hover .cta::after { transform: translateX(3px); }
+
+.v-portal .services {}
+.v-portal .srow {
+  display: grid; grid-template-columns: 28px 1.2fr 2fr 110px 60px;
+  gap: 18px; align-items: center; padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+.v-portal .srow:first-child { border-top: 1px solid var(--line); }
+.v-portal .srow .stile { width: 24px; height: 24px; border-radius: var(--r-tight); background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-weight: 700; font-size: 11px; }
+.v-portal .srow .sname { font-size: 14.5px; font-weight: 600; color: var(--ink); }
+.v-portal .srow .sdesc { font-size: 13px; color: var(--muted); }
+.v-portal .srow .sstatus { font-size: 11.5px; color: var(--accent); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+.v-portal .srow .sgo { color: var(--accent); font-size: 13px; font-weight: 600; text-decoration: none; text-align: right; }
+
+.footnote { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--faint); font-family: var(--font-display-italic); font-style: italic; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   PHOTOVAULT VIEW
+   ═══════════════════════════════════════════════════════════════════ */
+.v-pv .album-head {
+  padding: 20px 0 24px; border-bottom: 1px solid var(--line); margin-bottom: 32px;
+  display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: end;
+}
+.v-pv .album-head .crumbs { font-size: 12px; color: var(--faint); margin-bottom: 10px; font-weight: 500; letter-spacing: 0.02em; }
+.v-pv .album-head .crumbs a { color: var(--muted); text-decoration: none; }
+.v-pv .album-head .crumbs .sep { margin: 0 8px; }
+.v-pv .album-head h1 { font-family: var(--font-display); font-size: 44px; font-weight: 400; letter-spacing: -0.02em; line-height: 1.05; color: var(--ink); margin: 0; }
+.v-pv .album-head h1 em { font-family: var(--font-display-italic); font-style: italic; color: var(--accent); font-weight: 400; }
+.v-pv .album-head .sub { font-size: 14px; color: var(--muted); margin: 8px 0 0; line-height: 1.5; max-width: 56ch; }
+.v-pv .album-head .stats { display: flex; flex-direction: column; gap: 4px; text-align: right; }
+.v-pv .album-head .stats .n { font-family: var(--font-display); font-size: 28px; color: var(--ink); letter-spacing: -0.02em; }
+.v-pv .album-head .stats .l { font-size: 11px; color: var(--faint); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; }
+
+.v-pv .toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+.v-pv .toolbar .chip {
+  padding: 5px 11px; border-radius: var(--r-tight); border: 1px solid var(--line);
+  font-size: 12.5px; color: var(--ink-2); font-weight: 500; cursor: pointer;
+  background: transparent; transition: all var(--t-quick) var(--ease);
+}
+.v-pv .toolbar .chip:hover { border-color: var(--line-strong); }
+.v-pv .toolbar .chip.on { background: var(--ink); color: var(--canvas); border-color: var(--ink); }
+.v-pv .toolbar .spacer { flex: 1; }
+.v-pv .toolbar .primary {
+  padding: 7px 14px; background: var(--accent); color: white; border-radius: var(--r-tight);
+  border: none; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+  transition: filter var(--t-quick) var(--ease);
+}
+.v-pv .toolbar .primary:hover { filter: brightness(1.05); }
+
+/* Photo grid — dense, content-first */
+.v-pv .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.v-pv .cell {
+  aspect-ratio: 1 / 1; border-radius: var(--r-soft); overflow: hidden;
+  background: var(--accent-soft);
+  position: relative; cursor: pointer;
+  transition: transform var(--t-normal) var(--ease);
+}
+.v-pv .cell:hover { transform: translateY(-2px); }
+.v-pv .cell.tall { aspect-ratio: 1 / 1.4; grid-row: span 2; }
+.v-pv .cell::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(145deg, transparent 40%, rgba(26,26,34,0.25));
+}
+.v-pv .cell .label { position: absolute; bottom: 8px; left: 10px; color: white; font-size: 11px; font-weight: 500; letter-spacing: 0.02em; z-index: 1; }
+.v-pv .cell .n { position: absolute; top: 8px; right: 10px; color: white; font-size: 10.5px; font-weight: 600; z-index: 1; opacity: 0.85; }
+/* Tinted photo cells — simulate photographs via gradient variations */
+.v-pv .cell.c1 { background: linear-gradient(140deg, #d9b894, #c89772); }
+.v-pv .cell.c2 { background: linear-gradient(160deg, #8ba882, #637560); }
+.v-pv .cell.c3 { background: linear-gradient(120deg, #c09080, #8a5f52); }
+.v-pv .cell.c4 { background: linear-gradient(160deg, #7d8ca3, #4d5a6d); }
+.v-pv .cell.c5 { background: linear-gradient(145deg, #e0c7a3, #b89870); }
+.v-pv .cell.c6 { background: linear-gradient(155deg, #a2998a, #706652); }
+.v-pv .cell.c7 { background: linear-gradient(125deg, #b4928a, #7e5d58); }
+.v-pv .cell.c8 { background: linear-gradient(140deg, #98a689, #6b7862); }
+.v-pv .cell.c9 { background: linear-gradient(150deg, #cdb29d, #a38671); }
+.v-pv .cell.c10 { background: linear-gradient(140deg, #90a5a0, #5f7872); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   SIGN-IN VIEW
+   ═══════════════════════════════════════════════════════════════════ */
+.v-signin {
+  min-height: 100vh;
+  display: grid; grid-template-columns: 1fr 1fr;
+  background: var(--canvas);
+}
+.v-signin .left { padding: 56px 64px; display: flex; flex-direction: column; justify-content: space-between; border-right: 1px solid var(--line); }
+.v-signin .right { padding: 56px 64px; display: flex; flex-direction: column; justify-content: space-between; background: var(--canopy-soft); }
+.v-signin .brand-lock { font-family: var(--font-display); font-size: 24px; font-weight: 500; letter-spacing: -0.01em; }
+.v-signin .brand-lock em { font-family: var(--font-display-italic); font-style: italic; color: var(--accent); font-weight: 400; }
+.v-signin .form-wrap { max-width: 380px; align-self: flex-start; width: 100%; }
+.v-signin h1 { font-family: var(--font-display); font-size: 40px; font-weight: 400; margin: 0 0 8px; letter-spacing: -0.025em; line-height: 1.05; color: var(--ink); }
+.v-signin h1 em { font-family: var(--font-display-italic); font-style: italic; color: var(--accent); }
+.v-signin .sub { font-size: 14.5px; color: var(--muted); line-height: 1.55; margin: 0 0 32px; max-width: 40ch; }
+.v-signin label { display: block; font-size: 12px; font-weight: 600; color: var(--ink-2); margin-bottom: 6px; letter-spacing: 0.02em; }
+.v-signin input[type=email], .v-signin input[type=password] {
+  width: 100%; font: inherit; font-size: 14.5px;
+  padding: 11px 14px; border-radius: var(--r-tight);
+  border: 1px solid var(--line-strong); background: var(--canvas-elev); color: var(--ink);
+  transition: border-color var(--t-quick) var(--ease), box-shadow var(--t-quick) var(--ease);
+}
+.v-signin input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.v-signin .field { margin-bottom: 18px; }
+.v-signin .btn {
+  width: 100%; padding: 12px 16px; background: var(--ink); color: var(--canvas);
+  border: none; border-radius: var(--r-tight); font: inherit; font-size: 14.5px; font-weight: 600;
+  cursor: pointer; transition: all var(--t-quick) var(--ease); margin-top: 8px;
+}
+.v-signin .btn:hover { background: var(--accent); }
+.v-signin .help { font-size: 13px; color: var(--muted); margin-top: 18px; }
+.v-signin .help a { color: var(--accent); text-decoration: none; font-weight: 500; }
+.v-signin .quote { font-family: var(--font-display); font-size: 26px; font-weight: 400; letter-spacing: -0.01em; line-height: 1.3; color: var(--ink); max-width: 32ch; }
+.v-signin .quote em { font-family: var(--font-display-italic); font-style: italic; color: var(--accent); }
+.v-signin .attrib { font-size: 12px; color: var(--muted); margin-top: 14px; letter-spacing: 0.02em; }
+.v-signin .feet { display: flex; justify-content: space-between; font-size: 12px; color: var(--faint); }
+.v-signin .feet a { color: var(--muted); text-decoration: none; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   MARKETING HOMEPAGE VIEW
+   ═══════════════════════════════════════════════════════════════════ */
+.v-mkt { background: var(--canvas); }
+.v-mkt .nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 22px 64px;
+}
+.v-mkt .nav .lock { font-family: var(--font-display); font-size: 22px; font-weight: 500; letter-spacing: -0.01em; }
+.v-mkt .nav .lock em { font-family: var(--font-display-italic); font-style: italic; color: var(--accent); font-weight: 400; }
+.v-mkt .nav nav { display: flex; gap: 32px; font-size: 14px; color: var(--ink-2); font-weight: 500; }
+.v-mkt .nav nav a { color: inherit; text-decoration: none; transition: color var(--t-quick) var(--ease); }
+.v-mkt .nav nav a:hover { color: var(--accent); }
+.v-mkt .nav .sign-in {
+  padding: 8px 16px; border-radius: var(--r-tight); background: var(--ink); color: var(--canvas);
+  font-size: 13.5px; font-weight: 600; text-decoration: none;
+}
+
+.v-mkt .hero {
+  padding: 72px 64px 96px;
+  display: grid; grid-template-columns: 1.2fr 1fr; gap: 64px; align-items: end;
+}
+.v-mkt .hero .meta {
+  font-size: 11.5px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--faint); margin-bottom: 22px;
+}
+.v-mkt .hero h1 {
+  font-family: var(--font-display); font-size: clamp(56px, 8vw, 96px); font-weight: 400;
+  letter-spacing: -0.03em; line-height: 0.98; margin: 0; color: var(--ink);
+  font-variation-settings: "opsz" 144;
+}
+.v-mkt .hero h1 em {
+  font-family: var(--font-display-italic); font-style: italic; color: var(--accent); font-weight: 400;
+}
+.v-mkt .hero .pitch { font-size: 17px; color: var(--muted); line-height: 1.55; max-width: 42ch; margin: 24px 0 28px; }
+.v-mkt .hero .ctas { display: flex; gap: 14px; }
+.v-mkt .hero .ctas a { padding: 12px 22px; font-size: 14px; font-weight: 600; text-decoration: none; border-radius: var(--r-tight); transition: all var(--t-quick) var(--ease); }
+.v-mkt .hero .ctas .primary { background: var(--ink); color: var(--canvas); }
+.v-mkt .hero .ctas .primary:hover { background: var(--accent); }
+.v-mkt .hero .ctas .secondary { color: var(--ink); }
+.v-mkt .hero .ctas .secondary::after { content: " →"; }
+.v-mkt .hero .visual {
+  position: relative; aspect-ratio: 4 / 5;
+  background: linear-gradient(155deg, #c9a788 0%, #8b6a4f 50%, #5a6a3e 100%);
+  border-radius: var(--r-large);
+  overflow: hidden;
+}
+.v-mkt .hero .visual::after {
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 20% 80%, rgba(255,255,255,0.18), transparent 55%);
+}
+.v-mkt .hero .caption {
+  position: absolute; bottom: 24px; left: 24px; right: 24px; z-index: 2;
+  font-family: var(--font-display-italic); font-style: italic;
+  font-size: 15px; color: rgba(255,255,255,0.92); line-height: 1.45;
+}
+
+/* Product family row */
+.v-mkt .family {
+  padding: 72px 64px 96px;
+  border-top: 1px solid var(--line);
+}
+.v-mkt .family .kicker-row { display: grid; grid-template-columns: 200px 1fr; gap: 40px; margin-bottom: 36px; align-items: end; }
+.v-mkt .family .kicker-row .k { font-family: var(--font-display); font-size: 28px; font-weight: 500; letter-spacing: -0.015em; color: var(--ink); line-height: 1.1; }
+.v-mkt .family .kicker-row .k span { font-family: var(--font-ui); display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); margin-bottom: 8px; }
+.v-mkt .family .kicker-row .p { font-size: 15.5px; color: var(--muted); line-height: 1.55; max-width: 54ch; }
+
+.v-mkt .family .row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; border-top: 1px solid var(--line); }
+.v-mkt .family .fam {
+  padding: 24px 20px 28px; border-right: 1px solid var(--line);
+  transition: background var(--t-normal) var(--ease);
+}
+.v-mkt .family .fam:last-child { border-right: none; }
+.v-mkt .family .fam:hover { background: var(--canopy-soft); }
+.v-mkt .family .fam .dot { width: 10px; height: 10px; border-radius: 50%; margin-bottom: 16px; }
+.v-mkt .family .fam .name { font-family: var(--font-display); font-size: 19px; font-weight: 500; color: var(--ink); margin: 0 0 4px; letter-spacing: -0.01em; }
+.v-mkt .family .fam .what { font-size: 13px; color: var(--muted); line-height: 1.55; margin: 0 0 16px; min-height: 40px; }
+.v-mkt .family .fam .go { font-size: 12.5px; font-weight: 600; color: var(--ink); text-decoration: none; }
+.v-mkt .family .fam .go::after { content: " →"; transition: transform var(--t-quick) var(--ease); display: inline-block; }
+.v-mkt .family .fam:hover .go::after { transform: translateX(3px); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   PRINCIPLES VIEW
+   ═══════════════════════════════════════════════════════════════════ */
+.v-prin { background: var(--canvas); padding: 56px 80px 96px; }
+.v-prin .cover { margin-bottom: 56px; padding-bottom: 36px; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 1fr 380px; gap: 64px; align-items: end; }
+.v-prin .cover .eyebrow { font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); font-weight: 600; margin-bottom: 22px; }
+.v-prin .cover h1 { font-family: var(--font-display); font-size: 72px; font-weight: 400; margin: 0; letter-spacing: -0.025em; line-height: 0.98; color: var(--ink); }
+.v-prin .cover h1 em { font-family: var(--font-display-italic); font-style: italic; color: var(--canopy); }
+.v-prin .cover .lede { font-size: 17px; line-height: 1.55; color: var(--muted); }
+.v-prin .cover .lede strong { color: var(--ink); font-weight: 600; }
+
+.v-prin .rule { display: grid; grid-template-columns: 200px 1fr 180px; gap: 40px; padding: 28px 0; border-bottom: 1px solid var(--line); align-items: start; }
+.v-prin .rule .num { font-family: var(--font-display-italic); font-style: italic; font-size: 44px; color: var(--canopy); font-weight: 400; line-height: 1; }
+.v-prin .rule .num small { font-family: var(--font-ui); font-style: normal; display: block; font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); margin-top: 6px; }
+.v-prin .rule .body h3 { font-family: var(--font-display); margin: 0 0 10px; font-size: 22px; font-weight: 500; letter-spacing: -0.01em; color: var(--ink); }
+.v-prin .rule .body p { font-size: 14.5px; color: var(--ink-2); line-height: 1.6; margin: 0; max-width: 60ch; }
+.v-prin .rule .body p + p { margin-top: 8px; color: var(--muted); font-size: 13.5px; }
+.v-prin .rule .tags { display: flex; flex-direction: column; gap: 6px; }
+.v-prin .rule .tag { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--faint); }
+.v-prin .rule .tag::before { content: "→ "; }
+
+.v-prin .arch { margin-top: 64px; padding-top: 40px; border-top: 1px solid var(--line); display: grid; grid-template-columns: 200px 1fr; gap: 40px; align-items: start; }
+.v-prin .arch .k { font-family: var(--font-display); font-size: 24px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.15; }
+.v-prin .arch .k span { font-family: var(--font-ui); display: block; font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); margin-bottom: 8px; }
+.v-prin .arch .body { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+.v-prin .arch .box { border: 1px solid var(--line); border-radius: var(--r-soft); padding: 22px; background: var(--canvas-elev); }
+.v-prin .arch .box h4 { font-family: var(--font-display); margin: 0 0 10px; font-size: 17px; font-weight: 500; color: var(--ink); }
+.v-prin .arch .box p { font-size: 13.5px; color: var(--muted); line-height: 1.55; margin: 0 0 12px; }
+.v-prin .arch .box code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 11.5px; background: var(--canopy-soft); padding: 1px 6px; border-radius: 3px; color: var(--canopy); }
+.v-prin .arch .box ul { margin: 0; padding-left: 16px; }
+.v-prin .arch .box li { font-size: 13px; color: var(--ink-2); line-height: 1.7; }
+
+.v-prin .palette { margin-top: 48px; padding-top: 40px; border-top: 1px solid var(--line); display: grid; grid-template-columns: 200px 1fr; gap: 40px; align-items: start; }
+.v-prin .palette .k { font-family: var(--font-display); font-size: 24px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.15; }
+.v-prin .palette .k span { font-family: var(--font-ui); display: block; font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); margin-bottom: 8px; }
+.v-prin .palette .row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+.v-prin .palette .swatch { border: 1px solid var(--line); border-radius: var(--r-soft); overflow: hidden; }
+.v-prin .palette .swatch .chip { height: 80px; }
+.v-prin .palette .swatch .meta { padding: 10px 12px; background: var(--canvas-elev); }
+.v-prin .palette .swatch .name { font-size: 12.5px; font-weight: 600; color: var(--ink); }
+.v-prin .palette .swatch .hex { font-family: ui-monospace, monospace; font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+.v-prin .rollout { margin-top: 48px; padding-top: 40px; border-top: 1px solid var(--line); display: grid; grid-template-columns: 200px 1fr; gap: 40px; }
+.v-prin .rollout .k { font-family: var(--font-display); font-size: 24px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.15; }
+.v-prin .rollout .k span { font-family: var(--font-ui); display: block; font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); margin-bottom: 8px; }
+.v-prin .rollout ol { margin: 0; padding-left: 20px; }
+.v-prin .rollout ol li { font-size: 14.5px; color: var(--ink-2); line-height: 1.7; margin-bottom: 12px; }
+.v-prin .rollout ol li strong { color: var(--ink); }
+.v-prin .rollout ol li em { font-family: var(--font-display-italic); font-style: italic; color: var(--muted); font-weight: 400; font-size: 13.5px; }
+
+</style>
+</head>
+<body>
+
+<div class="switcher">
+  <span class="lock">Canopy <em>C</em></span>
+  <button data-target="portal" class="active">Portal</button>
+  <button data-target="pv">PhotoVault</button>
+  <button data-target="signin">Sign-in</button>
+  <button data-target="mkt">Marketing</button>
+  <button data-target="prin">Principles</button>
+  <span class="note">One system, five surfaces</span>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     PORTAL — accent = Canopy (default)
+     ═══════════════════════════════════════════════════════════════════ -->
+<div class="view active v-portal product-canopy" data-variant="portal">
+  <div class="description">
+    <strong>Portal, Canopy base accent.</strong> Signature olive-sage <code>#5a6a3e</code>.
+    The shared spine: 260px sidebar, editorial greeting, kicker-plus-content sections, Fraunces display + Inter UI. This is what all Canopy surfaces inherit; products then override one accent.
+  </div>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand-lock">Canopy <em>Portal</em></div>
+      <div class="avatar">RZ</div>
+    </div>
+    <div class="sidebar">
+      <div class="sb-ws">
+        <div class="name">Maple Creek</div>
+        <div class="sub">Grade school · K–8</div>
+      </div>
+      <div class="sb-label">Workspace</div>
+      <div class="sb-item active">Home</div>
+      <div class="sb-sub">Your apps</div>
+      <div class="sb-sub">Services</div>
+      <div class="sb-sub">More from Canopy</div>
+      <div class="sb-item">Account</div>
+      <div class="sb-label">Products</div>
+      <div class="sb-sub">PhotoVault</div>
+      <div class="sb-sub">Stories</div>
+      <div class="sb-sub">Reach</div>
+      <div class="sb-sub">Create</div>
+    </div>
+    <div class="content">
+      <div class="greet">
+        <div>
+          <div class="meta">Thursday · April 18 · Maple Creek</div>
+          <h1>Good afternoon, <em>Rob</em>.</h1>
+        </div>
+        <div class="aside">
+          <div class="num">4 · 2</div>
+          <p>Four products active. Two services running. Spring term is six weeks in.</p>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="kicker"><span class="small">Your apps</span>Running today<span class="hint">Everything below is live for Maple Creek. Each product carries its own accent so you always know where you are.</span></div>
+        <div class="body">
+          <div class="prods">
+            <div class="prod">
+              <div class="icon" style="background:#b44e42">P</div>
+              <div class="text"><h3 class="title">PhotoVault</h3><p class="desc">Secure photo storage, albums, and sharing for your whole school community.</p><p class="meta">Photo management</p></div>
+              <a href="#" class="cta">Open</a>
+            </div>
+            <div class="prod">
+              <div class="icon" style="background:#2a7a6a">C</div>
+              <div class="text"><h3 class="title">Canopy Stories</h3><p class="desc">Capture and share the moments that shape your school year.</p><p class="meta">Storytelling</p></div>
+              <a href="#" class="cta">Open</a>
+            </div>
+            <div class="prod">
+              <div class="icon" style="background:#6845d6">C</div>
+              <div class="text"><h3 class="title">Canopy Reach</h3><p class="desc">Compose, schedule, and track the social content your school shares.</p><p class="meta">Social &amp; outreach</p></div>
+              <a href="#" class="cta">Open</a>
+            </div>
+            <div class="prod">
+              <div class="icon" style="background:#c47121">C</div>
+              <div class="text"><h3 class="title">Canopy Create</h3><p class="desc">Design and ship newsletters, flyers, and collateral from one place.</p><p class="meta">Content creation</p></div>
+              <a href="#" class="cta">Open</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="kicker"><span class="small">Services</span>Running in the background<span class="hint">Canopy teams managing work for your school.</span></div>
+        <div class="body">
+          <div class="services">
+            <div class="srow"><div class="stile">W</div><div class="sname">Website Setup</div><div class="sdesc">Managed implementation of your school's public site.</div><div class="sstatus">● Active</div><a href="#" class="sgo">Open</a></div>
+            <div class="srow"><div class="stile">D</div><div class="sname">Design Support</div><div class="sdesc">Ongoing design collaboration for campaigns and collateral.</div><div class="sstatus">● Active</div><a href="#" class="sgo">Open</a></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footnote">Canopy, for Maple Creek School. Spring 2026.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     PHOTOVAULT — accent = coral
+     ═══════════════════════════════════════════════════════════════════ -->
+<div class="view v-pv product-photovault" data-variant="pv">
+  <div class="description">
+    <strong>PhotoVault, same system — coral accent <code>#b44e42</code>.</strong> Same sidebar structure, same typography, same greeting pattern, same motion. The only per-product changes: the accent color, the product name in the lockup, and the domain-specific content (album grid instead of product launcher). This is the "one line of CSS changes identity" promise in practice.
+  </div>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand-lock">Canopy <em>PhotoVault</em></div>
+      <div class="avatar">RZ</div>
+    </div>
+    <div class="sidebar">
+      <div class="sb-ws">
+        <div class="name">Maple Creek</div>
+        <div class="sub">PhotoVault · 4,218 photos</div>
+      </div>
+      <div class="sb-label">Library</div>
+      <div class="sb-item active">Albums</div>
+      <div class="sb-sub">All photos</div>
+      <div class="sb-sub">Shared with me</div>
+      <div class="sb-sub">Favorites</div>
+      <div class="sb-label">Albums</div>
+      <div class="sb-sub">Spring 2026</div>
+      <div class="sb-sub">Winter Concert</div>
+      <div class="sb-sub">Field Trips</div>
+      <div class="sb-sub">Graduation 2025</div>
+      <div class="sb-label">Team</div>
+      <div class="sb-item">People &amp; access</div>
+    </div>
+    <div class="content">
+      <div class="album-head">
+        <div>
+          <div class="crumbs"><a href="#">Albums</a><span class="sep">/</span><a href="#">Spring 2026</a><span class="sep">/</span>Week of April 13</div>
+          <h1>Spring on the <em>field</em>.</h1>
+          <p class="sub">Photos from the 4th–6th grade field day, Tuesday. Sorted by photographer. Parents in the shared album can save and print.</p>
+        </div>
+        <div class="stats"><div class="n">128</div><div class="l">Photos</div></div>
+      </div>
+
+      <div class="toolbar">
+        <button class="chip on">All</button>
+        <button class="chip">By photographer</button>
+        <button class="chip">By grade</button>
+        <button class="chip">Favorited</button>
+        <div class="spacer"></div>
+        <button class="primary">Share album</button>
+      </div>
+
+      <div class="grid">
+        <div class="cell tall c1"><span class="n">01</span><span class="label">Opening ceremony</span></div>
+        <div class="cell c2"><span class="n">02</span></div>
+        <div class="cell c3"><span class="n">03</span></div>
+        <div class="cell c4"><span class="n">04</span><span class="label">Tug of war</span></div>
+        <div class="cell c5"><span class="n">05</span></div>
+        <div class="cell c6"><span class="n">06</span></div>
+        <div class="cell tall c7"><span class="n">07</span><span class="label">Relay, 4th grade</span></div>
+        <div class="cell c8"><span class="n">08</span></div>
+        <div class="cell c9"><span class="n">09</span></div>
+        <div class="cell c10"><span class="n">10</span></div>
+        <div class="cell c2"><span class="n">11</span></div>
+        <div class="cell c5"><span class="n">12</span><span class="label">Lunch break</span></div>
+        <div class="cell c3"><span class="n">13</span></div>
+        <div class="cell c8"><span class="n">14</span></div>
+        <div class="cell c1"><span class="n">15</span></div>
+        <div class="cell c7"><span class="n">16</span></div>
+        <div class="cell c4"><span class="n">17</span></div>
+        <div class="cell c10"><span class="n">18</span></div>
+        <div class="cell c6"><span class="n">19</span></div>
+        <div class="cell c9"><span class="n">20</span><span class="label">Closing</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SIGN-IN — accent = Canopy (default)
+     ═══════════════════════════════════════════════════════════════════ -->
+<div class="view v-signin product-canopy" data-variant="signin">
+  <div class="left">
+    <div class="brand-lock">Canopy<em>.</em></div>
+    <div class="form-wrap">
+      <h1>Welcome <em>back</em>.</h1>
+      <p class="sub">Sign in to Canopy Portal. You'll land on your workspace and can jump to any product from there.</p>
+      <div class="field">
+        <label for="em">Email</label>
+        <input id="em" type="email" value="robbie.zylstra@maplecreek.school" />
+      </div>
+      <div class="field">
+        <label for="pw">Password</label>
+        <input id="pw" type="password" value="••••••••••••" />
+      </div>
+      <button class="btn">Sign in</button>
+      <p class="help">Forgot your password? <a href="#">Reset it</a> · New here? <a href="#">Contact Canopy</a></p>
+    </div>
+    <div class="feet">
+      <span>© 2026 Canopy</span>
+      <span><a href="#">Privacy</a> · <a href="#">Terms</a></span>
+    </div>
+  </div>
+  <div class="right">
+    <div></div>
+    <div>
+      <p class="quote">"A school is a lot of people doing a lot of things for a lot of <em>kids</em>. Canopy is the space where all of it lives."</p>
+      <p class="attrib">— Canopy, internal</p>
+    </div>
+    <div class="feet">
+      <span>Serving 1,240 schools</span>
+      <span><a href="#">Status</a></span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     MARKETING HOMEPAGE
+     ═══════════════════════════════════════════════════════════════════ -->
+<div class="view v-mkt product-canopy" data-variant="mkt">
+  <div class="nav">
+    <div class="lock">Canopy<em>.</em></div>
+    <nav>
+      <a href="#">Products</a>
+      <a href="#">Schools</a>
+      <a href="#">Pricing</a>
+      <a href="#">About</a>
+    </nav>
+    <a href="#" class="sign-in">Sign in</a>
+  </div>
+
+  <div class="hero">
+    <div>
+      <div class="meta">One platform, five products, every school</div>
+      <h1>Your school's<br/>digital <em>canopy</em>.</h1>
+      <p class="pitch">Photos, stories, social, creative — managed together, not glued together. Canopy is the operating layer for modern, heartfelt schools.</p>
+      <div class="ctas">
+        <a href="#" class="primary">See a demo</a>
+        <a href="#" class="secondary">For schools</a>
+      </div>
+    </div>
+    <div class="visual">
+      <div class="caption">Maple Creek School — photographed, captioned, and shared through Canopy. Spring 2026.</div>
+    </div>
+  </div>
+
+  <div class="family">
+    <div class="kicker-row">
+      <div class="k"><span>The products</span>Five ways schools live online.</div>
+      <div class="p">Every Canopy product shares the same shell, the same login, the same school context. Each is opinionated about its craft and restrained about everything else.</div>
+    </div>
+    <div class="row">
+      <div class="fam">
+        <div class="dot" style="background:#b44e42"></div>
+        <h3 class="name">PhotoVault</h3>
+        <p class="what">Photos, albums, and sharing for your community.</p>
+        <a href="#" class="go">Meet PhotoVault</a>
+      </div>
+      <div class="fam">
+        <div class="dot" style="background:#2a7a6a"></div>
+        <h3 class="name">Stories</h3>
+        <p class="what">Capture the moments that shape a school year.</p>
+        <a href="#" class="go">Meet Stories</a>
+      </div>
+      <div class="fam">
+        <div class="dot" style="background:#6845d6"></div>
+        <h3 class="name">Reach</h3>
+        <p class="what">Compose, schedule, and publish school social.</p>
+        <a href="#" class="go">Meet Reach</a>
+      </div>
+      <div class="fam">
+        <div class="dot" style="background:#c47121"></div>
+        <h3 class="name">Create</h3>
+        <p class="what">Newsletters, flyers, and collateral from one place.</p>
+        <a href="#" class="go">Meet Create</a>
+      </div>
+      <div class="fam">
+        <div class="dot" style="background:#5a6a3e"></div>
+        <h3 class="name">Portal</h3>
+        <p class="what">The shell that holds everything together.</p>
+        <a href="#" class="go">Meet Portal</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     PRINCIPLES
+     ═══════════════════════════════════════════════════════════════════ -->
+<div class="view v-prin product-canopy" data-variant="prin">
+  <div class="cover">
+    <div>
+      <div class="eyebrow">Direction C · Design system charter</div>
+      <h1>A system <em>with a point of view</em>.</h1>
+    </div>
+    <div class="lede">
+      <p><strong>Option A was a refresh. Option B was a redesign. Option C is a constitution.</strong> Below are the rules every Canopy product follows. A system is worth the effort only when the rules are opinionated enough to produce recognizable family resemblance — and loose enough that each product can do its actual job.</p>
+    </div>
+  </div>
+
+  <!-- Principles -->
+  <div class="rule">
+    <div class="num">01<small>Hierarchy</small></div>
+    <div class="body">
+      <h3>Type does the hierarchy.</h3>
+      <p>Size, weight, and leading do the structural work. Borders, fills, and shadows are a last resort, not a first instinct.</p>
+      <p>You cannot add a card to fix a layout problem. If the content wouldn't read without one, the content is wrong.</p>
+    </div>
+    <div class="tags"><span class="tag">No default cards</span><span class="tag">44→24→16→13 scale</span><span class="tag">Fraunces display · Inter UI</span></div>
+  </div>
+
+  <div class="rule">
+    <div class="num">02<small>Marquee</small></div>
+    <div class="body">
+      <h3>One big moment per screen.</h3>
+      <p>Exactly one element is allowed to be visually loud: a greeting, a cover photo, a hero illustration. Everything else supports it.</p>
+      <p>Stacked heroes are banned. Two gradients on one page is banned. A dashboard with three navy gradient banners is the antithesis of this system.</p>
+    </div>
+    <div class="tags"><span class="tag">One marquee, max</span><span class="tag">Others earn attention by content</span></div>
+  </div>
+
+  <div class="rule">
+    <div class="num">03<small>Density</small></div>
+    <div class="body">
+      <h3>Density follows content.</h3>
+      <p>Utility views (tables, lists, admin) are tight — 32–40px rows, minimal padding, edge-to-edge when it helps. Showcase views (dashboards, profiles, marketing) are airy — generous gutters, big type, real negative space.</p>
+      <p>Uniform padding across every surface is how AI-generated design systems telegraph themselves.</p>
+    </div>
+    <div class="tags"><span class="tag">Per-context, not per-token</span><span class="tag">Earn generosity</span></div>
+  </div>
+
+  <div class="rule">
+    <div class="num">04<small>Identity</small></div>
+    <div class="body">
+      <h3>One accent per surface. The spine stays Canopy.</h3>
+      <p>Every product overrides exactly one variable — <code style="font-family:ui-monospace,monospace;font-size:12px;background:var(--canopy-soft);padding:1px 5px;border-radius:3px">--accent</code> — from Canopy's palette. Everything else (type, spacing, motion, layout primitives) inherits from the core.</p>
+      <p>Walk into any Canopy product: you should know it's Canopy in 200ms and which one in 400ms.</p>
+    </div>
+    <div class="tags"><span class="tag">PhotoVault · coral</span><span class="tag">Stories · ocean</span><span class="tag">Reach · violet</span><span class="tag">Create · amber</span><span class="tag">Canopy · olive-sage</span></div>
+  </div>
+
+  <div class="rule">
+    <div class="num">05<small>Chrome</small></div>
+    <div class="body">
+      <h3>Chrome is earned, not default.</h3>
+      <p>An element gets a border or a fill — never both, except inputs. One shadow, ever, from one token. Radii come in three sizes only: tight (4px), soft (10px), large (20px, marquee only).</p>
+      <p>This is where the current Canopy system leaks AI-design-default: 28px radii on everything, double borders on cards, stacked shadows. Forbidden here.</p>
+    </div>
+    <div class="tags"><span class="tag">Border OR fill</span><span class="tag">One shadow token</span><span class="tag">Three radii</span></div>
+  </div>
+
+  <div class="rule">
+    <div class="num">06<small>Motion</small></div>
+    <div class="body">
+      <h3>One easing, one rhythm, applied everywhere.</h3>
+      <p>All transitions use <code style="font-family:ui-monospace,monospace;font-size:12px;background:var(--canopy-soft);padding:1px 5px;border-radius:3px">cubic-bezier(0.2, 0.8, 0.2, 1)</code>. Durations: quick (140ms), normal (220ms), slow (360ms). Nothing linear, ever.</p>
+      <p>Motion is the cheapest way for a B2B product to read as crafted — most competitors skip it entirely.</p>
+    </div>
+    <div class="tags"><span class="tag">One ease curve</span><span class="tag">Three durations</span><span class="tag">No linear</span></div>
+  </div>
+
+  <div class="rule">
+    <div class="num">07<small>Voice</small></div>
+    <div class="body">
+      <h3>Fraunces for moments. Inter for work.</h3>
+      <p>Serif for headings, greetings, quotes, brand moments. Sans for data, forms, tables, body copy. The italic cut of the display face is used sparingly — for names, one word per headline, and the single accent word in a phrase.</p>
+      <p>This is the single biggest lever for the "warm and human" target.</p>
+    </div>
+    <div class="tags"><span class="tag">Fraunces display</span><span class="tag">Instrument Serif italic</span><span class="tag">Inter UI, ss01 + cv11</span></div>
+  </div>
+
+  <!-- Architecture -->
+  <div class="arch">
+    <div class="k"><span>Architecture</span>Two token layers. One package. Five consumers.</div>
+    <div class="body">
+      <div class="box">
+        <h4>Base tokens (Canopy core)</h4>
+        <p>Defined once in <code>packages/ui/src/styles.css</code>. Every product, every repo inherits these. They do not change per product.</p>
+        <ul>
+          <li>Typography (fonts, sizes, leading, tracking)</li>
+          <li>Spacing scale (4 / 8 / 12 / 16 / 24 / 36 / 56 / 88)</li>
+          <li>Radii (tight / soft / large)</li>
+          <li>Motion (ease, durations)</li>
+          <li>Neutral palette (canvas, ink, muted, faint, lines)</li>
+          <li>One shadow token</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h4>Product tokens</h4>
+        <p>Each product overrides <strong>one class</strong> at the root of its app. That class changes only accent-related variables.</p>
+        <ul>
+          <li><code>.product-photovault</code> → coral accent</li>
+          <li><code>.product-stories</code> → ocean accent</li>
+          <li><code>.product-reach</code> → violet accent</li>
+          <li><code>.product-create</code> → amber accent</li>
+          <li><code>.product-canopy</code> → olive-sage (default)</li>
+        </ul>
+        <p style="margin-top:10px"><strong>Result:</strong> one npm package, five repos, five identities, zero drift.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Palette -->
+  <div class="palette">
+    <div class="k"><span>Palette</span>The family, by accent.</div>
+    <div class="row">
+      <div class="swatch"><div class="chip" style="background:#5a6a3e"></div><div class="meta"><div class="name">Canopy</div><div class="hex">#5a6a3e</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#b44e42"></div><div class="meta"><div class="name">PhotoVault</div><div class="hex">#b44e42</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#2a7a6a"></div><div class="meta"><div class="name">Stories</div><div class="hex">#2a7a6a</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#6845d6"></div><div class="meta"><div class="name">Reach</div><div class="hex">#6845d6</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#c47121"></div><div class="meta"><div class="name">Create</div><div class="hex">#c47121</div></div></div>
+    </div>
+  </div>
+
+  <!-- Rollout -->
+  <div class="rollout">
+    <div class="k"><span>Rollout</span>How this actually ships across five repos.</div>
+    <div class="body">
+      <ol>
+        <li><strong>Wire all products to <code>@canopy/ui</code>.</strong> Platform already publishes it; PhotoVault, Stories, Reach, and Create need to consume it (likely via workspace dep or private npm). <em>Without this, every repo is its own snowflake forever.</em></li>
+        <li><strong>Freeze tokens in Canopy/ui, not per app.</strong> Today <code>styles.css</code> has Tailwind-default values. Replace with the Option C palette, typography, motion tokens. This is a PR, not a project.</li>
+        <li><strong>Add the product class.</strong> Each repo sets <code>class="product-photovault"</code> (or equivalent) on its body / root layout. One line per product.</li>
+        <li><strong>Commission or license the display face.</strong> Fraunces is open source and free to use; Instrument Serif too. Zero licensing blocker. If you want a fully custom face, that's a separate 6–10 week commission.</li>
+        <li><strong>Migrate surfaces in order of visibility.</strong> Marketing homepage and sign-in first (highest-impression surfaces). Portal dashboard next. Then per-product dashboards. Each product interior last, worked by whichever team owns that repo.</li>
+        <li><strong>Enforce with lint.</strong> Add a stylelint rule that rejects hardcoded colors, non-token radii, and non-system shadows. The principles get real only when they're automated.</li>
+        <li><strong>Write no new components during the migration.</strong> Rule of thumb: a component has to earn its way in by replacing at least three one-off implementations. Otherwise you're just rebuilding a different generic library.</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<script>
+  const buttons = document.querySelectorAll('.switcher button');
+  const views = document.querySelectorAll('.view');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.target;
+      buttons.forEach(b => b.classList.toggle('active', b === btn));
+      views.forEach(v => v.classList.toggle('active', v.dataset.variant === target));
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    });
+  });
+</script>
+
+</body>
+</html>

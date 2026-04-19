@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Canopy Dashboard — Current / Direction A / Direction B</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Instrument+Serif&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Inter", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    color: #0f172a;
+    background: #f3f5fb;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* ─── Variant switcher ──────────────────────────────────────────── */
+  .switcher {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; gap: 8px; align-items: center;
+    padding: 10px 16px;
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .switcher strong {
+    font-weight: 700; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: #334155; margin-right: 8px;
+  }
+  .switcher button {
+    appearance: none; border: 1px solid #e2e8f0; background: white; color: #334155;
+    padding: 7px 14px; border-radius: 999px; font: inherit; font-size: 13px; font-weight: 500;
+    cursor: pointer; transition: all 0.15s ease;
+  }
+  .switcher button:hover { border-color: #94a3b8; }
+  .switcher button.active { background: #0f172a; color: white; border-color: #0f172a; }
+  .switcher .note { margin-left: auto; font-size: 12px; color: #64748b; }
+
+  /* ─── View container ────────────────────────────────────────────── */
+  .view { display: none; }
+  .view.active { display: block; }
+  .description {
+    padding: 16px 24px;
+    background: #fff8eb;
+    border-bottom: 1px solid #fde68a;
+    font-size: 13px; line-height: 1.55;
+    color: #713f12;
+  }
+  .description strong { color: #422006; }
+
+  /* ─── Shared app shell frame ────────────────────────────────────── */
+  .shell {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    min-height: 100vh;
+  }
+  .sidebar { padding: 16px; }
+  .topbar {
+    grid-column: 1 / -1;
+    height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px;
+    border-bottom: 1px solid #e2e8f0;
+    background: white;
+  }
+  .content { padding: 24px; }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     VIEW: CURRENT
+     ═══════════════════════════════════════════════════════════════════ */
+  .v-current {
+    background: linear-gradient(180deg, #f6f8ff 0%, #eef3ff 55%, #f8fbff 100%);
+    color: #0f172a;
+    font-family: "Avenir Next", "Inter", "Segoe UI", sans-serif;
+  }
+  .v-current .topbar {
+    background: rgba(255,255,255,0.6);
+    border-bottom-color: #dfe7f4;
+  }
+  .v-current .topbar .brand { font-weight: 700; letter-spacing: -0.02em; font-size: 15px; color: #0f172a; }
+  .v-current .topbar .avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: #cbd5e1; display: grid; place-items: center; font-size: 12px; font-weight: 600; color: #334155;
+  }
+  .v-current .shell { grid-template-rows: 56px 1fr; }
+  .v-current .sidebar { grid-column: 1; border-right: 1px solid #dfe7f4; }
+  .v-current .content {
+    grid-column: 2; background: #fbfcff;
+    max-width: 1340px; padding: 24px 24px 40px;
+  }
+
+  /* Sidebar — current */
+  .v-current .sb-ws {
+    display: flex; align-items: center; gap: 12px;
+    padding: 20px 16px; border-radius: 28px; background: transparent;
+  }
+  .v-current .sb-ws .tile {
+    width: 44px; height: 44px; border-radius: 14px;
+    background: linear-gradient(135deg, #2f76dd 0%, #5c96ea 100%);
+    color: white; display: grid; place-items: center;
+    font-weight: 600; letter-spacing: -0.02em;
+    box-shadow: 0 10px 24px rgba(47, 118, 221, 0.28);
+  }
+  .v-current .sb-ws .name { font-weight: 600; font-size: 15px; letter-spacing: -0.02em; color: #202020; }
+  .v-current .sb-ws .sub { font-size: 13px; color: #6f7e90; margin-top: 2px; }
+  .v-current .sb-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+    color: #8ea0b7; padding: 0 12px; margin-top: 22px; margin-bottom: 10px;
+  }
+  .v-current .sb-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 14px; border-radius: 16px;
+    font-size: 15px; font-weight: 500; letter-spacing: -0.01em;
+    color: #506176; margin-bottom: 4px;
+  }
+  .v-current .sb-item.active { background: rgba(255,255,255,0.82); color: #172033; box-shadow: 0 10px 24px rgba(35, 74, 144, 0.08); }
+  .v-current .sb-sub { padding: 8px 12px 8px 40px; font-size: 13px; color: #6d7d90; }
+
+  /* Hero — current (the generic gradient banner) */
+  .v-current .hero {
+    position: relative; overflow: hidden;
+    border-radius: 28px; padding: 36px 32px;
+    background: linear-gradient(135deg, #0f172a 0%, #1a3260 45%, #2563eb 100%);
+    color: white; margin-bottom: 20px;
+  }
+  .v-current .hero::before,
+  .v-current .hero::after {
+    content: ""; position: absolute; border-radius: 50%; pointer-events: none;
+  }
+  .v-current .hero::before {
+    right: -40px; top: -40px; width: 224px; height: 224px;
+    background: radial-gradient(circle, rgba(255,255,255,0.10) 0%, transparent 70%);
+  }
+  .v-current .hero::after {
+    bottom: -56px; right: 112px; width: 144px; height: 144px;
+    background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
+  }
+  .v-current .hero .row { display: flex; justify-content: space-between; align-items: center; gap: 32px; position: relative; }
+  .v-current .hero .eyebrow {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
+    color: rgba(255,255,255,0.55); margin-bottom: 12px;
+  }
+  .v-current .hero h2 {
+    font-family: "Avenir Next", "Gill Sans", sans-serif;
+    margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.15;
+  }
+  .v-current .hero p {
+    margin: 10px 0 0; font-size: 15px; line-height: 1.55; max-width: 480px;
+    color: rgba(255,255,255,0.68);
+  }
+  .v-current .hero .cta {
+    display: inline-block; margin-top: 24px;
+    background: white; color: #0f172a; font-weight: 600; font-size: 14px;
+    padding: 10px 20px; border-radius: 999px; text-decoration: none;
+  }
+  .v-current .hero .illus { color: rgba(255,255,255,0.18); }
+
+  /* Surface sections — current */
+  .v-current .surface {
+    border-radius: 28px; border: 1px solid #dfe7f4; background: transparent;
+    padding: 24px; margin-bottom: 20px;
+  }
+  .v-current .section-head { margin-bottom: 16px; }
+  .v-current .section-eyebrow {
+    font-family: "Avenir Next"; font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
+    color: #64748b; margin: 0 0 4px;
+  }
+  .v-current .section-title {
+    margin: 0; font-family: "Avenir Next"; font-size: 24px; font-weight: 600;
+    letter-spacing: -0.03em; color: #0f172a; line-height: 1.1;
+  }
+  .v-current .section-sub {
+    margin: 6px 0 0; font-size: 14px; color: #64748b; line-height: 1.55; max-width: 54ch;
+  }
+  .v-current .grid-3 {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  }
+
+  /* Product card — current */
+  .v-current .prod {
+    overflow: hidden; border-radius: 26px; border: 1px solid #dfe7f4;
+    background: transparent;
+  }
+  .v-current .prod .strip { height: 80px; }
+  .v-current .prod .body { position: relative; padding: 16px; }
+  .v-current .prod .icon-ring {
+    width: 64px; height: 64px; border-radius: 50%; background: white; border: 2px solid white;
+    margin-top: -40px; display: grid; place-items: center;
+    box-shadow: 0 1px 2px rgba(148,163,184,0.18);
+  }
+  .v-current .prod .icon {
+    width: 48px; height: 48px; border-radius: 50%; color: white; display: grid; place-items: center;
+    font-weight: 800; font-size: 15px; letter-spacing: -0.02em;
+  }
+  .v-current .prod .head-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  .v-current .prod .badge {
+    display: inline-block; padding: 4px 10px; border-radius: 999px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.02em;
+    background: #edf3fb; color: #516074; border: 1px solid #d7e3f3;
+  }
+  .v-current .prod .badge.on { background: #eef8f2; color: #21533f; border-color: #dbeadf; }
+  .v-current .prod .title { font-family: "Avenir Next"; font-size: 17px; font-weight: 600; letter-spacing: -0.02em; color: #0f172a; margin: 0 0 4px; line-height: 1.15; }
+  .v-current .prod .cat { font-size: 13px; color: #64748b; margin: 0; }
+  .v-current .prod .desc { font-size: 13px; color: #64748b; line-height: 1.5; margin: 8px 0 0; min-height: 3.3em; }
+  .v-current .prod .actions { padding: 12px; border-top: 1px solid #e3eaf6; display: flex; align-items: center; gap: 12px; }
+  .v-current .prod .btn {
+    display: inline-block; padding: 8px 14px; border-radius: 999px;
+    background: white; color: #334155; border: 1px solid #cbd5e1;
+    font-size: 13px; font-weight: 600; text-decoration: none;
+  }
+  .v-current .prod .link { font-size: 12px; color: #64748b; font-weight: 500; text-decoration: none; }
+
+  /* Service list — current */
+  .v-current .list {
+    overflow: hidden; border-radius: 24px; border: 1px solid #e3eaf6;
+    background: rgba(255,255,255,0.72);
+  }
+  .v-current .list-row {
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    padding: 14px 20px; border-bottom: 1px solid #e2e8f0;
+  }
+  .v-current .list-row:last-child { border-bottom: none; }
+  .v-current .list-row .left { display: flex; align-items: center; gap: 12px; }
+  .v-current .list-row .tile {
+    width: 32px; height: 32px; border-radius: 7px; color: white;
+    display: grid; place-items: center; font-weight: 800; font-size: 13px;
+  }
+  .v-current .list-row .name { font-family: "Avenir Next"; font-size: 16px; font-weight: 600; color: #0f172a; letter-spacing: -0.02em; margin: 0; }
+  .v-current .list-row .sub { font-size: 13px; color: #64748b; margin: 2px 0 0; }
+  .v-current .list-row .right { display: flex; align-items: center; gap: 12px; }
+  .v-current .list-row .pill {
+    padding: 4px 10px; border-radius: 999px; background: #edf3fb; color: #516074;
+    border: 1px solid #d7e3f3; font-size: 11px; font-weight: 600;
+  }
+  .v-current .list-row .go { color: #2563eb; font-size: 13px; font-weight: 600; text-decoration: none; }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     VIEW: DIRECTION A — Loosen the grid, keep the kit
+     ═══════════════════════════════════════════════════════════════════ */
+  .v-a {
+    /* warmer neutral */
+    background: linear-gradient(180deg, #fbf8f2 0%, #f6f2ea 60%, #fbf8f2 100%);
+    color: #1c1b22;
+    font-family: "Inter", -apple-system, sans-serif;
+    font-feature-settings: "ss01", "cv11";
+  }
+  .v-a .topbar { background: rgba(255,253,247,0.72); border-bottom-color: #e9e2d3; }
+  .v-a .topbar .brand { font-weight: 600; font-size: 15px; color: #1c1b22; letter-spacing: -0.01em; }
+  .v-a .topbar .avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: #d9cdb8; display: grid; place-items: center; font-size: 12px; font-weight: 600; color: #6b5a3a;
+  }
+  .v-a .sidebar { grid-column: 1; border-right: 1px solid #e9e2d3; }
+  .v-a .content {
+    grid-column: 2; background: #fdfbf6;
+    max-width: 1340px; padding: 32px 32px 48px;
+  }
+
+  /* Sidebar — A */
+  .v-a .sb-ws {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px; border-radius: 14px; background: transparent;
+  }
+  .v-a .sb-ws .tile {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: #204d8c;
+    color: white; display: grid; place-items: center; font-weight: 600; letter-spacing: -0.02em; font-size: 14px;
+  }
+  .v-a .sb-ws .name { font-weight: 600; font-size: 15px; color: #1c1b22; letter-spacing: -0.01em; }
+  .v-a .sb-ws .sub { font-size: 12px; color: #78706a; margin-top: 2px; }
+  .v-a .sb-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    color: #9a9289; padding: 0 8px; margin-top: 26px; margin-bottom: 8px;
+  }
+  .v-a .sb-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 10px; border-radius: 8px;
+    font-size: 14px; font-weight: 500;
+    color: #57524d; margin-bottom: 2px;
+  }
+  .v-a .sb-item.active { background: #efe8d7; color: #1c1b22; }
+  .v-a .sb-sub { padding: 6px 10px 6px 32px; font-size: 12.5px; color: #8a827a; }
+
+  /* Greeting replacing hero — A */
+  .v-a .greet { padding: 14px 0 20px; border-bottom: 1px solid #ece4d3; margin-bottom: 28px; }
+  .v-a .greet h1 {
+    margin: 0; font-size: 34px; font-weight: 600; letter-spacing: -0.02em;
+    color: #1c1b22; line-height: 1.1;
+  }
+  .v-a .greet h1 em { font-style: normal; color: #b4804a; }
+  .v-a .greet p {
+    margin: 10px 0 0; font-size: 15px; line-height: 1.55; color: #78706a;
+    max-width: 62ch;
+  }
+
+  /* Sections — A (no card chrome, just title + content) */
+  .v-a .section { margin-bottom: 36px; }
+  .v-a .section-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 16px; margin-bottom: 14px;
+  }
+  .v-a .section-title {
+    font-size: 18px; font-weight: 600; letter-spacing: -0.01em; color: #1c1b22; margin: 0;
+  }
+  .v-a .section-action { font-size: 13px; color: #204d8c; text-decoration: none; font-weight: 500; }
+  .v-a .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+
+  /* Product card — A (smaller radii, more restraint) */
+  .v-a .prod {
+    overflow: hidden; border-radius: 12px; border: 1px solid #e9e2d3;
+    background: white;
+  }
+  .v-a .prod .strip { height: 6px; }
+  .v-a .prod .body { padding: 16px; }
+  .v-a .prod .head-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .v-a .prod .icon {
+    width: 32px; height: 32px; border-radius: 8px; color: white; display: grid; place-items: center;
+    font-weight: 700; font-size: 14px; letter-spacing: -0.02em;
+  }
+  .v-a .prod .badge {
+    display: inline-block; padding: 3px 8px; border-radius: 4px;
+    font-size: 11px; font-weight: 500;
+    background: #efe8d7; color: #6b5f44;
+  }
+  .v-a .prod .badge.on { background: #e3ebe3; color: #40614a; }
+  .v-a .prod .title { font-size: 15.5px; font-weight: 600; letter-spacing: -0.01em; color: #1c1b22; margin: 4px 0 2px; line-height: 1.2; }
+  .v-a .prod .cat { font-size: 12px; color: #9a9289; margin: 0; }
+  .v-a .prod .desc { font-size: 13px; color: #57524d; line-height: 1.5; margin: 10px 0 14px; }
+  .v-a .prod .actions { display: flex; gap: 10px; align-items: center; }
+  .v-a .prod .btn {
+    display: inline-block; padding: 6px 12px; border-radius: 6px;
+    background: #204d8c; color: white; font-size: 13px; font-weight: 500; text-decoration: none;
+  }
+  .v-a .prod .link { font-size: 12px; color: #78706a; text-decoration: none; font-weight: 500; }
+
+  /* Services list — A (flat, dense) */
+  .v-a .list { border-top: 1px solid #e9e2d3; }
+  .v-a .list-row {
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    padding: 12px 0; border-bottom: 1px solid #e9e2d3;
+  }
+  .v-a .list-row .left { display: flex; align-items: center; gap: 12px; }
+  .v-a .list-row .tile {
+    width: 28px; height: 28px; border-radius: 6px; color: white;
+    display: grid; place-items: center; font-weight: 700; font-size: 12px;
+  }
+  .v-a .list-row .name { font-size: 14.5px; font-weight: 600; color: #1c1b22; margin: 0; }
+  .v-a .list-row .sub { font-size: 12.5px; color: #9a9289; margin: 0; margin-left: 8px; display: inline; }
+  .v-a .list-row .pill { font-size: 11px; color: #40614a; background: #e3ebe3; padding: 2px 8px; border-radius: 4px; font-weight: 500; }
+  .v-a .list-row .go { color: #204d8c; font-size: 13px; font-weight: 500; text-decoration: none; }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     VIEW: DIRECTION B — Magazine rhythm
+     ═══════════════════════════════════════════════════════════════════ */
+  .v-b {
+    background: #fbf8f2;
+    color: #1a1a22;
+    font-family: "Inter", -apple-system, sans-serif;
+  }
+  .v-b .topbar {
+    background: transparent; border-bottom: none; height: 64px;
+    padding: 0 36px;
+  }
+  .v-b .topbar .brand {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 600; font-size: 20px; letter-spacing: -0.01em; color: #1a1a22;
+  }
+  .v-b .topbar .topnav { display: flex; gap: 28px; font-size: 14px; color: #5c5a60; }
+  .v-b .topbar .topnav a { color: inherit; text-decoration: none; font-weight: 500; }
+  .v-b .topbar .avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: #d4c5ac; display: grid; place-items: center; font-size: 13px; font-weight: 600; color: #6b5a3a;
+    border: 1px solid #e9dcc2;
+  }
+  .v-b .sidebar { grid-column: 1; border-right: 1px solid #ece3d0; padding: 20px 14px; }
+  .v-b .content {
+    grid-column: 2; padding: 16px 48px 56px;
+    max-width: none;
+  }
+
+  /* Sidebar — B */
+  .v-b .sb-ws {
+    padding: 6px 10px 16px; border-bottom: 1px solid #ece3d0; margin-bottom: 16px;
+  }
+  .v-b .sb-ws .name {
+    font-family: "Fraunces", Georgia, serif;
+    font-size: 20px; font-weight: 600; color: #1a1a22; letter-spacing: -0.01em;
+  }
+  .v-b .sb-ws .sub { font-size: 12px; color: #8a837c; margin-top: 2px; }
+  .v-b .sb-label {
+    font-size: 10.5px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+    color: #a29a8f; padding: 0 10px; margin: 22px 0 6px;
+  }
+  .v-b .sb-item {
+    display: block; padding: 7px 10px; font-size: 14px; color: #5c5a60;
+    border-radius: 0; border-left: 2px solid transparent; margin-left: -2px;
+    font-weight: 500;
+  }
+  .v-b .sb-item.active { color: #1a1a22; border-left-color: #8e5a2f; font-weight: 600; }
+  .v-b .sb-sub { padding: 5px 10px 5px 22px; font-size: 12.5px; color: #8a837c; }
+
+  /* Editorial greeting — B */
+  .v-b .greet {
+    padding: 32px 0 0; display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: end;
+    border-bottom: 1px solid #ece3d0; padding-bottom: 28px; margin-bottom: 44px;
+  }
+  .v-b .greet .meta {
+    font-size: 11.5px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
+    color: #a29a8f; margin-bottom: 14px;
+  }
+  .v-b .greet h1 {
+    font-family: "Fraunces", Georgia, serif;
+    margin: 0; font-size: 56px; font-weight: 400; letter-spacing: -0.025em;
+    line-height: 1.02; color: #1a1a22;
+    font-variation-settings: "opsz" 144;
+  }
+  .v-b .greet h1 em {
+    font-family: "Instrument Serif", "Fraunces", Georgia, serif;
+    font-style: italic; font-weight: 400; color: #8e5a2f;
+  }
+  .v-b .greet .aside {
+    text-align: right; max-width: 260px;
+  }
+  .v-b .greet .aside .num {
+    font-family: "Fraunces", serif; font-size: 44px; font-weight: 500; line-height: 1; color: #1a1a22;
+    letter-spacing: -0.02em;
+  }
+  .v-b .greet .aside p { font-size: 13px; color: #5c5a60; margin: 6px 0 0; line-height: 1.5; }
+
+  /* Magazine sections — B */
+  .v-b .sec {
+    display: grid; grid-template-columns: 200px 1fr; gap: 40px; margin-bottom: 56px;
+    align-items: start;
+  }
+  .v-b .sec .kicker {
+    font-family: "Fraunces", Georgia, serif;
+    font-size: 22px; font-weight: 500; letter-spacing: -0.01em; color: #1a1a22; line-height: 1.15;
+  }
+  .v-b .sec .kicker .small {
+    font-family: "Inter", sans-serif;
+    display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+    color: #a29a8f; margin-bottom: 8px;
+  }
+  .v-b .sec .kicker .hint {
+    font-family: "Inter", sans-serif;
+    display: block; font-size: 13px; font-weight: 400; color: #8a837c;
+    margin-top: 10px; line-height: 1.5;
+  }
+  .v-b .sec .body { min-width: 0; }
+
+  /* Product grid — B (airy, type-led, no card chrome) */
+  .v-b .prods { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; }
+  .v-b .prod {
+    padding: 0 0 20px; border-bottom: 1px solid #ece3d0;
+    display: grid; grid-template-columns: 44px 1fr auto; gap: 16px; align-items: start;
+  }
+  .v-b .prod:nth-last-child(-n+2) { border-bottom: none; padding-bottom: 0; }
+  .v-b .prod .icon {
+    width: 44px; height: 44px; border-radius: 10px; color: white; display: grid; place-items: center;
+    font-weight: 700; font-size: 16px; letter-spacing: -0.02em;
+  }
+  .v-b .prod .text { min-width: 0; }
+  .v-b .prod .title {
+    font-family: "Fraunces", serif;
+    font-size: 20px; font-weight: 500; letter-spacing: -0.01em; color: #1a1a22; margin: 0 0 4px; line-height: 1.2;
+  }
+  .v-b .prod .desc { font-size: 13.5px; color: #5c5a60; line-height: 1.55; margin: 0; max-width: 40ch; }
+  .v-b .prod .meta { font-size: 11.5px; color: #a29a8f; margin: 6px 0 0; font-weight: 500; letter-spacing: 0.02em; }
+  .v-b .prod .cta {
+    font-size: 13px; color: #8e5a2f; text-decoration: none; font-weight: 600;
+    white-space: nowrap; padding-top: 3px;
+  }
+  .v-b .prod .cta::after { content: " →"; }
+
+  /* Services — B (full-bleed table, dense) */
+  .v-b .services {
+    border-top: 1px solid #ece3d0;
+  }
+  .v-b .srow {
+    display: grid; grid-template-columns: 28px 1.2fr 2fr 110px 60px;
+    gap: 18px; align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #ece3d0;
+  }
+  .v-b .srow .stile {
+    width: 24px; height: 24px; border-radius: 4px; background: #d4c5ac; color: #5a4822;
+    display: grid; place-items: center; font-weight: 700; font-size: 11px;
+  }
+  .v-b .srow .sname { font-size: 14.5px; font-weight: 600; color: #1a1a22; }
+  .v-b .srow .sdesc { font-size: 13px; color: #5c5a60; }
+  .v-b .srow .sstatus { font-size: 11.5px; color: #40614a; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
+  .v-b .srow .sgo { color: #8e5a2f; font-size: 13px; font-weight: 600; text-decoration: none; text-align: right; }
+
+  /* Footer note — B */
+  .v-b .footnote {
+    margin-top: 64px; padding-top: 24px; border-top: 1px solid #ece3d0;
+    font-size: 12.5px; color: #a29a8f; font-family: "Fraunces", Georgia, serif; font-style: italic;
+  }
+
+  /* Fade animation on variant switch */
+  .view.active { animation: fadeIn 0.25s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+
+<!-- ──────────────────────────────────────────────────────────────────── -->
+<div class="switcher">
+  <strong>Canopy Dashboard</strong>
+  <button data-target="current" class="active">Current</button>
+  <button data-target="a">Direction A — Loosen the grid</button>
+  <button data-target="b">Direction B — Magazine rhythm</button>
+  <span class="note">Same content, three visual treatments</span>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     VIEW: CURRENT
+     ═══════════════════════════════════════════════════════════════════ -->
+<div class="view active v-current" data-variant="current">
+  <div class="description">
+    <strong>Current design.</strong> Tailwind slate + indigo palette. Navy→blue gradient hero with placeholder illustration.
+    Every section is an <code>AppSurface</code> card with eyebrow → section title → muted one-liner. 28px radii everywhere.
+    Uniform <code>space-y-5</code> between sections.
+  </div>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand">Canopy Portal</div>
+      <div class="avatar">RZ</div>
+    </div>
+    <div class="sidebar">
+      <div class="sb-ws">
+        <div class="tile">MC</div>
+        <div>
+          <div class="name">Maple Creek School</div>
+          <div class="sub">Canopy Portal</div>
+        </div>
+      </div>
+      <div class="sb-label">Workspace</div>
+      <div class="sb-item active">◇ Home</div>
+      <div class="sb-sub">Your Apps</div>
+      <div class="sb-sub">Active Services</div>
+      <div class="sb-sub">More from Canopy</div>
+      <div class="sb-item">◈ Account</div>
+    </div>
+    <div class="content">
+      <div class="hero">
+        <div class="row">
+          <div>
+            <div class="eyebrow">Workspace Home</div>
+            <h2>Welcome to Canopy</h2>
+            <p>Launch products, review active services, and manage your workspace.</p>
+            <a href="#" class="cta">Your Apps</a>
+          </div>
+          <div class="illus">
+            <svg width="140" height="120" viewBox="0 0 140 120" fill="none" aria-hidden="true">
+              <rect x="10" y="20" width="48" height="36" rx="8" stroke="currentColor" stroke-width="2" />
+              <rect x="68" y="20" width="48" height="36" rx="8" stroke="currentColor" stroke-width="2" opacity="0.7" />
+              <rect x="10" y="68" width="48" height="36" rx="8" stroke="currentColor" stroke-width="2" opacity="0.7" />
+              <rect x="68" y="68" width="48" height="36" rx="8" stroke="currentColor" stroke-width="2" opacity="0.4" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="surface">
+        <div class="section-head">
+          <p class="section-eyebrow">Your Apps</p>
+          <h2 class="section-title">Launch into your products</h2>
+          <p class="section-sub">Products your workspace can access right now.</p>
+        </div>
+        <div class="grid-3">
+          <!-- PhotoVault -->
+          <div class="prod">
+            <div class="strip" style="background:#e85a4f"></div>
+            <div class="body">
+              <div class="head-row">
+                <div class="icon-ring"><div class="icon" style="background:#e85a4f">P</div></div>
+                <span class="badge on">Active</span>
+              </div>
+              <h3 class="title">PhotoVault</h3>
+              <p class="cat">Photo management</p>
+              <p class="desc">Secure photo storage, albums, and sharing for your whole school community.</p>
+            </div>
+            <div class="actions">
+              <a href="#" class="btn">Open PhotoVault</a>
+              <a href="#" class="link">Settings</a>
+            </div>
+          </div>
+          <!-- Stories -->
+          <div class="prod">
+            <div class="strip" style="background:#2a8f7a"></div>
+            <div class="body">
+              <div class="head-row">
+                <div class="icon-ring"><div class="icon" style="background:#2a8f7a">C</div></div>
+                <span class="badge on">Active</span>
+              </div>
+              <h3 class="title">Canopy Stories</h3>
+              <p class="cat">Storytelling</p>
+              <p class="desc">Capture and share the moments that shape your school year.</p>
+            </div>
+            <div class="actions">
+              <a href="#" class="btn">Open Stories</a>
+              <a href="#" class="link">Settings</a>
+            </div>
+          </div>
+          <!-- Reach -->
+          <div class="prod">
+            <div class="strip" style="background:#8b5cf6"></div>
+            <div class="body">
+              <div class="head-row">
+                <div class="icon-ring"><div class="icon" style="background:#8b5cf6">C</div></div>
+                <span class="badge on">Active</span>
+              </div>
+              <h3 class="title">Canopy Reach</h3>
+              <p class="cat">Social &amp; outreach</p>
+              <p class="desc">Compose, schedule, and track the social content your school shares.</p>
+            </div>
+            <div class="actions">
+              <a href="#" class="btn">Open Reach</a>
+              <a href="#" class="link">Settings</a>
+            </div>
+          </div>
+          <!-- Create -->
+          <div class="prod">
+            <div class="strip" style="background:#f59e0b"></div>
+            <div class="body">
+              <div class="head-row">
+                <div class="icon-ring"><div class="icon" style="background:#f59e0b">C</div></div>
+                <span class="badge on">Active</span>
+              </div>
+              <h3 class="title">Canopy Create</h3>
+              <p class="cat">Content creation</p>
+              <p class="desc">Design and ship newsletters, flyers, and collateral from one place.</p>
+            </div>
+            <div class="actions">
+              <a href="#" class="btn">Open Create</a>
+              <a href="#" class="link">Settings</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="surface">
+        <div class="section-head">
+          <p class="section-eyebrow">Services</p>
+          <h2 class="section-title">Active services</h2>
+          <p class="section-sub">Managed services currently running for your workspace.</p>
+        </div>
+        <div class="list">
+          <div class="list-row">
+            <div class="left">
+              <div class="tile" style="background:#0ea5a4">W</div>
+              <div>
+                <p class="name">Website Setup</p>
+                <p class="sub">Managed implementation of your school's public site.</p>
+              </div>
+            </div>
+            <div class="right">
+              <span class="pill">Active</span>
+              <a href="#" class="go">Open →</a>
+            </div>
+          </div>
+          <div class="list-row">
+            <div class="left">
+              <div class="tile" style="background:#3b82f6">D</div>
+              <div>
+                <p class="name">Design Support</p>
+                <p class="sub">Ongoing design collaboration for campaigns and collateral.</p>
+              </div>
+            </div>
+            <div class="right">
+              <span class="pill">Active</span>
+              <a href="#" class="go">Open →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="surface">
+        <div class="section-head">
+          <p class="section-eyebrow">More from Canopy</p>
+          <h2 class="section-title">Expand your platform</h2>
+          <p class="section-sub">Additional products that can be added to this workspace when you are ready.</p>
+        </div>
+        <div class="grid-3">
+          <div class="prod" style="opacity:0.72">
+            <div class="strip" style="background:#3b82f6"></div>
+            <div class="body">
+              <div class="head-row">
+                <div class="icon-ring"><div class="icon" style="background:#3b82f6">C</div></div>
+                <span class="badge">Available</span>
+              </div>
+              <h3 class="title">Canopy Web</h3>
+              <p class="cat">Website platform</p>
+              <p class="desc">A modern, maintainable public website built on Canopy.</p>
+            </div>
+            <div class="actions"><a href="#" class="btn">Learn more</a></div>
+          </div>
+          <div class="prod" style="opacity:0.72">
+            <div class="strip" style="background:#ec4899"></div>
+            <div class="body">
+              <div class="head-row">
+                <div class="icon-ring"><div class="icon" style="background:#ec4899">C</div></div>
+                <span class="badge">Available</span>
+              </div>
+              <h3 class="title">Canopy Community</h3>
+              <p class="cat">Community</p>
+              <p class="desc">A private space for families, teachers, and alumni to connect.</p>
+            </div>
+            <div class="actions"><a href="#" class="btn">Learn more</a></div>
+          </div>
+          <div class="prod" style="opacity:0.72">
+            <div class="strip" style="background:#10b981"></div>
+            <div class="body">
+              <div class="head-row">
+                <div class="icon-ring"><div class="icon" style="background:#10b981">C</div></div>
+                <span class="badge">Planned</span>
+              </div>
+              <h3 class="title">Canopy Insights</h3>
+              <p class="cat">Analytics</p>
+              <p class="desc">Cross-product analytics for school operations and engagement.</p>
+            </div>
+            <div class="actions"><a href="#" class="btn">Learn more</a></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     VIEW: DIRECTION A — Loosen the grid, keep the kit
+     ═══════════════════════════════════════════════════════════════════ -->
+<div class="view v-a" data-variant="a">
+  <div class="description">
+    <strong>Direction A — Loosen the grid, keep the kit.</strong>
+    Warmer neutral (<code>#fbf8f2</code>) replaces indigo. Accent swaps from Tailwind blue to a deeper, more distinctive navy. Ink becomes warmer. Radii drop from 28px to 8–12px. The generic gradient hero is replaced by a first-name greeting. The "eyebrow → title → muted" triple-decker is gone — sections just have a title. Cards are flatter and smaller. Services list is a flush table, not a rounded container.
+  </div>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand">Canopy</div>
+      <div class="avatar">RZ</div>
+    </div>
+    <div class="sidebar">
+      <div class="sb-ws">
+        <div class="tile">MC</div>
+        <div>
+          <div class="name">Maple Creek School</div>
+          <div class="sub">Portal</div>
+        </div>
+      </div>
+      <div class="sb-label">Workspace</div>
+      <div class="sb-item active">Home</div>
+      <div class="sb-sub">Your apps</div>
+      <div class="sb-sub">Active services</div>
+      <div class="sb-sub">More from Canopy</div>
+      <div class="sb-item">Account</div>
+    </div>
+    <div class="content">
+
+      <div class="greet">
+        <h1>Good afternoon, <em>Rob</em>.</h1>
+        <p>Four products active. Two services running. Here's what Maple Creek has on Canopy today.</p>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <h2 class="section-title">Your apps</h2>
+          <a href="#" class="section-action">Manage →</a>
+        </div>
+        <div class="grid-3">
+          <div class="prod">
+            <div class="strip" style="background:#c15e53"></div>
+            <div class="body">
+              <div class="head-row">
+                <div class="icon" style="background:#c15e53">P</div>
+                <span class="badge on">Active</span>
+              </div>
+              <h3 class="title">PhotoVault</h3>
+              <p class="cat">Photo management</p>
+              <p class="desc">Secure storage, albums, and sharing for your school community.</p>
+              <div class="actions">
+                <a href="#" class="btn">Open</a>
+                <a href="#" class="link">Settings</a>
+              </div>
+            </div>
+          </div>
+          <div class="prod">
+            <div class="strip" style="background:#2a8f7a"></div>
+            <div class="body">
+              <div class="head-row">
+                <div class="icon" style="background:#2a8f7a">C</div>
+                <span class="badge on">Active</span>
+              </div>
+              <h3 class="title">Canopy Stories</h3>
+              <p class="cat">Storytelling</p>
+              <p class="desc">Capture and share the moments that shape your school year.</p>
+              <div class="actions">
+                <a href="#" class="btn">Open</a>
+                <a href="#" class="link">Settings</a>
+              </div>
+            </div>
+          </div>
+          <div class="prod">
+            <div class="strip" style="background:#7a5af8"></div>
+            <div class="body">
+              <div class="head-row">
+                <div class="icon" style="background:#7a5af8">C</div>
+                <span class="badge on">Active</span>
+              </div>
+              <h3 class="title">Canopy Reach</h3>
+              <p class="cat">Social &amp; outreach</p>
+              <p class="desc">Compose, schedule, and track the social content your school shares.</p>
+              <div class="actions">
+                <a href="#" class="btn">Open</a>
+                <a href="#" class="link">Settings</a>
+              </div>
+            </div>
+          </div>
+          <div class="prod">
+            <div class="strip" style="background:#d98b2b"></div>
+            <div class="body">
+              <div class="head-row">
+                <div class="icon" style="background:#d98b2b">C</div>
+                <span class="badge on">Active</span>
+              </div>
+              <h3 class="title">Canopy Create</h3>
+              <p class="cat">Content creation</p>
+              <p class="desc">Design and ship newsletters, flyers, and collateral from one place.</p>
+              <div class="actions">
+                <a href="#" class="btn">Open</a>
+                <a href="#" class="link">Settings</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <h2 class="section-title">Active services</h2>
+          <a href="#" class="section-action">Contact us →</a>
+        </div>
+        <div class="list">
+          <div class="list-row">
+            <div class="left">
+              <div class="tile" style="background:#0d7a79">W</div>
+              <p class="name">Website Setup <span class="sub">— Managed implementation of your school's public site</span></p>
+            </div>
+            <div class="right" style="display:flex; gap:14px; align-items:center">
+              <span class="pill">Active</span>
+              <a href="#" class="go">Open →</a>
+            </div>
+          </div>
+          <div class="list-row">
+            <div class="left">
+              <div class="tile" style="background:#2f63b8">D</div>
+              <p class="name">Design Support <span class="sub">— Ongoing design collaboration for campaigns and collateral</span></p>
+            </div>
+            <div class="right" style="display:flex; gap:14px; align-items:center">
+              <span class="pill">Active</span>
+              <a href="#" class="go">Open →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <h2 class="section-title">More from Canopy</h2>
+          <a href="#" class="section-action">View all →</a>
+        </div>
+        <div class="grid-3">
+          <div class="prod" style="opacity:0.72">
+            <div class="strip" style="background:#2f63b8"></div>
+            <div class="body">
+              <div class="head-row">
+                <div class="icon" style="background:#2f63b8">C</div>
+                <span class="badge">Available</span>
+              </div>
+              <h3 class="title">Canopy Web</h3>
+              <p class="cat">Website platform</p>
+              <div class="actions"><a href="#" class="btn">Learn more</a></div>
+            </div>
+          </div>
+          <div class="prod" style="opacity:0.72">
+            <div class="strip" style="background:#c44b7f"></div>
+            <div class="body">
+              <div class="head-row">
+                <div class="icon" style="background:#c44b7f">C</div>
+                <span class="badge">Available</span>
+              </div>
+              <h3 class="title">Canopy Community</h3>
+              <p class="cat">Community</p>
+              <div class="actions"><a href="#" class="btn">Learn more</a></div>
+            </div>
+          </div>
+          <div class="prod" style="opacity:0.72">
+            <div class="strip" style="background:#0d8c6b"></div>
+            <div class="body">
+              <div class="head-row">
+                <div class="icon" style="background:#0d8c6b">C</div>
+                <span class="badge">Planned</span>
+              </div>
+              <h3 class="title">Canopy Insights</h3>
+              <p class="cat">Analytics</p>
+              <div class="actions"><a href="#" class="btn">Learn more</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     VIEW: DIRECTION B — Magazine rhythm
+     ═══════════════════════════════════════════════════════════════════ -->
+<div class="view v-b" data-variant="b">
+  <div class="description">
+    <strong>Direction B — Magazine rhythm.</strong>
+    Editorial serif (Fraunces) for display type, geometric sans for UI. Warm terracotta accent (<code>#8e5a2f</code>) replaces Tailwind blue. No card chrome — sections are a left-rail "kicker" plus right content column. Type-led hierarchy: 56px page title, italic inflection. Product list is airy and readable rather than boxed. Services becomes a dense full-bleed table. Density varies by content — airy for showcases, tight for utility.
+  </div>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand">Canopy</div>
+      <div class="topnav">
+        <a href="#">Home</a>
+        <a href="#">Account</a>
+      </div>
+      <div class="avatar">RZ</div>
+    </div>
+    <div class="sidebar">
+      <div class="sb-ws">
+        <div class="name">Maple Creek</div>
+        <div class="sub">Grade school · K–8</div>
+      </div>
+      <div class="sb-label">Workspace</div>
+      <div class="sb-item active">Home</div>
+      <div class="sb-sub">Your apps</div>
+      <div class="sb-sub">Services</div>
+      <div class="sb-sub">More from Canopy</div>
+      <div class="sb-item">Account</div>
+      <div class="sb-label">Products</div>
+      <div class="sb-sub">PhotoVault</div>
+      <div class="sb-sub">Stories</div>
+      <div class="sb-sub">Reach</div>
+      <div class="sb-sub">Create</div>
+    </div>
+    <div class="content">
+
+      <div class="greet">
+        <div>
+          <div class="meta">Thursday · April 18 · Maple Creek</div>
+          <h1>Good afternoon,<br/><em>Rob</em>.</h1>
+        </div>
+        <div class="aside">
+          <div class="num">4 · 2</div>
+          <p>Four products active. Two services running. Spring term is six weeks in.</p>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="kicker">
+          <span class="small">Your apps</span>
+          Running today
+          <span class="hint">Tap any product to jump in. Everything below is live for Maple Creek.</span>
+        </div>
+        <div class="body">
+          <div class="prods">
+            <div class="prod">
+              <div class="icon" style="background:#c15e53">P</div>
+              <div class="text">
+                <h3 class="title">PhotoVault</h3>
+                <p class="desc">Secure photo storage, albums, and sharing for your whole school community.</p>
+                <p class="meta">Photo management</p>
+              </div>
+              <a href="#" class="cta">Open</a>
+            </div>
+            <div class="prod">
+              <div class="icon" style="background:#2a8f7a">C</div>
+              <div class="text">
+                <h3 class="title">Canopy Stories</h3>
+                <p class="desc">Capture and share the moments that shape your school year.</p>
+                <p class="meta">Storytelling</p>
+              </div>
+              <a href="#" class="cta">Open</a>
+            </div>
+            <div class="prod">
+              <div class="icon" style="background:#7a5af8">C</div>
+              <div class="text">
+                <h3 class="title">Canopy Reach</h3>
+                <p class="desc">Compose, schedule, and track the social content your school shares.</p>
+                <p class="meta">Social &amp; outreach</p>
+              </div>
+              <a href="#" class="cta">Open</a>
+            </div>
+            <div class="prod">
+              <div class="icon" style="background:#d98b2b">C</div>
+              <div class="text">
+                <h3 class="title">Canopy Create</h3>
+                <p class="desc">Design and ship newsletters, flyers, and collateral from one place.</p>
+                <p class="meta">Content creation</p>
+              </div>
+              <a href="#" class="cta">Open</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="kicker">
+          <span class="small">Services</span>
+          Running in the background
+          <span class="hint">Canopy teams managing work for your school.</span>
+        </div>
+        <div class="body">
+          <div class="services">
+            <div class="srow">
+              <div class="stile">W</div>
+              <div class="sname">Website Setup</div>
+              <div class="sdesc">Managed implementation of your school's public site.</div>
+              <div class="sstatus">● Active</div>
+              <a href="#" class="sgo">Open</a>
+            </div>
+            <div class="srow">
+              <div class="stile">D</div>
+              <div class="sname">Design Support</div>
+              <div class="sdesc">Ongoing design collaboration for campaigns and collateral.</div>
+              <div class="sstatus">● Active</div>
+              <a href="#" class="sgo">Open</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="kicker">
+          <span class="small">More from Canopy</span>
+          Ready when you are
+          <span class="hint">Three more products you can add to Maple Creek.</span>
+        </div>
+        <div class="body">
+          <div class="prods">
+            <div class="prod">
+              <div class="icon" style="background:#2f63b8">C</div>
+              <div class="text">
+                <h3 class="title">Canopy Web</h3>
+                <p class="desc">A modern, maintainable public website built on Canopy.</p>
+                <p class="meta">Website platform · Available</p>
+              </div>
+              <a href="#" class="cta">Learn</a>
+            </div>
+            <div class="prod">
+              <div class="icon" style="background:#c44b7f">C</div>
+              <div class="text">
+                <h3 class="title">Canopy Community</h3>
+                <p class="desc">A private space for families, teachers, and alumni to connect.</p>
+                <p class="meta">Community · Available</p>
+              </div>
+              <a href="#" class="cta">Learn</a>
+            </div>
+            <div class="prod">
+              <div class="icon" style="background:#0d8c6b">C</div>
+              <div class="text">
+                <h3 class="title">Canopy Insights</h3>
+                <p class="desc">Cross-product analytics for school operations and engagement.</p>
+                <p class="meta">Analytics · Planned</p>
+              </div>
+              <a href="#" class="cta">Learn</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footnote">
+        Canopy, for Maple Creek School. Spring 2026.
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  const buttons = document.querySelectorAll('.switcher button');
+  const views = document.querySelectorAll('.view');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.target;
+      buttons.forEach(b => b.classList.toggle('active', b === btn));
+      views.forEach(v => v.classList.toggle('active', v.dataset.variant === target));
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    });
+  });
+</script>
+
+</body>
+</html>
