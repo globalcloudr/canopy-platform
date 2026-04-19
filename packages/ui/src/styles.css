@@ -1,3 +1,14 @@
+/* ═══════════════════════════════════════════════════════════════════
+   @canopy/ui — Akkedis baseline
+
+   Tokens, typography, motion, and per-product accent classes that every
+   Canopy product inherits. Palette drawn from the Broadley's flat lizard
+   ("Akkedis" in Afrikaans) that names Akkedis Digital.
+
+   Each consuming repo loads Maven Pro via next/font and exposes it as
+   --font-maven, then applies .product-[name] on the root element.
+   ═══════════════════════════════════════════════════════════════════ */
+
 @theme inline {
   --font-sans: var(--font-sans);
   --font-display: var(--font-display);
@@ -37,77 +48,134 @@
 }
 
 :root {
-  --font-sans: "Avenir Next", "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-  --font-display: "Avenir Next", "Gill Sans", "Trebuchet MS", "Segoe UI", sans-serif;
+  /* ─── Type ─────────────────────────────────────────────────────────
+     Maven Pro everywhere — loaded via next/font in each consuming repo
+     as --font-maven. Legacy aliases preserved for component compat. */
+  --font-sans: var(--font-maven, "Maven Pro"), -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-serif: var(--font-sans);
+  --font-display: var(--font-sans);
+  --font-outfit: var(--font-sans);
 
-  --background: #eef2ff;
-  --foreground: #0f172a;
-  --card: #ffffff;
-  --card-foreground: #0f172a;
-  --popover: #ffffff;
-  --popover-foreground: #0f172a;
+  /* ─── Ink scale — cool neutrals, matched to marketing ──────────── */
+  --ink:   #222222;
+  --ink-2: #444444;
+  --faint: #a0a0a0;
 
-  --primary: #0f172a;
-  --primary-foreground: #ffffff;
-  --secondary: #ffffff;
-  --secondary-foreground: #334155;
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
-  --text-muted: #64748b;
-  --accent: #f8fafc;
-  --accent-foreground: #0f172a;
+  /* ─── Paper scale — pure white canvas + pressed surface ────────── */
+  --paper:         #ffffff;
+  --paper-pressed: #f6f6f6;
+  --paper-elev:    #ffffff;
+  --rule:          #e5e5e5;
+  --rule-strong:   #cecece;
 
-  --border: #cbd5e1;
-  --border-strong: #94a3b8;
-  --input: #cbd5e1;
-  --ring: rgba(37, 99, 235, 0.14);
+  /* ─── Canvas + surface tokens ──────────────────────────────────── */
+  --background:          var(--paper);
+  --foreground:          var(--ink);
+  --surface:             var(--paper);
+  --surface-muted:       var(--paper-pressed);
+  --border:              var(--rule);
+  --border-strong:       var(--rule-strong);
+  --input:               var(--rule);
+  --text-muted:          #6b6b6b;
+  --muted:               var(--paper-pressed);
+  --muted-foreground:    var(--text-muted);
+  --muted-light:         var(--faint);
+  --card:                var(--paper);
+  --card-foreground:     var(--ink);
+  --popover:             var(--paper);
+  --popover-foreground:  var(--ink);
+  --primary:             var(--ink);
+  --primary-foreground:  var(--paper);
+  --secondary:           var(--paper-pressed);
+  --secondary-foreground: var(--ink-2);
+  --accent-foreground:   white;
+  --ring:                rgba(30, 63, 158, 0.18);
 
-  --navy: #0f172a;
-  --navy-mid: #1e293b;
-  --blue: #2563eb;
-  --blue-hover: #1d4ed8;
-  --surface: #ffffff;
-  --surface-muted: #f1f5f9;
-  --ink: #0f172a;
-  --ink-2: #334155;
-  --muted-light: #94a3b8;
-  --success: #059669;
-  --warning: #d97706;
-  --planned: #7c3aed;
-  --destructive: #b91c1c;
-  --destructive-surface: #fff1f2;
+  /* ─── Brand (per-org customizable identity tokens) ─────────────── */
+  --brand:          var(--ink);
+  --brand-contrast: var(--paper);
 
-  --radius-control: 1rem;
-  --radius-surface: 1.75rem;
-  --radius-menu: 1rem;
+  /* ─── Default accent = Canopy cobalt (lizard's head) ───────────── */
+  --accent:      #1e3f9e;
+  --accent-soft: #dde3f3;
+  --accent-ink:  #142b75;
 
-  --shadow-control: 0 1px 2px rgba(148, 163, 184, 0.18), 0 1px 1px rgba(15, 23, 42, 0.04);
-  --shadow-card: 0 18px 54px rgba(15, 23, 42, 0.08);
-  --shadow-popover: 0 20px 42px rgba(15, 23, 42, 0.16);
+  /* ─── Legacy navy/blue aliases (still referenced by components) ── */
+  --navy:       var(--ink);
+  --navy-mid:   var(--ink-2);
+  --blue:       var(--accent);
+  --blue-hover: var(--accent-ink);
 
-  --app-shell-bg: linear-gradient(180deg, #f6f8ff 0%, #eef3ff 55%, #f8fbff 100%);
-  --app-content-bg: #fbfcff;
-  --app-divider: #dfe7f4;
-  --app-surface-border: #dfe7f4;
-  --app-surface-soft-border: #e3eaf6;
-  --app-surface-fill: rgba(255, 255, 255, 0.62);
-  --app-pill-bg: #edf3fb;
-  --app-pill-border: #d7e3f3;
-  --app-pill-text: #516074;
-  --app-pill-success-bg: #eef8f2;
-  --app-pill-success-border: #dbeadf;
-  --app-pill-success-text: #21533f;
+  /* ─── Status — warmed out of Tailwind-bright range ─────────────── */
+  --success:             #3f7a4a;
+  --warning:             #a8691f;
+  --planned:             #5a3e7a;
+  --destructive:         #8a2b2b;
+  --destructive-surface: #f5dedc;
+
+  /* ─── Radii — three tiers, applied deliberately ────────────────── */
+  --radius-tight: 4px;
+  --radius-soft:  10px;
+  --radius-large: 20px;
+  /* Legacy radius aliases */
+  --radius-control: var(--radius-soft);
+  --radius-menu:    var(--radius-soft);
+  --radius-surface: var(--radius-large);
+  --radius-sm:      var(--radius-tight);
+  --radius-md:      var(--radius-soft);
+  --radius-lg:      var(--radius-large);
+
+  /* ─── One shadow token (and legacy aliases) ────────────────────── */
+  --shadow:         0 8px 24px rgba(34, 34, 34, 0.06);
+  --shadow-sm:      0 1px 2px rgba(34, 34, 34, 0.05);
+  --shadow-control: var(--shadow-sm);
+  --shadow-card:    var(--shadow);
+  --shadow-popover: 0 12px 32px rgba(34, 34, 34, 0.10);
+
+  /* ─── Motion — one curve, three rhythms ────────────────────────── */
+  --ease:     cubic-bezier(0.2, 0.8, 0.2, 1);
+  --t-quick:  140ms;
+  --t-normal: 220ms;
+  --t-slow:   360ms;
+
+  /* ─── App shell — flat paper, no gradient ──────────────────────── */
+  --app-shell-bg:            var(--paper);
+  --app-content-bg:          var(--paper);
+  --app-divider:             var(--rule);
+  --app-surface-border:      var(--rule);
+  --app-surface-soft-border: var(--rule);
+  --app-surface-fill:        var(--paper);
+  --app-pill-bg:             var(--paper-pressed);
+  --app-pill-border:         var(--rule);
+  --app-pill-text:           var(--text-muted);
+  --app-pill-success-bg:     #e5ede3;
+  --app-pill-success-border: #c9d6c4;
+  --app-pill-success-text:   #3f5e3e;
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   Per-product accent classes
+
+   Each product overrides a single CSS variable (--accent) at its root.
+   Drawn from the lizard: cobalt head, rust tail, turquoise throat,
+   mustard legs, ochre flanks, dusty-rose neck, deep-teal back.
+   ═══════════════════════════════════════════════════════════════════ */
+.product-canopy     { --accent: #1e3f9e; --accent-soft: #dde3f3; --accent-ink: #142b75; } /* head — cobalt */
+.product-photovault { --accent: #c6531f; --accent-soft: #f5ddcd; --accent-ink: #943b14; } /* tail base — rust */
+.product-stories    { --accent: #158595; --accent-soft: #d1e4e8; --accent-ink: #0c6070; } /* throat — turquoise */
+.product-reach      { --accent: #c49424; --accent-soft: #f1e4c2; --accent-ink: #8f6c15; } /* legs — mustard */
+.product-create     { --accent: #8a5a23; --accent-soft: #eadbc4; --accent-ink: #664014; } /* flanks — ochre */
+.product-community  { --accent: #9c5168; --accent-soft: #f2d9df; --accent-ink: #733a4c; } /* neck — dusty rose */
+
 html {
-  background: var(--background);
+  background: var(--paper);
   font-size: 14px;
 }
 
 body {
   margin: 0;
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--paper);
+  color: var(--ink);
   font-family: var(--font-sans);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -137,27 +205,30 @@ body {
     font-family: var(--font-display);
     font-size: 1.875rem;
     font-weight: 600;
-    letter-spacing: -0.04em;
-    line-height: 1.05;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
     margin-bottom: 12px;
+    color: var(--ink);
   }
 
   h2 {
     font-family: var(--font-display);
     font-size: 1.25rem;
     font-weight: 600;
-    letter-spacing: -0.03em;
-    line-height: 1.1;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
     margin-bottom: 8px;
+    color: var(--ink);
   }
 
   h3 {
     font-family: var(--font-display);
     font-size: 1.125rem;
     font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.15;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
     margin-bottom: 6px;
+    color: var(--ink);
   }
 }
 
@@ -179,6 +250,6 @@ body {
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.16em;
-  color: var(--muted-foreground);
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
 }

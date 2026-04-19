@@ -14,16 +14,24 @@ export interface DashboardHeroProps extends React.HTMLAttributes<HTMLDivElement>
   onCtaClick?: () => void;
   /** CTA link href (use this or onCtaClick) */
   ctaHref?: string;
-  /** Illustration or icon rendered on the right side (hidden on mobile) */
+  /**
+   * @deprecated The decorative right-side illustration from the old gradient
+   * hero is no longer rendered. Prop is kept for API compatibility. The new
+   * editorial treatment relies on typography and whitespace, not illustration.
+   */
   illustration?: React.ReactNode;
 }
 
 /**
- * DashboardHero — full-width navy-to-blue gradient banner for dashboard pages.
+ * DashboardHero — editorial header for dashboard pages.
  *
- * Used at the top of each product's dashboard to establish context and provide
- * a primary call-to-action. Pass an `illustration` to fill the right side with
- * a product-relevant icon or decorative element.
+ * Renders a quiet editorial block: eyebrow, headline, optional subheading,
+ * optional CTA button anchored to the right. The accent color comes from the
+ * active `.product-*` class on the page root (cobalt for Canopy, rust for
+ * PhotoVault, etc.), via `var(--accent)`.
+ *
+ * Replaces the prior navy-to-blue gradient banner — same prop API, different
+ * visual register: editorial rather than enterprise SaaS.
  *
  * @example
  * <DashboardHero
@@ -32,7 +40,6 @@ export interface DashboardHeroProps extends React.HTMLAttributes<HTMLDivElement>
  *   subheading="Connect your accounts, compose posts, and track engagement."
  *   ctaLabel="New post"
  *   onCtaClick={() => router.push('/posts/new')}
- *   illustration={<ReachIllustration />}
  * />
  */
 export function DashboardHero({
@@ -42,102 +49,57 @@ export function DashboardHero({
   ctaLabel,
   onCtaClick,
   ctaHref,
-  illustration,
   className,
   ...props
 }: DashboardHeroProps) {
   const showCta = ctaLabel && (onCtaClick || ctaHref);
 
   return (
-    <div
+    <header
       className={cn(
-        "relative overflow-hidden rounded-[28px] px-8 py-9",
+        "flex flex-col gap-4 border-b border-[var(--rule)] pb-6 sm:flex-row sm:items-end sm:justify-between",
         className
       )}
-      style={{
-        background:
-          "linear-gradient(135deg, #0f172a 0%, #1a3260 45%, #2563eb 100%)",
-      }}
       {...props}
     >
-      {/* Decorative radial blurs */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-10 -top-10 h-56 w-56 rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(255,255,255,0.10) 0%, transparent 70%)",
-        }}
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -bottom-14 right-28 h-36 w-36 rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%)",
-        }}
-      />
+      <div className="min-w-0 flex-1">
+        {eyebrow && (
+          <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--faint)]">
+            {eyebrow}
+          </p>
+        )}
 
-      <div className="relative flex items-center justify-between gap-8">
-        {/* Left: text + CTA */}
-        <div className="min-w-0 flex-1">
-          {eyebrow && (
-            <p
-              className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em]"
-              style={{ color: "rgba(255,255,255,0.55)" }}
-            >
-              {eyebrow}
-            </p>
-          )}
+        <h2 className="m-0 text-[32px] font-semibold leading-[1.08] tracking-[-0.015em] text-[var(--foreground)] sm:text-[36px]">
+          {headline}
+        </h2>
 
-          <h2
-            className="text-2xl font-bold tracking-[-0.03em] text-white sm:text-[1.75rem]"
-            style={{ margin: 0, lineHeight: 1.15 }}
-          >
-            {headline}
-          </h2>
-
-          {subheading && (
-            <p
-              className="mt-2.5 max-w-lg text-sm leading-relaxed sm:text-[15px]"
-              style={{ color: "rgba(255,255,255,0.68)" }}
-            >
-              {subheading}
-            </p>
-          )}
-
-          {showCta && (
-            <div className="mt-6">
-              {ctaHref ? (
-                <a
-                  href={ctaHref}
-                  className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-[#0f172a] transition hover:bg-white/90 active:bg-white/80"
-                >
-                  {ctaLabel}
-                </a>
-              ) : (
-                <button
-                  type="button"
-                  onClick={onCtaClick}
-                  className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-[#0f172a] transition hover:bg-white/90 active:bg-white/80"
-                >
-                  {ctaLabel}
-                </button>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Right: illustration slot */}
-        {illustration && (
-          <div
-            className="hidden shrink-0 sm:block"
-            style={{ color: "rgba(255,255,255,0.18)" }}
-          >
-            {illustration}
-          </div>
+        {subheading && (
+          <p className="mt-2 max-w-[56ch] text-sm leading-relaxed text-[var(--text-muted)]">
+            {subheading}
+          </p>
         )}
       </div>
-    </div>
+
+      {showCta && (
+        <div className="shrink-0">
+          {ctaHref ? (
+            <a
+              href={ctaHref}
+              className="inline-flex items-center gap-2 rounded-[var(--radius-tight)] bg-[var(--accent)] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--accent-ink)]"
+            >
+              {ctaLabel}
+            </a>
+          ) : (
+            <button
+              type="button"
+              onClick={onCtaClick}
+              className="inline-flex items-center gap-2 rounded-[var(--radius-tight)] bg-[var(--accent)] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--accent-ink)]"
+            >
+              {ctaLabel}
+            </button>
+          )}
+        </div>
+      )}
+    </header>
   );
 }
